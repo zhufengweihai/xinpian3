@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
+
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/player_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        app:touch_target_height="10dp" />
+
+    <TextView
+        android:id="@+id/position"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:background="@drawable/item_corners_10_background_80000000"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/volume_layout"
+        layout="@layout/item_volume_layout"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:background="@drawable/item_corners_10_background_80000000"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/lightness_layout"
+        layout="@layout/item_lightness_layout"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:background="@drawable/item_corners_10_background_80000000"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/shape_loading"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/lock"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="start|center_vertical"
+        android:layout_marginStart="30dp"
+        android:src="@drawable/icon_unlock"
+        android:visibility="gone" />
+</merge>

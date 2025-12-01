@@ -1,0 +1,86 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias libs.plugins.ksp
+    id 'io.dcloud.uts.kotlin'
+}
+
+android {
+    namespace 'uni.zf.xinpian'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "uni.zf.xinpian"
+        minSdk 23
+        targetSdk 36
+        versionCode 3
+        versionName "2.1.0"
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures {
+        buildConfig true
+        viewBinding true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "DEBUG", "true"
+        }
+        debug {
+            buildConfigField "boolean", "DEBUG", "true"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    aaptOptions {
+        additionalParameters '--auto-add-overlay'
+        ignoreAssetsPattern '!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.aar'], dir: './libs')
+    implementation project(':uts-progressNotification')
+    implementation project(':uts-openSchema')
+
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    implementation libs.constraintlayout
+    implementation libs.lifecycle.livedata.ktx
+    implementation libs.lifecycle.viewmodel.ktx
+    implementation libs.androidx.fragment.ktx
+    implementation libs.fastjson
+    implementation libs.media3.ui
+    implementation libs.media3.exoplayer
+    implementation libs.androidx.media3.exoplayer.hls
+    //implementation libs.androidx.media3.datasource.cronet
+    implementation libs.androidx.media3.datasource.okhttp
+    implementation libs.okhttp
+    implementation libs.androidx.swiperefreshlayout
+    implementation libs.fresco
+    implementation libs.glide
+    implementation libs.androidx.paging.runtime
+    implementation libs.androidx.activity
+    implementation libs.room.runtime
+    implementation libs.androidx.room.ktx
+    implementation libs.androidx.room.paging
+
+
+    ksp(libs.androidx.room.compiler)
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+}

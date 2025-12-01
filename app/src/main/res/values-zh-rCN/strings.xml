@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">新片</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <array name="tab_rec_list">
+        <item>推荐</item>
+        <item>电影</item>
+        <item>剧集</item>
+        <item>综艺</item>
+        <item>动漫</item>
+        <item>短剧</item>
+    </array>
+    <array name="title_rec_list">
+        <item>最新电影</item>
+        <item>最新电视剧</item>
+        <item>热门电影</item>
+        <item>热门电视剧</item>
+        <item>热门综艺</item>
+        <item>热门动漫</item>
+        <item>热门短剧</item>
+    </array>
+    <string name="cast_title">可连接设备</string>
+    <string name="cast_failed">投屏失败！</string>
+    <string name="op_failed">操作失败。</string>
+    <string name="cast_last">上一集</string>
+    <string name="cast_next">下一集</string>
+    <string name="cast_switch">切换设备</string>
+    <string name="cast_volume">音量</string>
+    <string name="cast_series">选集</string>
+    <string name="series">选集：</string>
+    <string name="introduction">简介：</string>
+    <string name="view_details">查看详情</string>
+    <string name="director">导演：</string>
+    <string name="actor">演员：</string>
+    <string name="search_tip">请输入搜索内容</string>
+    <string name="search">搜索</string>
+    <string name="title_rec">推荐</string>
+    <string name="title_search">搜索</string>
+    <string name="title_download">下载</string>
+    <string name="title_record">记录</string>
+    <string name="title_my">我的</string>
+    <string name="search_history">搜索历史</string>
+    <string name="delete_all">全部删除</string>
+    <string name="finish">完成</string>
+    <string name="delete_all_confirm">确定全部删除么?</string>
+    <string name="video_list">视频列表</string>
+    <string name="to_download">没有已下载视频，赶紧去下载吧!</string>
+    <string name="downloading">下载中: %1$d</string>
+    <string name="downloaded">已下载: %1$d</string>
+    <string name="download_count">共%1$d个视频</string>
+    <string name="available_mem">可用空间: %1$s</string>
+    <string name="download_start_error">下载失败</string>
+    <string name="channel_name">视频</string>
+    <string name="action_share">分享</string>
+    <string name="action_tips">打赏</string>
+    <string name="action_download">下载</string>
+    <string name="pause_all">全部暂停</string>
+    <string name="start_all">全部开始</string>
+    <string name="watch_to">观看至：%1$s</string>
+    <string name="download_play">边下边播</string>
+    <string name="clean_cache">清理缓存</string>
+    <string name="portrait_fullscreen">竖屏全屏</string>
+</resources>

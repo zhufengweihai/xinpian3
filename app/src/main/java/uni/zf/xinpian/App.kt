@@ -1,0 +1,18 @@
+package uni.zf.xinpian
+
+import androidx.room.Room.databaseBuilder
+import io.dcloud.uniapp.UniApplication
+import uni.zf.xinpian.data.AppDatabase
+
+class App : UniApplication() {
+    lateinit var appDb: AppDatabase
+    override fun onCreate() {
+        super.onCreate()
+        INSTANCE = this
+        appDb = databaseBuilder(applicationContext, AppDatabase::class.java, "xinpian").build()
+    }
+
+    companion object {
+        lateinit var INSTANCE: App
+    }
+}

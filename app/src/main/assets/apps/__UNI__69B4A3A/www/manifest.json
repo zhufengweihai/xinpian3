@@ -1,0 +1,34 @@
+{
+  "id": "__UNI__69B4A3A",
+  "name": "新片",
+  "description": "",
+  "version": {
+    "name": "2.0.0",
+    "code": "2"
+  },
+  "uni-app-x": {
+    "compilerVersion": "4.66"
+  },
+  "app": {
+    "distribute": {
+      "icons": {
+        "android": {
+          "hdpi": "",
+          "xhdpi": "",
+          "xxhdpi": "",
+          "xxxhdpi": ""
+        }
+      },
+      "modules": {
+        "uni-storage": {},
+        "uni-prompt": {},
+        "uni-installApk": {},
+        "uni-dialogPage": {},
+        "uni-exit": {},
+        "uni-getSystemInfo": {},
+        "uni-network": {},
+        "uni-cloud-client": {}
+      }
+    }
+  }
+}

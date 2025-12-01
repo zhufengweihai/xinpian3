@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">Xinpian</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <array name="tab_rec_list">
+        <item>Rec.</item>
+        <item>Movies</item>
+        <item>Series</item>
+        <item>Variety</item>
+        <item>Anime</item>
+        <item>Playlet</item>
+    </array>
+    <array name="title_rec_list">
+        <item>Latest Movies</item>
+        <item>Latest TV Series</item>
+        <item>Hot Movies</item>
+        <item>Hot TV Series</item>
+        <item>Hot Variety</item>
+        <item>Hot Anime</item>
+        <item>Hot Playlet</item>
+    </array>
+    <string name="cast_title">Connectable Devices</string>
+    <string name="cast_failed">Failed to cast!</string>
+    <string name="op_failed">Operation failed.</string>
+    <string name="cast_last">Pre</string>
+    <string name="cast_next">Next</string>
+    <string name="cast_switch">Switch Device</string>
+    <string name="cast_volume">Volume</string>
+    <string name="cast_series">Series</string>
+    <string name="series">Series</string>
+    <string name="introduction">Introduction</string>
+    <string name="view_details">View Details</string>
+    <string name="director">Directors</string>
+    <string name="actor">Actors</string>
+    <string name="search_tip">Please enter your search</string>
+    <string name="search">Search</string>
+    <string name="title_rec">Rec.</string>
+    <string name="title_search">Search</string>
+    <string name="title_download">Download</string>
+    <string name="title_record">Record</string>
+    <string name="title_my">My</string>
+    <string name="search_history">Search History</string>
+    <string name="delete_all">Delete All</string>
+    <string name="finish">Finish</string>
+    <string name="delete_all_confirm">Are you sure to delete all?</string>
+    <string name="video_list">Video List</string>
+    <string name="to_download">No downloaded videos, so go ahead and download!</string>
+    <string name="downloading">Downloading: %1$d</string>
+    <string name="downloaded">Downloaded: %1$d</string>
+    <string name="download_count">Total %1$d videos</string>
+    <string name="available_mem">Free space: %1$s</string>
+    <string name="download_start_error">Failed to start download</string>
+    <string name="channel_name">video</string>
+    <string name="action_share">Share</string>
+    <string name="action_tips">Tips</string>
+    <string name="action_download">Download</string>
+    <string name="pause_all">Pause All</string>
+    <string name="start_all">Start All</string>
+    <string name="watch_to">Watch to: %1$s</string>
+    <string name="download_play">Download And Play</string>
+    <string name="clean_cache">Clean Cache</string>
+    <string name="portrait_fullscreen">Portrait Fullscreen</string>
+</resources>
