@@ -9,8 +9,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <uni.zf.xinpian.view.BannerView
-            android:id="@+id/rec_view"
+        <uni.zf.xinpian.view.SlideView
+            android:id="@+id/slide_view"
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:layout_margin="10dp" />

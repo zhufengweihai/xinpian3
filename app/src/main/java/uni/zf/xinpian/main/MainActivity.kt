@@ -16,26 +16,24 @@ import android.os.Looper
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import io.dcloud.uts.UTSPromise.Companion.resolve
 import io.dcloud.uts.compareTo
+import uni.UNI69B4A3A.UniUpgradeCenterResult
 import uni.UNI69B4A3A.default
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ActivityMainBinding
-import uni.zf.xinpian.source.SYNC_INTERVAL
-import uni.zf.xinpian.source.startVodSync
 import java.io.File
-import androidx.core.net.toUri
-import uni.UNI69B4A3A.UniUpgradeCenterResult
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: VideoDataViewModel by viewModels()
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var runnable: Runnable
-    private var first = true
+    private var isDataLoaded = false
+    private val REQUEST_INSTALL_PERMISSION = 1001
+    private var downloadId: Long = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,30 +41,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupUI()
-        viewModel.syncVideoData(this)
-        //syncVideoDataTimely()
-    }
-
-    private fun syncVideoDataTimely() {
-        runnable = Runnable {
-            startVodSync(this)
-            handler.postDelayed(runnable, SYNC_INTERVAL)
-        }
-        handler.post(runnable)
     }
 
     override fun onStart() {
         super.onStart()
         checkAppUpdate()
     }
-
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(runnable)
     }
 
     private fun setupUI() {
-        //window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         binding.viewPager.apply {
             adapter = MainFragmentStateAdapter(this@MainActivity)
             isUserInputEnabled = false
@@ -85,10 +71,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val REQUEST_INSTALL_PERMISSION = 1001
-    private var downloadId: Long = -1
-
-    // 广播接收器实例
     private val downloadCompleteReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
@@ -102,14 +84,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAppUpdate() {
-        if (first) {
+        if (isDataLoaded) {
             default().then(fun(uniUpgradeCenterResult) {
                 if (uniUpgradeCenterResult.code > 0) {
                     showUpdateDialog(uniUpgradeCenterResult)
                 }
                 resolve()
             })
-            first = false
+            isDataLoaded = false
         }
     }
 
