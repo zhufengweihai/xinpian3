@@ -60,13 +60,16 @@ class CategoryFragment(private val fenlei: Fenlei) : Fragment() {
         }
         lifecycleScope.launch {
             val byTagData =viewModel.requestByTagData(fenlei.id)
-            if (customTags.isNotEmpty()) setupCustomTagsView(customTags)
+            for (tagData in byTagData){
+                binding.root.addView()
+            }
         }
     }
 
     private fun setupCustomTagsView(customTags:List<Tag>) {
         val adapter = TagAdapter(customTags)
         binding.tagListView.apply {
+            visibility = View.VISIBLE
             layoutManager = GridLayoutManager(requireContext(), 3)
             addItemDecoration(SeriesItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
             this.adapter = adapter

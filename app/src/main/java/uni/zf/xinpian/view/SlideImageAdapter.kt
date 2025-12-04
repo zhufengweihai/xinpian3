@@ -10,10 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
+import uni.zf.xinpian.data.model.SlideData
 import uni.zf.xinpian.data.model.VideoBrief
 import uni.zf.xinpian.player.PlayerActivity
 
-class SlideImageAdapter(private val videoList: List<VideoBrief>) : Adapter<SlideImageAdapter.ViewHolder>() {
+class SlideImageAdapter(private val videoList: List<SlideData>) : Adapter<SlideImageAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_banner_image, parent, false)
@@ -29,16 +30,16 @@ class SlideImageAdapter(private val videoList: List<VideoBrief>) : Adapter<Slide
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.banner_image_view)
 
-        fun bind(video: VideoBrief) {
-            Glide.with(imageView).load(video.image).into(imageView)
+        fun bind(video: SlideData) {
+            Glide.with(imageView).load(video.thumbnail).into(imageView)
             itemView.setOnClickListener { toPlay(itemView.context, video) }
         }
     }
 
     companion object {
-        private fun toPlay(context: Context, video: VideoBrief) {
+        private fun toPlay(context: Context, video: SlideData) {
             val intent = Intent(context, PlayerActivity::class.java).apply {
-                putExtra(PlayerActivity.KEY_VIDEO_ID, video.id)
+                putExtra(PlayerActivity.KEY_VIDEO_ID, video.jumpId)
             }
             context.startActivity(intent)
         }

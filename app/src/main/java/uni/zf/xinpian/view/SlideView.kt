@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import android.widget.RadioButton
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import uni.zf.xinpian.R
+import uni.zf.xinpian.data.model.SlideData
 import uni.zf.xinpian.data.model.VideoBrief
 import uni.zf.xinpian.databinding.ViewBannerBinding
 import uni.zf.xinpian.utils.dpToPx
@@ -24,7 +25,7 @@ class SlideView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int
     private val handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable? = null
 
-    fun setVideoList(videoList: List<VideoBrief>, corner: Boolean) {
+    fun setVideoList(videoList: List<SlideData>, corner: Boolean) {
         if (videoList.isEmpty()) return
         if (corner) {
             clipToOutline = true
@@ -36,7 +37,7 @@ class SlideView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int
         updateNameView(videoList.first().title)
     }
 
-    private fun setupViewPager(videoList: List<VideoBrief>) {
+    private fun setupViewPager(videoList: List<SlideData>) {
         binding.viewPager.adapter = SlideImageAdapter(videoList)
         binding.viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -57,7 +58,7 @@ class SlideView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int
         }
     }
 
-    private fun displayInLoop(videoList: List<VideoBrief>) {
+    private fun displayInLoop(videoList: List<SlideData>) {
         runnable?.let { handler.removeCallbacks(it) }
         runnable = Runnable {
             val currentItem = binding.viewPager.currentItem
@@ -69,7 +70,7 @@ class SlideView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int
         binding.indicatorGroup.check(0)
     }
 
-    private fun updateCurrentView(nextItem: Int, videoList: List<VideoBrief>) {
+    private fun updateCurrentView(nextItem: Int, videoList: List<SlideData>) {
         binding.viewPager.setCurrentItem(nextItem, true)
         binding.indicatorGroup.check(nextItem)
         updateNameView(videoList[nextItem].title)
