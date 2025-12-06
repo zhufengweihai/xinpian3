@@ -1,9 +1,11 @@
 package uni.zf.xinpian.utils
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -11,6 +13,7 @@ import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+
 
 private val client = OkHttpClient.Builder()
     .connectTimeout(5, TimeUnit.SECONDS)
@@ -38,15 +41,15 @@ private suspend fun repeatRequest(urls: List<String>, headers: Map<String, Strin
 }
 
 private suspend fun request(url: String, headers: Map<String, String>): String {
-    for (i in 0 until 3) {
-        val requestBuilder = Request.Builder()
+    (0 until 3).forEach { _ ->
+        val request = Request.Builder()
             .url(url)
             .apply { headers.forEach { (k, v) -> addHeader(k, v) } }
-
-        val response = executeRequest(requestBuilder.build())
-        if (response?.code == 200) {
-            response.body.string().let {
-                if (it.isNotBlank() && !it.contains("异常请求")) return it
+            .build()
+        withContext(Dispatchers.IO) {
+            client.newCall(request).execute().use {
+                val data = it.body.string()
+                if (data.isNotBlank() && !data.contains("异常请求")) return@use data
             }
         }
         delay(1000)

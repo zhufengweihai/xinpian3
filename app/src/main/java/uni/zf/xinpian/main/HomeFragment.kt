@@ -25,6 +25,9 @@ class HomeFragment : Fragment() {
 
     private fun loadData() {
         lifecycleScope.launch {
+            viewModel.requestImgDomains()
+        }
+        lifecycleScope.launch {
             val fenleiList = viewModel.requestFenlei()
             setupViewPagerAndTabs(fenleiList)
         }

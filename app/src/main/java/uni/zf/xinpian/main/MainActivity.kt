@@ -131,9 +131,9 @@ class MainActivity : AppCompatActivity() {
                 downloadCompleteReceiver,
                 filter,
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    Context.RECEIVER_EXPORTED
+                    RECEIVER_EXPORTED
                 } else {
-                    Context.RECEIVER_NOT_EXPORTED
+                    RECEIVER_NOT_EXPORTED
                 }
             )
         } else {

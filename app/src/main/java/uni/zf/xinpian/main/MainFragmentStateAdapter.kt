@@ -24,9 +24,9 @@ class MainFragmentStateAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) 
     @OptIn(UnstableApi::class)
     override fun createFragment(position: Int): Fragment = when (position) {
         HOME_FRAGMENT_POSITION -> HomeFragment()
-        SHORT_FRAGMENT_POSITION -> ShortVideoFragment()
+        SHORT_FRAGMENT_POSITION -> ListFragment()
         LIST_FRAGMENT_POSITION -> ListFragment()
-        DISCOVERY_FRAGMENT_POSITION -> DiscoveryFragment()
+        DISCOVERY_FRAGMENT_POSITION -> ListFragment()
         else -> throw IllegalArgumentException("Invalid position: $position")
     }
 }
