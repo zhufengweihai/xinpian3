@@ -2,7 +2,7 @@ package uni.zf.xinpian.category
 
 import androidx.lifecycle.ViewModel
 import com.alibaba.fastjson.JSON
-import uni.zf.xinpian.data.model.ByTagData
+import uni.zf.xinpian.data.model.TagData
 import uni.zf.xinpian.data.model.SlideData
 import uni.zf.xinpian.data.model.Tag
 import uni.zf.xinpian.data.model.VideoBrief
@@ -24,10 +24,10 @@ class CategoryViewModel : ViewModel() {
         return dataListString.mapNotNull { parseTag(it as Map<String, Any>) }
     }
 
-    suspend fun requestByTagData(categoryId:String): List<ByTagData> {
+    suspend fun requestTagDatas(categoryId:String): List<TagData> {
         val dataString = requestUrl(BY_TAG_URL.format(categoryId))
         val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        return dataListString.mapNotNull { parseByTagData(it as Map<String, Any>) }
+        return dataListString.mapNotNull { parseTagData(it as Map<String, Any>) }
     }
 
     private fun parseSlideData(data: Map<String, Any>): SlideData {
@@ -45,8 +45,8 @@ class CategoryViewModel : ViewModel() {
         }
     }
 
-    private fun parseByTagData(data: Map<String, Any>): ByTagData {
-        return ByTagData().apply {
+    private fun parseTagData(data: Map<String, Any>): TagData {
+        return TagData().apply {
             name = data["name"].toString()
             jumpAddress = data["jump_address"].toString()
             cover = data["cover"].toString()
@@ -59,6 +59,7 @@ class CategoryViewModel : ViewModel() {
         return VideoBrief().apply {
             id = data["id"].toString()
             score = data["score"].toString()
+            definition = data["definition"] as Int
             title = data["title"].toString()
             image = data["path"].toString()
             mask = data["mask"].toString()

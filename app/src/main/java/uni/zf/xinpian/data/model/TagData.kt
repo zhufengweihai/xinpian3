@@ -1,6 +1,6 @@
 package uni.zf.xinpian.data.model
 
-class ByTagData {
+class TagData {
     var name: String = ""
     var jumpAddress: String = ""
     var cover: String = ""

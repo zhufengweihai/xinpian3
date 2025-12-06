@@ -4,31 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast.LENGTH_SHORT
-import android.widget.Toast.makeText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState.Error
-import androidx.paging.LoadState.Loading
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.model.Fenlei
-import uni.zf.xinpian.data.model.RecData
 import uni.zf.xinpian.data.model.Tag
-import uni.zf.xinpian.data.model.Video
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
-import uni.zf.xinpian.main.VideoDataViewModel
-import uni.zf.xinpian.search.SearchParamAdapter
-import uni.zf.xinpian.search.SearchParamListener
-import uni.zf.xinpian.search.SearchType
-import uni.zf.xinpian.search.SearchType.GENRES
 import uni.zf.xinpian.series.SeriesItemDecoration
-import uni.zf.xinpian.video.EvenVideoListAdapter
+import uni.zf.xinpian.view.TagDataView
 
 class CategoryFragment(private val fenlei: Fenlei) : Fragment() {
 
@@ -59,9 +45,11 @@ class CategoryFragment(private val fenlei: Fenlei) : Fragment() {
             if (customTags.isNotEmpty()) setupCustomTagsView(customTags)
         }
         lifecycleScope.launch {
-            val byTagData =viewModel.requestByTagData(fenlei.id)
-            for (tagData in byTagData){
-                binding.root.addView()
+            val tagDatas =viewModel.requestTagDatas(fenlei.id)
+            for (tagData in tagDatas){
+                val tagDataView = TagDataView(requireContext())
+                tagDataView.setTagData(tagData)
+                binding.main.addView(tagDataView)
             }
         }
     }

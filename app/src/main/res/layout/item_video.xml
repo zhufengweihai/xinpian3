@@ -30,13 +30,14 @@
         android:id="@+id/label_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        android:background="@color/red"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:textColor="@color/white"
         android:textSize="11sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/status_view"
