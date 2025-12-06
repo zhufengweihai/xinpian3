@@ -40,13 +40,14 @@
         app:tint="@color/main" />
 
     <ImageView
-        android:id="@+id/large_video_view"
+        android:id="@+id/cover_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tag_text_view"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp"
+        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/video_list_view"
@@ -55,5 +56,5 @@
         android:layout_margin="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/large_video_view" />
+        app:layout_constraintTop_toBottomOf="@id/cover_view"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

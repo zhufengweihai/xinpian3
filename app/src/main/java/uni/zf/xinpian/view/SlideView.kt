@@ -11,7 +11,6 @@ import android.widget.RadioButton
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.model.SlideData
-import uni.zf.xinpian.data.model.VideoBrief
 import uni.zf.xinpian.databinding.ViewBannerBinding
 import uni.zf.xinpian.utils.dpToPx
 
