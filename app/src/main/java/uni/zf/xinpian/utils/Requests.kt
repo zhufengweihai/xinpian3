@@ -46,12 +46,16 @@ private suspend fun request(url: String, headers: Map<String, String>): String {
             .url(url)
             .apply { headers.forEach { (k, v) -> addHeader(k, v) } }
             .build()
-        withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             client.newCall(request).execute().use {
-                val data = it.body.string()
-                if (data.isNotBlank() && !data.contains("异常请求")) return@use data
+                if (it.isSuccessful){
+                    val data = it.body.string()
+                    if (data.isNotBlank() && !data.contains("异常请求")) return@withContext data
+                }
             }
+            ""
         }
+        if (result.isNotEmpty()) return result
         delay(1000)
     }
     return ""

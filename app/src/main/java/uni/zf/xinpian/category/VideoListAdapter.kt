@@ -10,16 +10,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
+import uni.zf.xinpian.App
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.model.VideoBrief
 import uni.zf.xinpian.player.PlayerActivity
 
-class VideoListAdapter(private val videoList: List<VideoBrief>) :
+class VideoListAdapter(val imagDomain: String, private val videoList: List<VideoBrief>) :
     Adapter<VideoListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video, parent, false)
-        return ViewHolder(view)
+        val inflater = LayoutInflater.from(parent.context)
+        return ViewHolder(inflater.inflate(R.layout.item_video, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -50,7 +51,7 @@ class VideoListAdapter(private val videoList: List<VideoBrief>) :
         }
 
         fun bind(video: VideoBrief) {
-            Glide.with(imageView).load(video.image).into(imageView)
+            Glide.with(imageView).load(imagDomain + video.image).into(imageView)
             scoreView.text = video.score
             statusView.text = video.mask
             nameView.text = video.title

@@ -1,9 +1,7 @@
 package uni.zf.xinpian.data.model
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-class Fenlei : Serializable {
-    var id: String = ""
-    var name: String = ""
-    var abbr: String? = null
-}
+@Parcelize
+class Fenlei(var id: String = "", var name: String = "", var abbr: String?) : Parcelable

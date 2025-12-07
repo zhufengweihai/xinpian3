@@ -1,10 +1,9 @@
 package uni.zf.xinpian
 
+import android.os.Process
+import android.util.Log
 import androidx.room.Room.databaseBuilder
 import io.dcloud.uniapp.UniApplication
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import uni.zf.xinpian.data.AppDatabase
 
 class App : UniApplication() {
@@ -13,13 +12,17 @@ class App : UniApplication() {
         super.onCreate()
         INSTANCE = this
         appDb = databaseBuilder(applicationContext, AppDatabase::class.java, "xinpian").build()
-    }
 
-    private val _imgDomains = MutableStateFlow<List<String>>(emptyList())
-    val imgDomains: StateFlow<List<String>> = _imgDomains.asStateFlow()
-
-    fun setImgDomains(imgDomains: List<String>) {
-        _imgDomains.value = imgDomains
+        // 设置全局未捕获异常处理器
+        Thread.setDefaultUncaughtExceptionHandler { thread: Thread?, throwable: Throwable? ->
+            // 强制打印完整异常栈到Logcat
+            Log.e("GlobalCrash", "Uncaught exception in thread: " + thread!!.getName(), throwable)
+            // 可选：将日志写入本地文件（防止Logcat丢失）
+            // saveCrashLogToFile(throwable);
+            // 退出应用（模拟系统默认行为）
+            Process.killProcess(Process.myPid())
+            System.exit(1)
+        }
     }
 
     companion object {

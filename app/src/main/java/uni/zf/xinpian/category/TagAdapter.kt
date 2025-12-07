@@ -16,8 +16,8 @@ import uni.zf.xinpian.player.PlayerActivity
 class TagAdapter(private val videoList: List<Tag>) : Adapter<TagAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_tag, parent, false)
-        return ViewHolder(view)
+        val inflater = LayoutInflater.from(parent.context)
+        return ViewHolder(inflater.inflate(R.layout.item_tag, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

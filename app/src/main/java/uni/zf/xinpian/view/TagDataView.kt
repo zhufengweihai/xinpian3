@@ -20,15 +20,21 @@ class TagDataView (context: Context, attrs: AttributeSet? = null, defStyleAttr: 
 
     private val binding = ViewTagDataBinding.inflate(LayoutInflater.from(context), this)
 
-    fun setTagData(tagData: TagData) {
+    fun setTagData(imgDomains: List<String>, tagData: TagData) {
         binding.tagTextView.text = tagData.name
-        if(tagData.cover.isNotEmpty())
-            Glide.with(this).load(tagData.cover).into(binding.coverView)
-        setupVideoListView(tagData.videoList)
+        val imagDomain = imgDomains.random()
+        if(tagData.cover.isNotEmpty()){
+            Glide.with(this).load(imagDomain+tagData.cover).into(binding.coverView)
+            binding.coverView.visibility = VISIBLE
+        }else{
+            binding.coverView.visibility = GONE
+        }
+
+        setupVideoListView(imagDomain,tagData.videoList)
     }
 
-    private fun setupVideoListView(videoList: List<VideoBrief>) {
-        val adapter = VideoListAdapter(videoList)
+    private fun setupVideoListView(imagDomain: String, videoList: List<VideoBrief>) {
+        val adapter = VideoListAdapter(imagDomain,videoList)
         binding.videoListView.layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
         binding.videoListView.adapter = adapter
     }

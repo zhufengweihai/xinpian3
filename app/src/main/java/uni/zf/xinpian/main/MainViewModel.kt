@@ -18,13 +18,10 @@ class MainViewModel : ViewModel() {
     suspend fun requestImgDomains() {
         val dataString = requestUrl(IMAGE_DOMAIN_URL)
         val imgDomainString = JSON.parseObject(dataString).getJSONObject("data").getString("imgDomain")
-        App.INSTANCE.setImgDomains(imgDomainString.split(","))
+        //App.INSTANCE.setImgDomains(imgDomainString.split(","))
     }
+
     private fun parseFenlei(data: Map<String, Any>): Fenlei {
-        return Fenlei().apply {
-            this.id = data["id"].toString()
-            this.name = data["name"].toString()
-            this.abbr = data["title"]?.toString()
-        }
+        return Fenlei(data["id"].toString(), data["name"].toString(), data["title"]?.toString())
     }
 }

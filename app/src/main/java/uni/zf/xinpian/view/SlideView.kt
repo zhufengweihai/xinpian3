@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import android.widget.RadioButton
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import uni.zf.xinpian.R
+import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.data.model.SlideData
 import uni.zf.xinpian.databinding.ViewBannerBinding
 import uni.zf.xinpian.utils.dpToPx
@@ -37,7 +38,7 @@ class SlideView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int
     }
 
     private fun setupViewPager(videoList: List<SlideData>) {
-        binding.viewPager.adapter = SlideImageAdapter(videoList)
+        binding.viewPager.adapter = SlideImageAdapter(AppData.getInstance(context).imgDomains,videoList)
         binding.viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 updateCurrentView(position, videoList)

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias libs.plugins.ksp
     id 'io.dcloud.uts.kotlin'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -32,6 +33,9 @@ android {
             buildConfigField "boolean", "DEBUG", "true"
         }
         debug {
+            debuggable true // 必须开启，默认Debug版已开启
+            minifyEnabled false // 关闭混淆，避免Log被移除
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "DEBUG", "true"
         }
     }
@@ -76,7 +80,7 @@ dependencies {
     implementation libs.room.runtime
     implementation libs.androidx.room.ktx
     implementation libs.androidx.room.paging
-
+    implementation libs.androidx.startup.runtime
 
     ksp(libs.androidx.room.compiler)
 
