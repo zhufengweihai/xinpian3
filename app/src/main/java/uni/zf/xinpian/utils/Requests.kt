@@ -14,7 +14,6 @@ import okhttp3.Response
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-
 private val client = OkHttpClient.Builder()
     .connectTimeout(5, TimeUnit.SECONDS)
     .readTimeout(5, TimeUnit.SECONDS)
@@ -42,20 +41,24 @@ private suspend fun repeatRequest(urls: List<String>, headers: Map<String, Strin
 
 private suspend fun request(url: String, headers: Map<String, String>): String {
     (0 until 3).forEach { _ ->
-        val request = Request.Builder()
-            .url(url)
-            .apply { headers.forEach { (k, v) -> addHeader(k, v) } }
-            .build()
-        val result = withContext(Dispatchers.IO) {
-            client.newCall(request).execute().use {
-                if (it.isSuccessful){
-                    val data = it.body.string()
-                    if (data.isNotBlank() && !data.contains("异常请求")) return@withContext data
+        try {
+            val request = Request.Builder()
+                .url(url)
+                .apply { headers.forEach { (k, v) -> addHeader(k, v) } }
+                .build()
+            val result = withContext(Dispatchers.IO) {
+                client.newCall(request).execute().use {
+                    if (it.isSuccessful) {
+                        val data = it.body.string()
+                        if (data.isNotBlank() && !data.contains("异常请求")) return@withContext data
+                    }
                 }
+                ""
             }
-            ""
+            if (result.isNotEmpty()) return result
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        if (result.isNotEmpty()) return result
         delay(1000)
     }
     return ""

@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.launch
-import uni.zf.xinpian.App
 import uni.zf.xinpian.R
 import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.data.model.Fenlei
@@ -46,21 +45,21 @@ class CategoryFragment() : Fragment() {
     private fun loadData() {
         if (fenlei == null) return
         lifecycleScope.launch {
-            val slideData =viewModel.requestSlideData(fenlei!!.id)
+            val slideData =viewModel.requestSlideData(fenlei!!.id,requireContext())
             binding.slideView.setVideoList(slideData, true)
         }
         lifecycleScope.launch {
-            val customTags =viewModel.requestCustomTags(fenlei!!.id)
+            val customTags =viewModel.requestCustomTags(fenlei!!.id,requireContext())
             if (customTags.isNotEmpty()) setupCustomTagsView(customTags)
         }
-        /*lifecycleScope.launch {
-            val tagDatas =viewModel.requestTagDatas(fenlei!!.id)
+        lifecycleScope.launch {
+            val tagDatas =viewModel.requestTagDatas(fenlei!!.id,requireContext())
             for (tagData in tagDatas){
                 val tagDataView = TagDataView(requireContext())
                 tagDataView.setTagData(AppData.getInstance(requireContext()).imgDomains,tagData)
                 binding.main.addView(tagDataView)
             }
-        }*/
+        }
     }
 
     private fun setupCustomTagsView(customTags:List<Tag>) {
