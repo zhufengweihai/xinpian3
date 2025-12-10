@@ -7,11 +7,16 @@ import com.alibaba.fastjson.JSON
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import uni.zf.xinpian.data.model.Fenlei
+import uni.zf.xinpian.utils.createHeaders
+import uni.zf.xinpian.utils.generateJpUrlPrefix
+import uni.zf.xinpian.utils.initUrl
 import uni.zf.xinpian.utils.requestUrl
 
 class AppData private constructor(context: Context) {
     private val IMAGE_DOMAIN_URL = "https://qqhx9o.zxbwv.com/api/resourceDomainConfig"
     private val FENLEI_URL = "https://qqhx9o.zxbwv.com/api/term/home_fenlei"
+    private val imgDomainUrl = "https://${generateJpUrlPrefix()}.zxbwv.com/api/resourceDomainConfig"
+    private val fenleiUrl = "https://qqhx9o.zxbwv.com/api/term/home_fenlei"
     val userAgent: String = WebSettings.getDefaultUserAgent(context)
     val imgDomains: List<String>
     val fenleiList: List<Fenlei>
@@ -47,6 +52,12 @@ class AppData private constructor(context: Context) {
         val dataString = requestUrl(FENLEI_URL, customHeaders)
         val dataListString = JSON.parseObject(dataString).getJSONArray("data")
         return dataListString.mapNotNull { parseFenlei(it as Map<String, Any>) }
+    }
+
+    suspend fun requestSecret(): String {
+        val headers = createHeaders(userAgent = userAgent)
+        val dataString = requestUrl(initUrl, headers)
+        return JSON.parseObject(dataString).getJSONObject("data").getString("secret")
     }
 
     suspend fun requestImgDomains(): List<String> {
