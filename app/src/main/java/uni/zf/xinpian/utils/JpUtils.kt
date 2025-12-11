@@ -9,6 +9,9 @@ private const val defaultSecret = "0sD4gjkMdbnsYp5k4K0oB5MGMggyp9UP"
 val imgDomainUrl = "https://${jpUrlPrefix}.zxbwv.com/api/resourceDomainConfig"
 val fenleiUrl = "https://${jpUrlPrefix}.zxbwv.com/api/term/home_fenlei"
 val initUrl = "https://${jpUrlPrefix}.zxbwv.com/api/v2/sys/init"
+val slideUrl = "https://${jpUrlPrefix}.zxbwv.com/api/slide/list?pos_id=%s"
+val tagsUrl = "https://${jpUrlPrefix}.zxbwv.com/api/customTags/list?category_id=%s"
+val dyTagURL = "https://${jpUrlPrefix}.zxbwv.com/api/dyTag/hand_data?category_id=%s"
 
 fun generateSignature(timestamp: String, secret: String = defaultSecret): String {
     return calcMD5("$version$timestamp$secret")
@@ -23,10 +26,10 @@ fun generateJpUrlPrefix(): String {
     }
 }
 
-fun createHeaders(signature: String = defaultSecret, userAgent: String): Map<String, String> {
+fun createHeaders(timestamp: String, signature: String, userAgent: String): Map<String, String> {
     return mapOf(
         "Host" to "${jpUrlPrefix}.zxbwv.com",
-        "timestamp" to (System.currentTimeMillis() / 1000).toString(),
+        "timestamp" to timestamp,
         "signature" to signature,
         "User-Agent" to userAgent,
         "version" to version

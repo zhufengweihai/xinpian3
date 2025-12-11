@@ -15,8 +15,8 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 private val client = OkHttpClient.Builder()
-    .connectTimeout(5, TimeUnit.SECONDS)
-    .readTimeout(5, TimeUnit.SECONDS)
+    .connectTimeout(10, TimeUnit.SECONDS)
+    .readTimeout(10, TimeUnit.SECONDS)
     .build()
 
 private val defaultHeaders = mapOf(
@@ -24,7 +24,7 @@ private val defaultHeaders = mapOf(
 )
 
 suspend fun requestUrl(url: String, customHeaders: Map<String, String>? = null): String {
-    return request(url, if (customHeaders == null) defaultHeaders else defaultHeaders + customHeaders)
+    return request(url, if (customHeaders == null) defaultHeaders else customHeaders)
 }
 
 suspend fun requestUrls(urls: List<String>, customHeaders: Pair<String, String>? = null): String {
