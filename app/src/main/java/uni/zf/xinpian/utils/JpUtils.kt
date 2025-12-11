@@ -11,7 +11,7 @@ val fenleiUrl = "https://${jpUrlPrefix}.zxbwv.com/api/term/home_fenlei"
 val initUrl = "https://${jpUrlPrefix}.zxbwv.com/api/v2/sys/init"
 val slideUrl = "https://${jpUrlPrefix}.zxbwv.com/api/slide/list?pos_id=%s"
 val tagsUrl = "https://${jpUrlPrefix}.zxbwv.com/api/customTags/list?category_id=%s"
-val dyTagURL = "https://${jpUrlPrefix}.zxbwv.com/api/dyTag/hand_data?category_id=%s"
+val dyTagURL = "https://${jpUrlPrefix}.zxbwv.com/api/dyTag/list?category_id=%s"
 
 fun generateSignature(timestamp: String, secret: String = defaultSecret): String {
     return calcMD5("$version$timestamp$secret")
@@ -32,7 +32,9 @@ fun createHeaders(timestamp: String, signature: String, userAgent: String): Map<
         "timestamp" to timestamp,
         "signature" to signature,
         "User-Agent" to userAgent,
-        "version" to version
+        "version" to version,
+        "X-Requested-With" to "com.qihoo.jp22",
+        "Connection" to "keep-alive"
     )
 }
 

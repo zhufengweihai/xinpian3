@@ -15,7 +15,7 @@ import uni.zf.xinpian.utils.initUrl
 import uni.zf.xinpian.utils.requestUrl
 
 class AppData private constructor(context: Context) {
-    val userAgent: String = WebSettings.getDefaultUserAgent(context)
+    val userAgent: String = WebSettings.getDefaultUserAgent(context)+";webank/h5face;webank/1.0;netType:NETWORK_WIFI;appVersion:424;packageName:com.qihoo.jp22"
     val secret: String
     val imgDomains: List<String>
     val fenleiList: List<Fenlei>
