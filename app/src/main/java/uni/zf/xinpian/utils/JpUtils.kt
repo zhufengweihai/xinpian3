@@ -1,21 +1,13 @@
 package uni.zf.xinpian.utils
 
+import android.content.Context
+import uni.zf.xinpian.common.AppData
+import uni.zf.xinpian.data.AppConst.defaultSecret
+import uni.zf.xinpian.data.AppConst.host
+import uni.zf.xinpian.data.AppConst.packageName
+import uni.zf.xinpian.data.AppConst.version
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
-
-private val jpUrlPrefix = generateJpUrlPrefix()
-private const val version = "417"
-private const val defaultSecret = "0sD4gjkMdbnsYp5k4K0oB5MGMggyp9UP"
-val imgDomainUrl = "https://${jpUrlPrefix}.zxbwv.com/api/resourceDomainConfig"
-val fenleiUrl = "https://${jpUrlPrefix}.zxbwv.com/api/term/home_fenlei"
-val initUrl = "https://${jpUrlPrefix}.zxbwv.com/api/v2/sys/init"
-val slideUrl = "https://${jpUrlPrefix}.zxbwv.com/api/slide/list?pos_id=%s"
-val tagsUrl = "https://${jpUrlPrefix}.zxbwv.com/api/customTags/list?category_id=%s"
-val dyTagURL = "https://${jpUrlPrefix}.zxbwv.com/api/dyTag/list?category_id=%s"
-
-fun generateSignature(timestamp: String, secret: String = defaultSecret): String {
-    return calcMD5("$version$timestamp$secret")
-}
 
 fun generateJpUrlPrefix(): String {
     val charPool = ('0'..'9') + ('a'..'z') + ('A'..'Z')
@@ -26,16 +18,22 @@ fun generateJpUrlPrefix(): String {
     }
 }
 
-fun createHeaders(timestamp: String, signature: String, userAgent: String): Map<String, String> {
+fun createHeaders(context: Context): Map<String, String> {
+    val timestamp = (System.currentTimeMillis() / 1000).toString()
+    val signature = generateSignature(timestamp, AppData.getInstance(context).secret)
     return mapOf(
-        "Host" to "${jpUrlPrefix}.zxbwv.com",
+        "Host" to host,
         "timestamp" to timestamp,
         "signature" to signature,
-        "User-Agent" to userAgent,
+        "User-Agent" to AppData.getInstance(context).userAgent,
         "version" to version,
-        "X-Requested-With" to "com.qihoo.jp22",
+        "X-Requested-With" to packageName,
         "Connection" to "keep-alive"
     )
+}
+
+fun generateSignature(timestamp: String, secret: String = defaultSecret): String {
+    return calcMD5("$version$timestamp$secret")
 }
 
 fun calcMD5(input: String?, toUpperCase: Boolean = false): String {

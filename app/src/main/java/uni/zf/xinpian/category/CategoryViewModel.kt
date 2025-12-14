@@ -3,44 +3,47 @@ package uni.zf.xinpian.category
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.alibaba.fastjson.JSON
-import uni.zf.xinpian.common.AppData
-import uni.zf.xinpian.data.model.TagData
+import uni.zf.xinpian.App
+import uni.zf.xinpian.data.AppConst.dyTagURL
+import uni.zf.xinpian.data.AppConst.slideUrl
+import uni.zf.xinpian.data.AppConst.tagsUrl
+import uni.zf.xinpian.data.model.CustomTag
+import uni.zf.xinpian.data.model.DyTag
 import uni.zf.xinpian.data.model.SlideData
-import uni.zf.xinpian.data.model.Tag
+import uni.zf.xinpian.data.model.TagData
 import uni.zf.xinpian.data.model.VideoBrief
 import uni.zf.xinpian.utils.createHeaders
-import uni.zf.xinpian.utils.dyTagURL
-import uni.zf.xinpian.utils.generateSignature
 import uni.zf.xinpian.utils.requestUrl
-import uni.zf.xinpian.utils.slideUrl
-import uni.zf.xinpian.utils.tagsUrl
 
 class CategoryViewModel : ViewModel() {
-    suspend fun requestSlideData(categoryId: String, context: Context): List<SlideData> {
-        val timestamp = (System.currentTimeMillis() / 1000).toString()
-        val signature = generateSignature(timestamp, AppData.getInstance(context).secret)
-        val headers = createHeaders(timestamp, signature, AppData.getInstance(context).userAgent)
-        val dataString = requestUrl(slideUrl.format(categoryId), headers)
+    private val slideDataDao = App.INSTANCE.appDb.slideDataDao()
+    private val tagDao = App.INSTANCE.appDb.tagDao()
+    private val tagDataDao = App.INSTANCE.appDb.tagDataDao()
+    fun getSlideDataList(categoryId: String) = slideDataDao.getSlideDataList(categoryId)
+
+    fun getTagList(categoryId: String) = tagDao.getTagList(categoryId)
+
+    fun getTagDatas(categoryId: String) = tagDataDao.getTagDatas(categoryId)
+
+    suspend fun requestSlideData(categoryId: String, context: Context) {
+        val dataString = requestUrl(slideUrl.format(categoryId), createHeaders(context))
         val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        return dataListString.mapNotNull { parseSlideData(it as Map<String, Any>) }
+        val slideDatas = dataListString.mapNotNull { parseSlideData(it as Map<String, Any>) }
+        slideDataDao.insertSlideDataList(slideDatas)
     }
 
-    suspend fun requestCustomTags(categoryId: String, context: Context): List<Tag> {
-        val timestamp = (System.currentTimeMillis() / 1000).toString()
-        val signature = generateSignature(timestamp, AppData.getInstance(context).secret)
-        val headers = createHeaders(timestamp, signature, AppData.getInstance(context).userAgent)
-        val dataString = requestUrl(tagsUrl.format(categoryId), headers)
+    suspend fun requestCustomTags(categoryId: String, context: Context) {
+        val dataString = requestUrl(tagsUrl.format(categoryId), createHeaders(context))
         val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        return dataListString.mapNotNull { parseTag(it as Map<String, Any>) }
+        val tags =dataListString.mapNotNull { parseTag(it as Map<String, Any>) }
+        tagDao.insertTagList(tags)
     }
 
-    suspend fun requestTagDatas(categoryId: String, context: Context): List<TagData> {
-        val timestamp = (System.currentTimeMillis() / 1000).toString()
-        val signature = generateSignature(timestamp, AppData.getInstance(context).secret)
-        val headers = createHeaders(timestamp, signature, AppData.getInstance(context).userAgent)
-        val dataString = requestUrl(dyTagURL.format(categoryId), headers)
+    suspend fun requestTagDatas(categoryId: String, context: Context) {
+        val dataString = requestUrl(dyTagURL.format(categoryId), createHeaders(context))
         val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        return dataListString.mapNotNull { parseTagData(it as Map<String, Any>) }
+        val tagDatas = dataListString.mapNotNull { parseTagData(it as Map<String, Any>) }
+        tagDataDao.updateTagDatas(categoryId,tagDatas)
     }
 
     private fun parseSlideData(data: Map<String, Any>): SlideData {
@@ -51,21 +54,24 @@ class CategoryViewModel : ViewModel() {
         }
     }
 
-    private fun parseTag(data: Map<String, Any>): Tag {
-        return Tag().apply {
+    private fun parseTag(data: Map<String, Any>): CustomTag {
+        return CustomTag().apply {
             title = data["title"].toString()
             jumpAddress = data["jump_address"].toString()
         }
     }
 
     private fun parseTagData(data: Map<String, Any>): TagData {
-        return TagData().apply {
-            name = data["name"].toString()
-            jumpAddress = data["jump_address"].toString()
-            cover = data["cover"].toString()
-            coverJumpAddress = data["cover_jump_address"].toString()
-            videoList = (data["dataList"] as List<Map<String, Any>>).mapNotNull { parseVideoBrief(it) }
-        }
+        return TagData(
+            dyTag = DyTag().apply {
+                id = data["id"].toString()
+                categoryId = data["category_id"].toString()
+                name = data["name"].toString()
+                jumpAddress = data["jump_address"].toString()
+                cover = data["cover"].toString()
+                coverJumpAddress = data["cover_jump_address"].toString()
+            },
+            videoList = (data["dataList"] as List<*>).map { parseVideoBrief(it as Map<String, Any>) })
     }
 
     private fun parseVideoBrief(data: Map<String, Any>): VideoBrief {

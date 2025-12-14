@@ -16,11 +16,14 @@ import android.os.Looper
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import io.dcloud.uts.UTSPromise.Companion.resolve
 import io.dcloud.uts.compareTo
+import kotlinx.coroutines.launch
 import uni.UNI69B4A3A.UniUpgradeCenterResult
 import uni.UNI69B4A3A.default
 import uni.zf.xinpian.R
@@ -28,6 +31,7 @@ import uni.zf.xinpian.databinding.ActivityMainBinding
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var runnable: Runnable
@@ -41,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupUI()
+        loadData()
     }
 
     override fun onStart() {
@@ -52,6 +57,12 @@ class MainActivity : AppCompatActivity() {
         handler.removeCallbacks(runnable)
     }
 
+    private fun loadData() {
+        lifecycleScope.launch {
+            viewModel.refreshSecret( this@MainActivity)
+            viewModel.refreshImgDomains(this@MainActivity)
+        }
+    }
     private fun setupUI() {
         binding.viewPager.apply {
             adapter = MainFragmentStateAdapter(this@MainActivity)

@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
-import uni.zf.xinpian.App
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.model.VideoBrief
 import uni.zf.xinpian.player.PlayerActivity
@@ -31,8 +30,8 @@ class VideoListAdapter(val imagDomain: String, private val videoList: List<Video
 
     private fun updateLabelView(labelView: TextView, video: VideoBrief) {
         val labelText = when (video.definition) {
-            1 -> "热门"
-            3 -> "高清"
+            1 -> "高清"
+            3 -> "热门"
             else -> ""
         }
         labelView.visibility = if (labelText.isEmpty()) View.GONE else View.VISIBLE

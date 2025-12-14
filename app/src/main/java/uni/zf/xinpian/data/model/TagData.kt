@@ -1,9 +1,10 @@
 package uni.zf.xinpian.data.model
 
-class TagData {
-    var name: String = ""
-    var jumpAddress: String = ""
-    var cover: String = ""
-    var coverJumpAddress: String = ""
-    var videoList: List<VideoBrief> = emptyList()
-}
+import androidx.room.Embedded
+import androidx.room.Relation
+
+data class TagData(
+    @Embedded var dyTag: DyTag,
+    @Relation(parentColumn = "id", entityColumn = "dyTagId")
+    var videoList: List<VideoBrief>
+)

@@ -9,11 +9,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import uni.zf.xinpian.R
-import uni.zf.xinpian.data.model.Tag
+import uni.zf.xinpian.data.model.CustomTag
 import uni.zf.xinpian.data.model.VideoBrief
 import uni.zf.xinpian.player.PlayerActivity
 
-class TagAdapter(private val videoList: List<Tag>) : Adapter<TagAdapter.ViewHolder>() {
+class TagAdapter(private val videoList: List<CustomTag>) : Adapter<TagAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -29,8 +29,8 @@ class TagAdapter(private val videoList: List<Tag>) : Adapter<TagAdapter.ViewHold
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textView: TextView = itemView as TextView
 
-        fun bind(tag: Tag) {
-            textView.text = tag.title
+        fun bind(customTag: CustomTag) {
+            textView.text = customTag.title
             textView.setOnClickListener {  }
         }
     }

@@ -10,24 +10,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
-import uni.zf.xinpian.common.AppData
-import uni.zf.xinpian.data.model.Fenlei
-import uni.zf.xinpian.data.model.Tag
+import uni.zf.xinpian.data.model.Category
+import uni.zf.xinpian.data.model.CustomTag
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
 import uni.zf.xinpian.series.SeriesItemDecoration
 import uni.zf.xinpian.view.TagDataView
 
 class CategoryFragment() : Fragment() {
-    private val fenlei: Fenlei? by lazy {
-        arguments?.getParcelable(ARG_FENLEI)
-    }
+    private val category: Category? by lazy { arguments?.getParcelable(ARG_FENLEI) }
     private val viewModel: CategoryViewModel by viewModels()
     private lateinit var binding: FragmentCategoryBinding
     private var isDataLoaded = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCategoryBinding.inflate(inflater, container, false)
@@ -43,26 +36,29 @@ class CategoryFragment() : Fragment() {
     }
 
     private fun loadData() {
-        if (fenlei == null) return
+        if (category == null) return
         lifecycleScope.launch {
-            val slideData =viewModel.requestSlideData(fenlei!!.id,requireContext())
-            binding.slideView.setVideoList(slideData, true)
-        }
-        lifecycleScope.launch {
-            val customTags =viewModel.requestCustomTags(fenlei!!.id,requireContext())
-            if (customTags.isNotEmpty()) setupCustomTagsView(customTags)
-        }
-        lifecycleScope.launch {
-            val tagDatas =viewModel.requestTagDatas(fenlei!!.id,requireContext())
-            for (tagData in tagDatas){
-                val tagDataView = TagDataView(requireContext())
-                tagDataView.setTagData(AppData.getInstance(requireContext()).imgDomains,tagData)
-                binding.main.addView(tagDataView)
+            viewModel.getSlideDataList(category!!.id).collect {
+                binding.slideView.setVideoList(it, true)
             }
+            viewModel.getTagList(category!!.id).collect {
+                if (it.isNotEmpty()) setupCustomTagsView(it)
+            }
+            viewModel.getTagDatas(category!!.id).collect {
+                for (tagData in it){
+                    val tagDataView = TagDataView(requireContext())
+                    tagDataView.setTagData(tagData)
+                    binding.main.addView(tagDataView)
+                }
+            }
+
+            viewModel.requestSlideData(category!!.id,requireContext())
+            viewModel.requestCustomTags(category!!.id,requireContext())
+            viewModel.requestTagDatas(category!!.id,requireContext())
         }
     }
 
-    private fun setupCustomTagsView(customTags:List<Tag>) {
+    private fun setupCustomTagsView(customTags:List<CustomTag>) {
         val adapter = TagAdapter(customTags)
         binding.tagListView.apply {
             visibility = View.VISIBLE
@@ -76,9 +72,9 @@ class CategoryFragment() : Fragment() {
         private const val ARG_FENLEI = "fenlei"
 
         @JvmStatic
-        fun newInstance(fenlei: Fenlei): CategoryFragment {
+        fun newInstance(category: Category): CategoryFragment {
             return CategoryFragment().apply {
-                arguments = Bundle().apply { putParcelable(ARG_FENLEI, fenlei) }
+                arguments = Bundle().apply { putParcelable(ARG_FENLEI, category) }
             }
         }
     }

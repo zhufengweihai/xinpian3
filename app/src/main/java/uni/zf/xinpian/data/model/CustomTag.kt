@@ -1,6 +1,10 @@
 package uni.zf.xinpian.data.model
 
-class Tag {
+import androidx.room.Entity
+
+@Entity
+class CustomTag {
+    var categoryId: String = ""
     var title: String = ""
     var jumpAddress: String = ""
 }

@@ -1,65 +1,40 @@
 package uni.zf.xinpian.common
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.webkit.WebSettings
+import androidx.core.content.edit
 import androidx.startup.Initializer
-import com.alibaba.fastjson.JSON
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import uni.zf.xinpian.data.model.Fenlei
-import uni.zf.xinpian.utils.createHeaders
-import uni.zf.xinpian.utils.fenleiUrl
-import uni.zf.xinpian.utils.generateSignature
-import uni.zf.xinpian.utils.imgDomainUrl
-import uni.zf.xinpian.utils.initUrl
-import uni.zf.xinpian.utils.requestUrl
+import uni.zf.xinpian.data.AppConst.defaultImgDomains
+import uni.zf.xinpian.data.AppConst.defaultSecret
+import uni.zf.xinpian.data.AppConst.keyImgDomains
+import uni.zf.xinpian.data.AppConst.keySecret
+import uni.zf.xinpian.data.AppConst.networkMobile
+import uni.zf.xinpian.data.AppConst.networkWifi
+import uni.zf.xinpian.data.AppConst.userAgentSuffix
+import uni.zf.xinpian.utils.NetworkTypeUtils
+import uni.zf.xinpian.utils.prefs
 
-class AppData private constructor(context: Context) {
-    val userAgent: String = WebSettings.getDefaultUserAgent(context)+";webank/h5face;webank/1.0;netType:NETWORK_WIFI;appVersion:424;packageName:com.qihoo.jp22"
-    val secret: String
-    val imgDomains: List<String>
-    val fenleiList: List<Fenlei>
-
-    init {
-        val result = runBlocking(Dispatchers.IO) {
-            val secret = requestSecret()
-            val imgDomains = requestImgDomains(secret)
-            val fenleiList = requestFenlei(secret)
-            Triple(secret, imgDomains, fenleiList)
+class AppData private constructor(val context: Context) {
+    val userAgent = initUserAgent()
+    var secret = context.prefs.getString(keySecret, defaultSecret)!!
+        set(value) {
+            context.prefs.edit { putString(keySecret, value) }
         }
-        secret = result.first
-        imgDomains = result.second
-        fenleiList = result.third
-    }
+    var imgDomains = context.prefs.getString(keyImgDomains, defaultImgDomains)!!.split(",")
+        set(value) {
+            context.prefs.edit { putString(keyImgDomains, value.joinToString(",")) }
+        }
 
-    suspend fun requestSecret(): String {
-        val timestamp = (System.currentTimeMillis() / 1000).toString()
-        val signature = generateSignature(timestamp)
-        val dataString = requestUrl(initUrl, createHeaders(timestamp, signature, userAgent = userAgent))
-        return JSON.parseObject(dataString).getJSONObject("data").getString("secret")
-    }
+    fun imgDomain() = imgDomains.random()
 
-    suspend fun requestImgDomains(secret: String): List<String> {
-        val timestamp = (System.currentTimeMillis() / 1000).toString()
-        val signature = generateSignature(timestamp, secret)
-        val dataString = requestUrl(imgDomainUrl, createHeaders(timestamp, signature, userAgent))
-        val imgDomainString = JSON.parseObject(dataString).getJSONObject("data").getString("imgDomain")
-        return imgDomainString.split(",").map { "https://$it" }
-    }
-
-    suspend fun requestFenlei(secret: String): List<Fenlei> {
-        val timestamp = (System.currentTimeMillis() / 1000).toString()
-        val signature = generateSignature(timestamp, secret)
-        val dataString = requestUrl(fenleiUrl, createHeaders(timestamp, signature, userAgent))
-        val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        return dataListString.mapNotNull { parseFenlei(it as Map<String, Any>) }
-    }
-
-    private fun parseFenlei(data: Map<String, Any>): Fenlei {
-        return Fenlei(data["id"].toString(), data["name"].toString(), data["title"]?.toString())
+    private fun initUserAgent(): String {
+        val networkType = if (NetworkTypeUtils.isWifiConnected(context)) networkWifi else networkMobile
+        return WebSettings.getDefaultUserAgent(context) + userAgentSuffix.format(networkType)
     }
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         @Volatile
         private var INSTANCE: AppData? = null
 
