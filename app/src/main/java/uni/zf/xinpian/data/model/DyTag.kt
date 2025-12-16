@@ -12,6 +12,5 @@ data class DyTag (
     var name: String = "",
     var jumpAddress: String = "",
     var cover: String = "",
-    var coverJumpAddress: String = "",
-    var videoList: List<VideoBrief> = emptyList()
+    var coverJumpAddress: String = ""
 )

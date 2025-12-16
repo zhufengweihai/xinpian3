@@ -44,7 +44,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun slideDataDao(): SlideDataDao
 
-    abstract fun tagDao(): CustomTagDao
+    abstract fun customTagDao(): CustomTagDao
 
     abstract fun tagDataDao(): TagDataDao
 }

@@ -1,5 +1,6 @@
 package uni.zf.xinpian.data.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -7,6 +8,7 @@ import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 import uni.zf.xinpian.data.model.SlideData
 
+@Dao
 interface SlideDataDao {
     @Query("SELECT * FROM slidedata WHERE categoryId = :categoryId")
     fun getSlideDataList(categoryId: String): Flow<List<SlideData>>

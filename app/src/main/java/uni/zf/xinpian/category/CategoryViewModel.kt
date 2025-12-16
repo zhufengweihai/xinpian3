@@ -17,7 +17,7 @@ import uni.zf.xinpian.utils.requestUrl
 
 class CategoryViewModel : ViewModel() {
     private val slideDataDao = App.INSTANCE.appDb.slideDataDao()
-    private val tagDao = App.INSTANCE.appDb.tagDao()
+    private val tagDao = App.INSTANCE.appDb.customTagDao()
     private val tagDataDao = App.INSTANCE.appDb.tagDataDao()
     fun getSlideDataList(categoryId: String) = slideDataDao.getSlideDataList(categoryId)
 
@@ -35,7 +35,7 @@ class CategoryViewModel : ViewModel() {
     suspend fun requestCustomTags(categoryId: String, context: Context) {
         val dataString = requestUrl(tagsUrl.format(categoryId), createHeaders(context))
         val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        val tags =dataListString.mapNotNull { parseTag(it as Map<String, Any>) }
+        val tags = dataListString.mapNotNull { parseTag(categoryId,it as Map<String, Any>) }
         tagDao.insertTagList(tags)
     }
 
@@ -43,7 +43,7 @@ class CategoryViewModel : ViewModel() {
         val dataString = requestUrl(dyTagURL.format(categoryId), createHeaders(context))
         val dataListString = JSON.parseObject(dataString).getJSONArray("data")
         val tagDatas = dataListString.mapNotNull { parseTagData(it as Map<String, Any>) }
-        tagDataDao.updateTagDatas(categoryId,tagDatas)
+        tagDataDao.updateTagDatas(categoryId, tagDatas)
     }
 
     private fun parseSlideData(data: Map<String, Any>): SlideData {
@@ -54,11 +54,12 @@ class CategoryViewModel : ViewModel() {
         }
     }
 
-    private fun parseTag(data: Map<String, Any>): CustomTag {
-        return CustomTag().apply {
-            title = data["title"].toString()
+    private fun parseTag(categoryId: String, data: Map<String, Any>): CustomTag {
+        return CustomTag(
+            categoryId = categoryId,
+            title = data["title"].toString(),
             jumpAddress = data["jump_address"].toString()
-        }
+        )
     }
 
     private fun parseTagData(data: Map<String, Any>): TagData {

@@ -1,5 +1,6 @@
 package uni.zf.xinpian.data.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -9,6 +10,7 @@ import uni.zf.xinpian.data.model.DyTag
 import uni.zf.xinpian.data.model.TagData
 import uni.zf.xinpian.data.model.VideoBrief
 
+@Dao
 interface TagDataDao {
     @Transaction
     @Query("SELECT * FROM dytag WHERE categoryId = :categoryId")
