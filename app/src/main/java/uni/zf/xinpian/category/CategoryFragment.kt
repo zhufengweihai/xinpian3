@@ -38,6 +38,9 @@ class CategoryFragment() : Fragment() {
     private fun loadData() {
         if (category == null) return
         lifecycleScope.launch {
+            viewModel.requestSlideData(category!!.id,requireContext())
+            viewModel.requestCustomTags(category!!.id,requireContext())
+            viewModel.requestTagDatas(category!!.id,requireContext())
             viewModel.getSlideDataList(category!!.id).collect {
                 binding.slideView.setVideoList(it, true)
             }
@@ -51,10 +54,6 @@ class CategoryFragment() : Fragment() {
                     binding.main.addView(tagDataView)
                 }
             }
-
-            viewModel.requestSlideData(category!!.id,requireContext())
-            viewModel.requestCustomTags(category!!.id,requireContext())
-            viewModel.requestTagDatas(category!!.id,requireContext())
         }
     }
 

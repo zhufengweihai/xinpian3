@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON
 import uni.zf.xinpian.App
 import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.data.AppConst
+import uni.zf.xinpian.data.AppConst.appAuthUrl
 import uni.zf.xinpian.data.AppConst.imgDomainUrl
 import uni.zf.xinpian.data.AppConst.initUrl
 import uni.zf.xinpian.data.model.Category
@@ -18,6 +19,7 @@ class MainViewModel : ViewModel() {
     fun getCategoryList() = categoryDao.getAll()
 
     suspend fun refreshSecret(context: Context) {
+        //requestUrl(appAuthUrl, createHeaders(context))
         val dataString = requestUrl(initUrl, createHeaders(context))
         val secret = JSON.parseObject(dataString).getJSONObject("data").getString("secret")
         AppData.getInstance(context).secret = secret

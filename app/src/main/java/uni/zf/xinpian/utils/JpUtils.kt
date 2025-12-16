@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
 fun generateJpUrlPrefix(): String {
-    val charPool = ('0'..'9') + ('a'..'z') + ('A'..'Z')
+    val charPool = ('0'..'9') + ('a'..'z')
     return buildString {
         repeat(6) {
             append(charPool.random())

@@ -13,12 +13,13 @@ object AppConst{
     const val version = "417"
     const val packageName = "com.qihoo.jp22"
     private val jpUrlPrefix = generateJpUrlPrefix()
-    val host = "https://${jpUrlPrefix}.zxbwv.com"
+    val host = "${jpUrlPrefix}.zxbwv.com"
     val imgDomainUrl = "https://${jpUrlPrefix}.zxbwv.com/api/resourceDomainConfig"
     val fenleiUrl = "https://${jpUrlPrefix}.zxbwv.com/api/term/home_fenlei"
     val initUrl = "https://${jpUrlPrefix}.zxbwv.com/api/v2/sys/init"
     val slideUrl = "https://${jpUrlPrefix}.zxbwv.com/api/slide/list?pos_id=%s"
     val tagsUrl = "https://${jpUrlPrefix}.zxbwv.com/api/customTags/list?category_id=%s"
     val dyTagURL = "https://${jpUrlPrefix}.zxbwv.com/api/dyTag/list?category_id=%s"
+    val appAuthUrl = "https://${jpUrlPrefix}.zxbwv.com/api/appAuthConfig"
 }
 

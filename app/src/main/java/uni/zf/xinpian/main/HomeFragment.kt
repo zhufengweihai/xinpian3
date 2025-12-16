@@ -25,8 +25,8 @@ class HomeFragment : Fragment() {
 
     private fun loadData() {
         lifecycleScope.launch {
-            viewModel.getCategoryList().collect(::setupViewPagerAndTabs)
             viewModel.refreshCategoryList()
+            viewModel.getCategoryList().collect(::setupViewPagerAndTabs)
         }
     }
 

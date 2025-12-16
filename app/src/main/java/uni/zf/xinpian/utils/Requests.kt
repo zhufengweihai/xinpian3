@@ -24,7 +24,7 @@ private val defaultHeaders = mapOf(
 )
 
 suspend fun requestUrl(url: String, customHeaders: Map<String, String>? = null): String {
-    return request(url, if (customHeaders == null) defaultHeaders else customHeaders)
+    return request(url, customHeaders ?: defaultHeaders)
 }
 
 suspend fun requestUrls(urls: List<String>, customHeaders: Pair<String, String>? = null): String {
