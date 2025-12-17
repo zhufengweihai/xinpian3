@@ -26,7 +26,7 @@ class AppData private constructor(val context: Context) {
             context.prefs.edit { putString(keyImgDomains, value.joinToString(",")) }
         }
 
-    fun imgDomain() = imgDomains.random()
+    fun imgDomain() = "https://" + imgDomains.random()
 
     private fun initUserAgent(): String {
         val networkType = if (NetworkTypeUtils.isWifiConnected(context)) networkWifi else networkMobile

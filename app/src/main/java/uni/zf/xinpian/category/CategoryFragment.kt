@@ -41,12 +41,18 @@ class CategoryFragment() : Fragment() {
             viewModel.requestSlideData(category!!.id,requireContext())
             viewModel.requestCustomTags(category!!.id,requireContext())
             viewModel.requestTagDatas(category!!.id,requireContext())
+        }
+        lifecycleScope.launch {
             viewModel.getSlideDataList(category!!.id).collect {
                 binding.slideView.setVideoList(it, true)
             }
+        }
+        lifecycleScope.launch {
             viewModel.getTagList(category!!.id).collect {
                 if (it.isNotEmpty()) setupCustomTagsView(it)
             }
+        }
+        lifecycleScope.launch {
             viewModel.getTagDatas(category!!.id).collect {
                 for (tagData in it){
                     val tagDataView = TagDataView(requireContext())

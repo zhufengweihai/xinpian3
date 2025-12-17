@@ -4,11 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class SlideData {
+data class SlideData(
     @PrimaryKey
-    var id: String = ""
-    var categoryId: String = ""
-    var jumpId: String = ""
-    var thumbnail: String = ""
+    var id: String = "",
+    var categoryId: String = "",
+    var jumpId: String = "",
+    var thumbnail: String = "",
     var title: String = ""
-}
+)

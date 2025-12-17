@@ -28,8 +28,8 @@ class CategoryViewModel : ViewModel() {
     suspend fun requestSlideData(categoryId: String, context: Context) {
         val dataString = requestUrl(slideUrl.format(categoryId), createHeaders(context))
         val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        val slideDatas = dataListString.mapNotNull { parseSlideData(it as Map<String, Any>) }
-        slideDataDao.insertSlideDataList(slideDatas)
+        val slideDatas = dataListString.mapNotNull { parseSlideData(categoryId, it as Map<String, Any>) }
+        slideDataDao.updateSlideDataList(categoryId, slideDatas)
     }
 
     suspend fun requestCustomTags(categoryId: String, context: Context) {
@@ -46,12 +46,14 @@ class CategoryViewModel : ViewModel() {
         tagDataDao.updateTagDatas(categoryId, tagDatas)
     }
 
-    private fun parseSlideData(data: Map<String, Any>): SlideData {
-        return SlideData().apply {
-            jumpId = data["jump_id"].toString()
-            thumbnail = data["thumbnail"].toString()
-            title = data["title"].toString()
-        }
+    private fun parseSlideData(categoryId: String, data: Map<String, Any>): SlideData {
+        return SlideData(
+            data["id"].toString(),
+            categoryId,
+            data["jump_id"].toString(),
+            data["thumbnail"].toString(),
+            data["title"].toString()
+        )
     }
 
     private fun parseTag(categoryId: String, data: Map<String, Any>): CustomTag {

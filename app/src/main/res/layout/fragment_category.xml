@@ -4,29 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/main"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <uni.zf.xinpian.view.SlideView
-            android:id="@+id/slide_view"
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_margin="10dp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tag_list_view"
+        <LinearLayout
+            android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:visibility="gone"/>
+            android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/ad_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:visibility="gone"/>
-    </LinearLayout>
+            <uni.zf.xinpian.view.SlideView
+                android:id="@+id/slide_view"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_margin="10dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tag_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/ad_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

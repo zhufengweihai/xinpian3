@@ -28,7 +28,7 @@ class MainViewModel : ViewModel() {
     suspend fun refreshImgDomains(context: Context) {
         val dataString = requestUrl(imgDomainUrl, createHeaders(context))
         val imgDomainString = JSON.parseObject(dataString).getJSONObject("data").getString("imgDomain")
-        val imgDomains =imgDomainString.split(",").map { "https://$it" }
+        val imgDomains =imgDomainString.split(",")
         AppData.getInstance(context).imgDomains = imgDomains
     }
 
