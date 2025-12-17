@@ -35,7 +35,7 @@ class CategoryViewModel : ViewModel() {
     suspend fun requestCustomTags(categoryId: String, context: Context) {
         val dataString = requestUrl(tagsUrl.format(categoryId), createHeaders(context))
         val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        val tags = dataListString.mapNotNull { parseTag(categoryId,it as Map<String, Any>) }
+        val tags = dataListString.mapNotNull { parseTag(categoryId, it as Map<String, Any>) }
         tagDao.insertTagList(tags)
     }
 
@@ -63,19 +63,25 @@ class CategoryViewModel : ViewModel() {
     }
 
     private fun parseTagData(data: Map<String, Any>): TagData {
+        val id = data["id"].toString()
         return TagData(
             dyTag = DyTag().apply {
-                id = data["id"].toString()
+                this.id = id
                 categoryId = data["category_id"].toString()
                 name = data["name"].toString()
                 jumpAddress = data["jump_address"].toString()
                 cover = data["cover"].toString()
                 coverJumpAddress = data["cover_jump_address"].toString()
             },
-            videoList = (data["dataList"] as List<*>).map { parseVideoBrief(it as Map<String, Any>) })
+            videoList = (data["dataList"] as List<*>).map {
+                parseVideoBrief(
+                    id,
+                    it as Map<String, Any>
+                )
+            })
     }
 
-    private fun parseVideoBrief(data: Map<String, Any>): VideoBrief {
+    private fun parseVideoBrief(dyTag: String, data: Map<String, Any>): VideoBrief {
         return VideoBrief().apply {
             id = data["id"].toString()
             score = data["score"].toString()
@@ -83,6 +89,7 @@ class CategoryViewModel : ViewModel() {
             title = data["title"].toString()
             image = data["path"].toString()
             mask = data["mask"].toString()
+            dyTagId = dyTag
         }
     }
 }
