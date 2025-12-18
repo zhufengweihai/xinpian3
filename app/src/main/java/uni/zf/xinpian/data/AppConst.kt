@@ -21,5 +21,6 @@ object AppConst{
     val tagsUrl = "https://${jpUrlPrefix}.zxbwv.com/api/customTags/list?category_id=%s"
     val dyTagURL = "https://${jpUrlPrefix}.zxbwv.com/api/dyTag/list?category_id=%s"
     val appAuthUrl = "https://${jpUrlPrefix}.zxbwv.com/api/appAuthConfig"
+    val videoUrl = "https://${jpUrlPrefix}.zxbwv.com/api/video/detailv2?id=%s"
 }
 
