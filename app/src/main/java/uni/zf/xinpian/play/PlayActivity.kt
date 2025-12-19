@@ -89,11 +89,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
         initData(savedInstanceState)
         initView()
         onBackPressedDispatcher()
@@ -134,7 +129,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         if (Build.VERSION.SDK_INT <= 23) {
             binding.playerView.onPause()
             player?.pause()
-            //releasePlayer()
         }
     }
 
@@ -204,22 +198,21 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
     }
 
     private fun initView() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         binding.playerView.setControllerVisibilityListener(this)
         binding.playerView.requestFocus()
         GestureControl(this, binding.playerView).setOnGestureControlListener(PlayerGestureListener())
         titleView = binding.playerView.findViewById(R.id.title)
-        binding.viewDetailsView.setOnClickListener { showBottomDetailsDialog() }
         initBackView()
         binding.playerView.findViewById<View>(R.id.fullscreen).setOnClickListener { toggleFullScreen() }
         initLockView()
         initFastStepsView()
-        binding.sourceView.setOnClickListener { showSourceList() }
-        binding.statusView.setOnClickListener { showBottomSeriesDialog() }
+        initSourceListView()
         initEpisodeListView()
-        initShareButton()
-        initTipsButton()
-        initDownloadButton()
-        binding.portraitFullButton.setOnClickListener { toggleFullScreen(true) }
     }
 
     private fun initBackView() {
@@ -230,9 +223,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
 
     private fun toggleFullScreen(isPortrait: Boolean = false) {
         isFullScreen = !isFullScreen
-        binding.downloadButton.isGone = isFullScreen
-        binding.shareButton.isGone = isFullScreen
-        binding.tipsButton.isGone = isFullScreen
         val layoutParams = binding.playerView.layoutParams.apply {
             if (isFullScreen) {
                 originHeight = height
@@ -277,28 +267,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         binding.playerView.postDelayed(hideRunnable, 5000)
     }
 
-    private fun initShareButton() {
-        binding.shareButton.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "https://www.pgyer.com/Ghr0s1dR")
-            }
-            startActivity(Intent.createChooser(shareIntent, "分享到"))
-        }
-    }
-
-    private fun initTipsButton() {
-        binding.tipsButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = URL_TIPS.toUri()
-            startActivity(intent)
-        }
-    }
-
-    private fun initDownloadButton() {
-        binding.downloadButton.setOnClickListener { showDownloadSeriesDialog() }
-    }
-
     private fun initFastStepsView() {
         setupClickListener(binding.fastSteps.pre10mButton, STEPS[0])
         setupClickListener(binding.fastSteps.pre1mButton, STEPS[1])
@@ -326,10 +294,22 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         }
     }
 
+    private fun initSourceListView() {
+        binding.rvSources.adapter = EpisodeListAdapter(this)
+        binding.rvSources.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
+        binding.rvSources.addItemDecoration(SpaceItemDecoration(this))
+    }
+
     private fun initEpisodeListView() {
-        binding.episodeListView.adapter = EpisodeListAdapter(this)
-        binding.episodeListView.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
-        binding.episodeListView.addItemDecoration(SpaceItemDecoration(this))
+        binding.rvEpisodes.adapter = EpisodeListAdapter(this)
+        binding.rvEpisodes.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
+        binding.rvEpisodes.addItemDecoration(SpaceItemDecoration(this))
+    }
+
+    private fun initRecommendListView() {
+        binding.rvRecommend.adapter = EpisodeListAdapter(this)
+        binding.rvRecommend.layoutManager = GridLayoutManager(this, 3)
+        binding.rvRecommend.addItemDecoration(SpaceItemDecoration(this))
     }
 
     private fun showBottomDetailsDialog() {
@@ -377,26 +357,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
 
     private fun setupClickListener(button: TextView, step: Int) {
         button.setOnClickListener { player?.seekTo(player!!.currentPosition + step) }
-    }
-
-    private fun score(score: String): String {
-        return if (score.isEmpty() || score == "0") "暂无评分" else "$score 分"
-    }
-
-    private fun videoDesc(video: Video): String {
-        return buildString {
-            if (video.year > 0) {
-                append(video.year)
-            }
-            if (video.areas.isNotEmpty()) {
-                if (isNotEmpty()) append(" · ")
-                append(video.areas.joinToString(" "))
-            }
-        }
-    }
-
-    private fun ratingStar(score: String?): Float {
-        return score?.toFloatOrNull()?.div(2) ?: 0f
     }
 
     private fun initData(state: Bundle?) {
@@ -643,6 +603,5 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         private val STEPS = intArrayOf(-600000, -60000, -10000, 10000, 60000, 600000)
         private const val VOLUME_ADJUSTMENT_FACTOR = 200
         private const val MIN_WATCH_TIME = 10000L
-        private const val URL_TIPS = "https://qr.alipay.com/fkx11997wt3eo5oahqozzfb"
     }
 }
