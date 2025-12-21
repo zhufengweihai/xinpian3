@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
-import uni.zf.xinpian.data.model.SlideData
+import uni.zf.xinpian.objectbox.model.SlideData
 
 @Dao
 interface SlideDataDao {

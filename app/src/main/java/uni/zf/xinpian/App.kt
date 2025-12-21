@@ -3,6 +3,7 @@ package uni.zf.xinpian
 import androidx.room.Room.databaseBuilder
 import io.dcloud.uniapp.UniApplication
 import uni.zf.xinpian.data.AppDatabase
+import uni.zf.xinpian.objectbox.ObjectBoxManager
 
 class App : UniApplication() {
     lateinit var appDb: AppDatabase
@@ -16,6 +17,7 @@ class App : UniApplication() {
                     1
                 )
             .build()
+        ObjectBoxManager.init(this)
     }
 
     companion object {

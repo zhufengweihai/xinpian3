@@ -46,6 +46,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
+import uni.zf.xinpian.category.VideoListAdapter
 import uni.zf.xinpian.data.model.DownloadItem
 import uni.zf.xinpian.data.model.Episode
 import uni.zf.xinpian.data.model.Video
@@ -307,7 +308,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
     }
 
     private fun initRecommendListView() {
-        binding.rvRecommend.adapter = EpisodeListAdapter(this)
+        binding.rvRecommend.adapter = VideoListAdapter(this)
         binding.rvRecommend.layoutManager = GridLayoutManager(this, 3)
         binding.rvRecommend.addItemDecoration(SpaceItemDecoration(this))
     }

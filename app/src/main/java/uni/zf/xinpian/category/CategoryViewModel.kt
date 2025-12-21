@@ -2,16 +2,20 @@ package uni.zf.xinpian.category
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.alibaba.fastjson.JSON
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import io.objectbox.kotlin.equal
+import io.objectbox.kotlin.flow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import uni.zf.xinpian.App
 import uni.zf.xinpian.data.AppConst.dyTagURL
 import uni.zf.xinpian.data.AppConst.slideUrl
 import uni.zf.xinpian.data.AppConst.tagsUrl
-import uni.zf.xinpian.data.model.CustomTag
-import uni.zf.xinpian.data.model.DyTag
-import uni.zf.xinpian.data.model.SlideData
-import uni.zf.xinpian.data.model.TagData
-import uni.zf.xinpian.data.model.VideoBrief
+import uni.zf.xinpian.objectbox.model.CustomTag
+import uni.zf.xinpian.objectbox.ObjectBoxManager
+import uni.zf.xinpian.objectbox.model.DyTagData
+import uni.zf.xinpian.objectbox.model.SlideData
 import uni.zf.xinpian.utils.createHeaders
 import uni.zf.xinpian.utils.requestUrl
 
@@ -19,79 +23,54 @@ class CategoryViewModel : ViewModel() {
     private val slideDataDao = App.INSTANCE.appDb.slideDataDao()
     private val tagDao = App.INSTANCE.appDb.customTagDao()
     private val tagDataDao = App.INSTANCE.appDb.tagDataDao()
-    fun getSlideDataList(categoryId: String) = slideDataDao.getSlideDataList(categoryId)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getSlideDataList(categoryId: Int): Flow<List<SlideData>> {
+        val slideBox = ObjectBoxManager.getBox(SlideData::class.java)
+        return slideBox.query().equal(SlideData_.categoryId, categoryId).build().flow()
+    }
 
-    fun getTagList(categoryId: String) = tagDao.getTagList(categoryId)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getTagList(categoryId: Int) : Flow<List<CustomTag>>{
+        val tagBox = ObjectBoxManager.getBox(CustomTag::class.java)
+        return tagBox.query().equal(CustomTag_.categoryId, categoryId).build().flow()
+    }
 
-    fun getTagDatas(categoryId: String) = tagDataDao.getTagDatas(categoryId)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getTagDatas(categoryId: Int) : Flow<List<DyTagData>>{
+        val tagDataBox = ObjectBoxManager.getBox(DyTagData::class.java)
+        return tagDataBox.query().equal(DyTagData_.categoryId, categoryId).build().flow()
+    }
 
     suspend fun requestSlideData(categoryId: String, context: Context) {
-        val dataString = requestUrl(slideUrl.format(categoryId), createHeaders(context))
-        val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        val slideDatas = dataListString.mapNotNull { parseSlideData(categoryId, it as Map<String, Any>) }
-        slideDataDao.updateSlideDataList(categoryId, slideDatas)
+        val json = requestUrl(slideUrl.format(categoryId), createHeaders(context))
+        val gson = Gson()
+        val fullJsonObject = gson.fromJson(json, JsonObject::class.java)
+        val dataArray = fullJsonObject.getAsJsonArray("data")
+        val slideList = dataArray.map { gson.fromJson(it, SlideData::class.java) }
+        val slideBox = ObjectBoxManager.getBox(SlideData::class.java)
+        slideBox.put(slideList)
     }
 
     suspend fun requestCustomTags(categoryId: String, context: Context) {
-        val dataString = requestUrl(tagsUrl.format(categoryId), createHeaders(context))
-        val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        val tags = dataListString.mapNotNull { parseTag(categoryId, it as Map<String, Any>) }
-        tagDao.insertTagList(tags)
+        val json = requestUrl(tagsUrl.format(categoryId), createHeaders(context))
+        val gson = Gson()
+        val fullJsonObject = gson.fromJson(json, JsonObject::class.java)
+        val dataArray = fullJsonObject.getAsJsonArray("data")
+        val customTags = dataArray.map {
+            (it as JsonObject).addProperty("categoryId", categoryId)
+            gson.fromJson(it, CustomTag::class.java)
+        }
+        val tagsBox = ObjectBoxManager.getBox(CustomTag::class.java)
+        tagsBox.put(customTags)
     }
 
     suspend fun requestTagDatas(categoryId: String, context: Context) {
-        val dataString = requestUrl(dyTagURL.format(categoryId), createHeaders(context))
-        val dataListString = JSON.parseObject(dataString).getJSONArray("data")
-        val tagDatas = dataListString.mapNotNull { parseTagData(it as Map<String, Any>) }
-        tagDataDao.updateTagDatas(categoryId, tagDatas)
-    }
-
-    private fun parseSlideData(categoryId: String, data: Map<String, Any>): SlideData {
-        return SlideData(
-            data["id"].toString(),
-            categoryId,
-            data["jump_id"].toString(),
-            data["thumbnail"].toString(),
-            data["title"].toString()
-        )
-    }
-
-    private fun parseTag(categoryId: String, data: Map<String, Any>): CustomTag {
-        return CustomTag(
-            categoryId = categoryId,
-            title = data["title"].toString(),
-            jumpAddress = data["jump_address"].toString()
-        )
-    }
-
-    private fun parseTagData(data: Map<String, Any>): TagData {
-        val id = data["id"].toString()
-        return TagData(
-            dyTag = DyTag().apply {
-                this.id = id
-                categoryId = data["category_id"].toString()
-                name = data["name"].toString()
-                jumpAddress = data["jump_address"].toString()
-                cover = data["cover"].toString()
-                coverJumpAddress = data["cover_jump_address"].toString()
-            },
-            videoList = (data["dataList"] as List<*>).map {
-                parseVideoBrief(
-                    id,
-                    it as Map<String, Any>
-                )
-            })
-    }
-
-    private fun parseVideoBrief(dyTag: String, data: Map<String, Any>): VideoBrief {
-        return VideoBrief().apply {
-            id = data["id"].toString()
-            score = data["score"].toString()
-            definition = data["definition"] as Int
-            title = data["title"].toString()
-            image = data["path"].toString()
-            mask = data["mask"].toString()
-            dyTagId = dyTag
-        }
+        val json = requestUrl(dyTagURL.format(categoryId), createHeaders(context))
+        val gson = Gson()
+        val fullJsonObject = gson.fromJson(json, JsonObject::class.java)
+        val dataArray = fullJsonObject.getAsJsonArray("data")
+        val dyTagDatas = dataArray.map { gson.fromJson(it, DyTagData::class.java) }
+        val dyTagBox = ObjectBoxManager.getBox(DyTagData::class.java)
+        dyTagBox.put(dyTagDatas)
     }
 }

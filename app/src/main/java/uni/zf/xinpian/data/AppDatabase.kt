@@ -18,14 +18,16 @@ import uni.zf.xinpian.data.dao.VideoDao
 import uni.zf.xinpian.data.model.Video
 import uni.zf.xinpian.data.model.Vod
 import uni.zf.xinpian.data.model.Category
-import uni.zf.xinpian.data.model.CustomTag
+import uni.zf.xinpian.objectbox.model.CustomTag
 import uni.zf.xinpian.data.model.DyTag
-import uni.zf.xinpian.data.model.SlideData
-import uni.zf.xinpian.data.model.VideoBrief
+import uni.zf.xinpian.objectbox.model.SlideData
+import uni.zf.xinpian.data.model.video.VideoCoreData
+import uni.zf.xinpian.data.model.video.VideoData
 
 @Database(
     entities = [Video::class, Vod::class, WatchRecord::class, SearchHistory::class, DownloadVideo::class,
-        DownloadItem::class, Category::class, SlideData::class, CustomTag::class, DyTag::class, VideoBrief::class],
+        DownloadItem::class, Category::class, SlideData::class, CustomTag::class, DyTag::class, VideoCoreData::class,
+        VideoData::class],
     version = 2,
     exportSchema = false
 )

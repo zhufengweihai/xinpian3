@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
 import uni.zf.xinpian.common.AppData
-import uni.zf.xinpian.data.model.SlideData
+import uni.zf.xinpian.objectbox.model.SlideData
 import uni.zf.xinpian.player.PlayerActivity
 
 class SlideImageAdapter(private val videoList: List<SlideData>) : Adapter<SlideImageAdapter.ViewHolder>() {

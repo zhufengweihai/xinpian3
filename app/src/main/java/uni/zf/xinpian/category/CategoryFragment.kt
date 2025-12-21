@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.model.Category
-import uni.zf.xinpian.data.model.CustomTag
+import uni.zf.xinpian.objectbox.model.CustomTag
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
 import uni.zf.xinpian.series.SeriesItemDecoration
 import uni.zf.xinpian.view.TagDataView

@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
-import uni.zf.xinpian.data.model.CustomTag
+import uni.zf.xinpian.objectbox.model.CustomTag
 
 @Dao
 interface CustomTagDao {

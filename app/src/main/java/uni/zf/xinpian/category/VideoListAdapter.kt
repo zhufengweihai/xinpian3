@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
-import uni.zf.xinpian.data.model.VideoBrief
+import uni.zf.xinpian.data.AppConst
+import uni.zf.xinpian.data.model.video.VideoCoreData
 import uni.zf.xinpian.player.PlayerActivity
 
-class VideoListAdapter(val imagDomain: String, private val videoList: List<VideoBrief>) :
-    Adapter<VideoListAdapter.ViewHolder>() {
+class VideoListAdapter(private val videoList: List<VideoCoreData>) : Adapter<VideoListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -28,7 +28,7 @@ class VideoListAdapter(val imagDomain: String, private val videoList: List<Video
 
     override fun getItemCount(): Int = videoList.size
 
-    private fun updateLabelView(labelView: TextView, video: VideoBrief) {
+    private fun updateLabelView(labelView: TextView, video: VideoCoreData) {
         val labelText = when (video.definition) {
             1 -> "高清"
             3 -> "热门"
@@ -44,13 +44,13 @@ class VideoListAdapter(val imagDomain: String, private val videoList: List<Video
         private val labelView: TextView = itemView.findViewById(R.id.label_view)
         private val statusView: TextView = itemView.findViewById(R.id.status_view)
         private val nameView: TextView = itemView.findViewById(R.id.name_view)
-
+        private val imagDomain = AppConst.imgDomainUrl
         init {
             itemView.clipToOutline = true
         }
 
-        fun bind(video: VideoBrief) {
-            Glide.with(imageView).load(imagDomain + video.image).into(imageView)
+        fun bind(video: VideoCoreData) {
+            Glide.with(imageView).load(imagDomain + video.thumbnail).into(imageView)
             scoreView.text = video.score
             statusView.text = video.mask
             nameView.text = video.title
@@ -60,7 +60,7 @@ class VideoListAdapter(val imagDomain: String, private val videoList: List<Video
     }
 
     companion object {
-        private fun toPlay(context: Context, video: VideoBrief) {
+        private fun toPlay(context: Context, video: VideoCoreData) {
             val intent = Intent(context, PlayerActivity::class.java).apply {
                 putExtra(PlayerActivity.KEY_VIDEO_ID, video.id)
             }

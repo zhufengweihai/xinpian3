@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import uni.zf.xinpian.category.VideoListAdapter
 import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.data.model.TagData
-import uni.zf.xinpian.data.model.VideoBrief
+import uni.UNI69B4A3A.uni.zf.xinpian.data.model.video.VideoCoreData
 import uni.zf.xinpian.databinding.ViewTagDataBinding
 
 class TagDataView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -34,7 +34,7 @@ class TagDataView(context: Context, attrs: AttributeSet? = null, defStyleAttr: I
         setupVideoListView(imagDomain, tagData.videoList)
     }
 
-    private fun setupVideoListView(imagDomain: String, videoList: List<VideoBrief>) {
+    private fun setupVideoListView(imagDomain: String, videoList: List<VideoCoreData>) {
         val adapter = VideoListAdapter(imagDomain, videoList)
         binding.videoListView.layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
         binding.videoListView.adapter = adapter

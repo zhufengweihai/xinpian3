@@ -2,7 +2,6 @@ package uni.zf.xinpian.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import uni.zf.xinpian.data.model.VideoBrief
 
 @Entity
 data class DyTag (

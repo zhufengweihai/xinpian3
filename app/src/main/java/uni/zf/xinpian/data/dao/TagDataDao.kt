@@ -8,7 +8,7 @@ import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 import uni.zf.xinpian.data.model.DyTag
 import uni.zf.xinpian.data.model.TagData
-import uni.zf.xinpian.data.model.VideoBrief
+import uni.zf.xinpian.data.model.video.VideoCoreData
 
 @Dao
 interface TagDataDao {
@@ -23,7 +23,7 @@ interface TagDataDao {
     suspend fun insertDyTag(dyTag: DyTag)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertVideoBriefs(videoBriefs: List<VideoBrief>)
+    suspend fun insertVideoBriefs(videoCoreData: List<VideoCoreData>)
 
     @Transaction
     suspend fun updateTagDatas(categoryId: String, tagDataList: List<TagData>) {

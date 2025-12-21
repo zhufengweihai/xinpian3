@@ -10,8 +10,7 @@ import android.widget.FrameLayout
 import android.widget.RadioButton
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import uni.zf.xinpian.R
-import uni.zf.xinpian.common.AppData
-import uni.zf.xinpian.data.model.SlideData
+import uni.zf.xinpian.objectbox.model.SlideData
 import uni.zf.xinpian.databinding.ViewBannerBinding
 import uni.zf.xinpian.utils.dpToPx
 

@@ -4,6 +4,7 @@ plugins {
     alias libs.plugins.ksp
     id 'io.dcloud.uts.kotlin'
     id 'kotlin-parcelize'
+    id 'io.objectbox'
 }
 
 android {
@@ -82,6 +83,9 @@ dependencies {
     implementation libs.androidx.room.paging
     implementation libs.androidx.startup.runtime
     implementation libs.androidx.preference
+    implementation libs.gson
+    implementation libs.objectbox.android
+    implementation libs.objectbox.coroutines
 
     ksp(libs.androidx.room.compiler)
 
