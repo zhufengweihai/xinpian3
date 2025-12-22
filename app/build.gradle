@@ -84,8 +84,8 @@ dependencies {
     implementation libs.androidx.startup.runtime
     implementation libs.androidx.preference
     implementation libs.gson
-    implementation libs.objectbox.android
-    implementation libs.objectbox.coroutines
+    //implementation libs.objectbox.android
+    //implementation libs.objectbox.coroutines
 
     ksp(libs.androidx.room.compiler)
 

@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Entity
 data class Category(
     @PrimaryKey
-    var id: String = "",
+    var id: Int = 0,
     var name: String = "",
     var abbr: String?
 ) : Parcelable

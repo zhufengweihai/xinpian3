@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import uni.zf.xinpian.R
 import uni.zf.xinpian.objectbox.model.CustomTag
-import uni.UNI69B4A3A.uni.zf.xinpian.data.model.video.VideoCoreData
 import uni.zf.xinpian.player.PlayerActivity
 
 class TagAdapter(private val videoList: List<CustomTag>) : Adapter<TagAdapter.ViewHolder>() {
@@ -36,7 +35,7 @@ class TagAdapter(private val videoList: List<CustomTag>) : Adapter<TagAdapter.Vi
     }
 
     companion object {
-        private fun toPlay(context: Context, video: VideoCoreData) {
+        private fun toPlay(context: Context, video: CustomTag) {
             val intent = Intent(context, PlayerActivity::class.java).apply {
                 putExtra(PlayerActivity.KEY_VIDEO_ID, video.id)
             }

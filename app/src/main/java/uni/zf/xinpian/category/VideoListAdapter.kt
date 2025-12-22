@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst
-import uni.zf.xinpian.data.model.video.VideoCoreData
+import uni.zf.xinpian.objectbox.model.TagData
 import uni.zf.xinpian.player.PlayerActivity
 
-class VideoListAdapter(private val videoList: List<VideoCoreData>) : Adapter<VideoListAdapter.ViewHolder>() {
+class VideoListAdapter(private val videoList: List<TagData>) : Adapter<VideoListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -28,7 +28,7 @@ class VideoListAdapter(private val videoList: List<VideoCoreData>) : Adapter<Vid
 
     override fun getItemCount(): Int = videoList.size
 
-    private fun updateLabelView(labelView: TextView, video: VideoCoreData) {
+    private fun updateLabelView(labelView: TextView, video: TagData) {
         val labelText = when (video.definition) {
             1 -> "高清"
             3 -> "热门"
@@ -49,8 +49,8 @@ class VideoListAdapter(private val videoList: List<VideoCoreData>) : Adapter<Vid
             itemView.clipToOutline = true
         }
 
-        fun bind(video: VideoCoreData) {
-            Glide.with(imageView).load(imagDomain + video.thumbnail).into(imageView)
+        fun bind(video: TagData) {
+            Glide.with(imageView).load(imagDomain + video.path).into(imageView)
             scoreView.text = video.score
             statusView.text = video.mask
             nameView.text = video.title
@@ -60,7 +60,7 @@ class VideoListAdapter(private val videoList: List<VideoCoreData>) : Adapter<Vid
     }
 
     companion object {
-        private fun toPlay(context: Context, video: VideoCoreData) {
+        private fun toPlay(context: Context, video: TagData) {
             val intent = Intent(context, PlayerActivity::class.java).apply {
                 putExtra(PlayerActivity.KEY_VIDEO_ID, video.id)
             }

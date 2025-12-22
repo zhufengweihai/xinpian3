@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSON
 import uni.zf.xinpian.App
 import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.data.AppConst
-import uni.zf.xinpian.data.AppConst.appAuthUrl
 import uni.zf.xinpian.data.AppConst.imgDomainUrl
 import uni.zf.xinpian.data.AppConst.initUrl
 import uni.zf.xinpian.data.model.Category
@@ -40,6 +39,6 @@ class MainViewModel : ViewModel() {
     }
 
     private fun parseCategory(data: Map<String, Any>): Category {
-        return Category(data["id"].toString(), data["name"].toString(), data["title"]?.toString())
+        return Category(data["id"] as Int, data["name"].toString(), data["title"]?.toString())
     }
 }

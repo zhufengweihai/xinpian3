@@ -1,10 +1,11 @@
 package uni.zf.xinpian.objectbox.model
 
 import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
 
 @Entity
 class TagData (
-    val id: Int = 0,
+    @Id val id: Long = 0,
     val title: String = "",
     val score: String = "",
     val definition: Int = 0,
