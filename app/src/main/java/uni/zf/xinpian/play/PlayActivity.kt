@@ -99,7 +99,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (isFullScreen) {
-                    videoData?.let { toggleFullScreen(it.isDuanju()) }
+                    videoData?.let { toggleFullScreen()}
                 } else {
                     finish()
                 }
