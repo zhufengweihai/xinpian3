@@ -1,4 +1,4 @@
-package uni.zf.xinpian.objectbox.model
+package uni.zf.xinpian.json.model
 
 import kotlinx.serialization.Serializable
 

@@ -1,9 +1,11 @@
 [versions]
 agp = "8.13.1"
+datastore = "1.2.0"
 fastjson = "1.2.83"
 fragmentKtx = "1.8.9"
 gson = "2.13.2"
 kotlin = "2.2.0"
+kotlinxSerializationJson = "1.9.0"
 ksp = "2.2.0-2.0.2"
 coreKtx = "1.17.0"
 fresco = "3.6.0"
@@ -26,6 +28,7 @@ okhttp = "5.3.2"
 activity = "1.12.2"
 
 [libraries]
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-preference = { module = "androidx.preference:preference", version.ref = "preference" }
 androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startupRuntime" }
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
@@ -40,6 +43,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleKtx" }

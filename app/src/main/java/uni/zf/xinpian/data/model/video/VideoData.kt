@@ -1,8 +1,11 @@
 package uni.zf.xinpian.data.model.video
 
 import com.google.gson.annotations.SerializedName
+import io.objectbox.annotation.Entity
+import io.objectbox.relation.ToMany
 
-class VideoData(
+@Entity
+data class VideoData(
     val id: Int = 0,
     val score: String = "",
     @SerializedName("original_name") val originalName: String = "",
@@ -24,7 +27,7 @@ class VideoData(
     @SerializedName("update_cycle") val updateCycle: String = "",
     val thumbnail: String = "",
     val languages: List<LanguageItem> = listOf(),
-    val types: List<VideoType> = listOf(),
+    val types: ToMany<VideoType> = ToMany(this, VideoData_.orders),
     val countries: List<String> = listOf(),
     val persons: List<Person> = listOf(),
     val directors: List<Person> = listOf(),

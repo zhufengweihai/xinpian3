@@ -4,7 +4,6 @@ buildscript {
     dependencies {
         classpath(files('plugins/uts-kotlin-compiler-plugin-0.0.1.jar'))
         classpath(files('plugins/uts-kotlin-gradle-plugin-0.0.1.jar'))
-        classpath libs.objectbox.gradle.plugin
     }
 }
 plugins {

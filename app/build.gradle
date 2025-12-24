@@ -4,7 +4,7 @@ plugins {
     alias libs.plugins.ksp
     id 'io.dcloud.uts.kotlin'
     id 'kotlin-parcelize'
-    id 'io.objectbox'
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
 }
 
 android {
@@ -84,8 +84,8 @@ dependencies {
     implementation libs.androidx.startup.runtime
     implementation libs.androidx.preference
     implementation libs.gson
-    //implementation libs.objectbox.android
-    //implementation libs.objectbox.coroutines
+    implementation libs.androidx.datastore
+    implementation libs.kotlinx.serialization.json
 
     ksp(libs.androidx.room.compiler)
 
