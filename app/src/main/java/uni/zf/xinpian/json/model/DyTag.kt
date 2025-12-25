@@ -1,16 +1,13 @@
-package uni.zf.xinpian.objectbox.model
+package uni.zf.xinpian.json.model
 
 import com.google.gson.annotations.SerializedName
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import kotlinx.serialization.Serializable
 
-
-@Entity
+@Serializable
 data class DyTag (
     val name: String = "",
     @SerializedName("category_id") val categoryId: Int = 0,
     val cover: String = "",
     @SerializedName("cover_jump_address") val coverJumpAddress: String = "",
-    @Id val id: Long = 0,
     val dataList : List<TagData> = listOf()
 )

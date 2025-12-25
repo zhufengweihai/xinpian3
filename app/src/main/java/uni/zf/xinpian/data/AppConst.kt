@@ -12,6 +12,7 @@ object AppConst{
     const val defaultImgDomains = "static.ztcuc.com,img4.ztcuc.com,img.ztcuc.com,oxcljymt.top,lnijywwg.top,pxluvojc.top"
     const val version = "417"
     const val packageName = "com.qihoo.jp22"
+    const val KEY_VIDEO_ID = "video_id"
     private val jpUrlPrefix = generateJpUrlPrefix()
     val host = "${jpUrlPrefix}.zxbwv.com"
     val imgDomainUrl = "https://${jpUrlPrefix}.zxbwv.com/api/resourceDomainConfig"

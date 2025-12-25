@@ -1,11 +1,10 @@
-package uni.zf.xinpian.objectbox.model
+package uni.zf.xinpian.json.model
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import kotlinx.serialization.Serializable
 
-@Entity
+@Serializable
 class TagData (
-    @Id val id: Long = 0,
+    val id: Long = 0,
     val title: String = "",
     val score: String = "",
     val definition: Int = 0,

@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.model.Category
-import uni.zf.xinpian.objectbox.model.CustomTag
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
+import uni.zf.xinpian.json.model.CustomTag
 import uni.zf.xinpian.series.SeriesItemDecoration
 import uni.zf.xinpian.view.TagDataView
 
@@ -44,24 +44,22 @@ class CategoryFragment() : Fragment() {
 
     private fun loadData() {
         if (category == null) return
+        viewModel.requestSlideData()
+        viewModel.requestCustomTags()
+        viewModel.requestDyTag()
         lifecycleScope.launch {
-            viewModel.requestSlideData(category!!.id,requireContext())
-            viewModel.requestCustomTags(category!!.id,requireContext())
-            viewModel.requestTagDatas(category!!.id,requireContext())
-        }
-        lifecycleScope.launch {
-            viewModel.getSlideList(category!!.id).collect {
-                binding.slideView.setVideoList(it, true)
+            viewModel.getSlideList().collect {
+                binding.slideView.setVideoList(it.data, true)
             }
         }
         lifecycleScope.launch {
-            viewModel.getCustomTagList(category!!.id).collect {
-                if (it.isNotEmpty()) setupCustomTagsView(it)
+            viewModel.getCustomTagList().collect {
+                if (it.data.isNotEmpty()) setupCustomTagsView(it.data)
             }
         }
         lifecycleScope.launch {
-            viewModel.getTagDatas(category!!.id).collect {
-                for (tagData in it){
+            viewModel.getDyTag().collect {
+                for (tagData in it.dataList){
                     val tagDataView = TagDataView(requireContext())
                     tagDataView.setTagData(tagData)
                     binding.main.addView(tagDataView)

@@ -1,0 +1,9 @@
+package uni.zf.xinpian.json.model
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Person(
+    val id: Int,
+    val name: String
+)

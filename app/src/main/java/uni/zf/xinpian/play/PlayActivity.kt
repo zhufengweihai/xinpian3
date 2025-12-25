@@ -47,6 +47,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
 import uni.zf.xinpian.category.VideoListAdapter
+import uni.zf.xinpian.data.AppConst.KEY_VIDEO_ID
 import uni.zf.xinpian.data.model.DownloadItem
 import uni.zf.xinpian.data.model.Episode
 import uni.zf.xinpian.data.model.Video
@@ -600,7 +601,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
     }
 
     companion object {
-        const val KEY_VIDEO_ID = "video_id"
         private val STEPS = intArrayOf(-600000, -60000, -10000, 10000, 60000, 600000)
         private const val VOLUME_ADJUSTMENT_FACTOR = 200
         private const val MIN_WATCH_TIME = 10000L

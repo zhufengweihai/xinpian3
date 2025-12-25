@@ -4,18 +4,18 @@ import android.content.Context
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.Serializer
 import kotlinx.serialization.json.Json
-import uni.zf.xinpian.json.model.CustomTags
+import uni.zf.xinpian.json.model.VideoData
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-fun Context.createCustomTagDataStore(id: Int) = DataStoreFactory.create(
-    CustomTagSerializer(),
-    produceFile = { File(filesDir, "custom_tag_$id.json") }
+fun Context.createVideoDataStore(id: Int) = DataStoreFactory.create(
+    VideoSerializer(),
+    produceFile = { File(filesDir, "video_$id.json") }
 )
 
-class CustomTagSerializer : Serializer<CustomTags> {
-    override val defaultValue = CustomTags()
+class VideoSerializer : Serializer<VideoData> {
+    override val defaultValue = VideoData()
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -23,17 +23,17 @@ class CustomTagSerializer : Serializer<CustomTags> {
         isLenient = true
     }
 
-    override suspend fun readFrom(input: InputStream): CustomTags {
+    override suspend fun readFrom(input: InputStream): VideoData {
         return json.decodeFromString(
-            deserializer = CustomTags.serializer(),
+            deserializer = VideoData.serializer(),
             string = input.readBytes().decodeToString()
         )
     }
 
-    override suspend fun writeTo(t: CustomTags, output: OutputStream) {
+    override suspend fun writeTo(t: VideoData, output: OutputStream) {
         output.write(
             json.encodeToString(
-                serializer = CustomTags.serializer(),
+                serializer = VideoData.serializer(),
                 value = t
             ).encodeToByteArray()
         )
