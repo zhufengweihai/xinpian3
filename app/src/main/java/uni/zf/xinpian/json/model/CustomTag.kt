@@ -1,13 +1,11 @@
-package uni.zf.xinpian.objectbox.model
+package uni.zf.xinpian.json.model
 
 import com.google.gson.annotations.SerializedName
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import kotlinx.serialization.Serializable
 
 
-@Entity
+@Serializable
 data class CustomTag (
-    @Id val id: Long = 0,
     val categoryId: String = "",
     val title: String = "",
     @SerializedName("jump_address") val jumpAddress: String = ""

@@ -11,5 +11,5 @@ data class Category(
     @PrimaryKey
     var id: Int = 0,
     var name: String = "",
-    var abbr: String?
+    var abbr: String? = null
 ) : Parcelable

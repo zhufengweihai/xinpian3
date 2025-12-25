@@ -1,38 +1,34 @@
 package uni.zf.xinpian.category
 
+import android.app.Application
 import android.content.Context
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import io.objectbox.kotlin.equal
-import io.objectbox.kotlin.flow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import uni.zf.xinpian.data.AppConst.dyTagURL
 import uni.zf.xinpian.data.AppConst.slideUrl
 import uni.zf.xinpian.data.AppConst.tagsUrl
-import uni.zf.xinpian.objectbox.ObjectBoxManager
-import uni.zf.xinpian.objectbox.model.CustomTag
-import uni.zf.xinpian.objectbox.model.CustomTag_
+import uni.zf.xinpian.data.model.Category
+import uni.zf.xinpian.json.createCustomTagDataStore
+import uni.zf.xinpian.json.createSlideDataStore
+import uni.zf.xinpian.json.model.SlideList
 import uni.zf.xinpian.objectbox.model.DyTag
-import uni.zf.xinpian.objectbox.model.DyTag_
-import uni.zf.xinpian.objectbox.model.SlideData
-import uni.zf.xinpian.objectbox.model.SlideData_
 import uni.zf.xinpian.utils.createHeaders
 import uni.zf.xinpian.utils.requestUrl
 
-class CategoryViewModel : ViewModel() {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun getSlideDataList(categoryId: Int): Flow<List<SlideData>> {
-        val slideBox = ObjectBoxManager.getBox(SlideData::class.java)
-        return slideBox.query().equal(SlideData_.categoryId, categoryId).build().flow()
-    }
+class CategoryViewModel(application: Application, savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {
+    private val category: Category = savedStateHandle.get<Category>(arg_category) ?: Category()
+    private val slideDataStore = getApplication<Application>().createSlideDataStore(category.id)
+    private val customTagDataStore = getApplication<Application>().createCustomTagDataStore(category.id)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun getTagList(categoryId: Int) : Flow<List<CustomTag>>{
-        val tagBox = ObjectBoxManager.getBox(CustomTag::class.java)
-        return tagBox.query().equal(CustomTag_.categoryId, categoryId).build().flow()
-    }
+    fun getSlideList(): Flow<SlideList> = slideDataStore.data
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getCustomTagList(categoryId: Int) = customTagDataStore.data
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getTagDatas(categoryId: Int) : Flow<List<DyTag>>{

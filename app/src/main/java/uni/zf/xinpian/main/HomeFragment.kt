@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
-import uni.zf.xinpian.category.CategoryFragment
+import uni.zf.xinpian.category.newCategoryFragment
 import uni.zf.xinpian.data.model.Category
 import uni.zf.xinpian.databinding.FragmentHomeBinding
 
@@ -41,6 +41,6 @@ class HomeFragment : Fragment() {
     private fun createSectionsAdapter(categoryList: List<Category>) = object : FragmentStateAdapter(this) {
         override fun getItemCount() = categoryList.size
 
-        override fun createFragment(position: Int): Fragment = CategoryFragment.newInstance(categoryList[position])
+        override fun createFragment(position: Int): Fragment = newCategoryFragment(categoryList[position])
     }
 }

@@ -16,9 +16,16 @@ import uni.zf.xinpian.databinding.FragmentCategoryBinding
 import uni.zf.xinpian.series.SeriesItemDecoration
 import uni.zf.xinpian.view.TagDataView
 
+const val arg_category = "category"
+
+fun newCategoryFragment(category: Category) = CategoryFragment().apply {
+    arguments = Bundle().apply { putParcelable(arg_category, category) }
+}
+
 class CategoryFragment() : Fragment() {
-    private val category: Category? by lazy { arguments?.getParcelable(ARG_FENLEI) }
+    private val category: Category? by lazy { arguments?.getParcelable(arg_category) }
     private val viewModel: CategoryViewModel by viewModels()
+
     private lateinit var binding: FragmentCategoryBinding
     private var isDataLoaded = false
 
@@ -43,12 +50,12 @@ class CategoryFragment() : Fragment() {
             viewModel.requestTagDatas(category!!.id,requireContext())
         }
         lifecycleScope.launch {
-            viewModel.getSlideDataList(category!!.id).collect {
+            viewModel.getSlideList(category!!.id).collect {
                 binding.slideView.setVideoList(it, true)
             }
         }
         lifecycleScope.launch {
-            viewModel.getTagList(category!!.id).collect {
+            viewModel.getCustomTagList(category!!.id).collect {
                 if (it.isNotEmpty()) setupCustomTagsView(it)
             }
         }
@@ -70,17 +77,6 @@ class CategoryFragment() : Fragment() {
             layoutManager = GridLayoutManager(requireContext(), 3)
             addItemDecoration(SeriesItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
             this.adapter = adapter
-        }
-    }
-
-    companion object {
-        private const val ARG_FENLEI = "fenlei"
-
-        @JvmStatic
-        fun newInstance(category: Category): CategoryFragment {
-            return CategoryFragment().apply {
-                arguments = Bundle().apply { putParcelable(ARG_FENLEI, category) }
-            }
         }
     }
 }
