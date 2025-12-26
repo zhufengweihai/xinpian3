@@ -1,7 +1,6 @@
 package uni.zf.xinpian.play
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.content.pm.PackageManager
@@ -36,7 +35,6 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView.ControllerVisibilityListener
 import androidx.recyclerview.widget.GridLayoutManager
@@ -50,7 +48,6 @@ import uni.zf.xinpian.category.VideoListAdapter
 import uni.zf.xinpian.data.AppConst.KEY_VIDEO_ID
 import uni.zf.xinpian.data.model.DownloadItem
 import uni.zf.xinpian.data.model.Episode
-import uni.zf.xinpian.data.model.Video
 import uni.zf.xinpian.data.model.VideoData
 import uni.zf.xinpian.data.model.fromVideo
 import uni.zf.xinpian.databinding.ActivityPlayBinding
@@ -61,7 +58,6 @@ import uni.zf.xinpian.player.EpisodeChangeListener
 import uni.zf.xinpian.player.EpisodeListAdapter
 import uni.zf.xinpian.player.GestureControl
 import uni.zf.xinpian.player.GestureListener
-import uni.zf.xinpian.player.PlayerViewModel
 import uni.zf.xinpian.player.parser.MyMediaSourceFactory
 import uni.zf.xinpian.source.startVodSync
 import uni.zf.xinpian.utils.TimeUtils.formatMs
@@ -71,13 +67,13 @@ import uni.zf.xinpian.utils.toPercent
 import uni.zf.xinpian.view.SpaceItemDecoration
 
 @OptIn(UnstableApi::class)
-open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
-    EpisodeChangeListener {
+open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, EpisodeChangeListener {
     private val binding by lazy { ActivityPlayBinding.inflate(layoutInflater) }
     private lateinit var titleView: TextView
     private var player: ExoPlayer? = null
+    private var playbackPosition = 0L
     private var factory: MyMediaSourceFactory? = null
-    private val viewModel: PlayerViewModel by viewModels()
+    private val viewModel: PlayViewModel by viewModels()
     private var videoData: VideoData? = null
     private var loading = false
     private var isFullScreen = false
@@ -94,6 +90,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         initData(savedInstanceState)
         initView()
         onBackPressedDispatcher()
+        player = createPlayer(PlayerEventListener())
+        binding.playerView.player = player
     }
 
     private fun onBackPressedDispatcher() {
@@ -110,48 +108,24 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
 
     public override fun onStart() {
         super.onStart()
-        if (Build.VERSION.SDK_INT > 23) {
-            initPlayerAndPlay()
-            binding.playerView.onResume()
-            player?.play()
+        if (player == null) {
+            createPlayer(PlayerEventListener())
+            binding.playerView.player = player
         }
-    }
-
-    public override fun onResume() {
-        super.onResume()
-        if (Build.VERSION.SDK_INT <= 23 || player == null) {
-            initPlayerAndPlay()
-            binding.playerView.onResume()
-            player?.play()
-        }
-    }
-
-    public override fun onPause() {
-        super.onPause()
-        if (Build.VERSION.SDK_INT <= 23) {
-            binding.playerView.onPause()
-            player?.pause()
-        }
+        player?.seekTo(playbackPosition)
+        player?.play()
     }
 
     public override fun onStop() {
         super.onStop()
-        if (Build.VERSION.SDK_INT > 23) {
-            binding.playerView.onPause()
-            player?.pause()
-            //releasePlayer()
-        }
-        saveWatchRecord()
+        playbackPosition = player?.currentPosition ?: 0
+        player?.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isFinishing) {
-            player?.currentMediaItem?.localConfiguration?.uri?.let {
-                viewModel.pauseLastDownload(it)
-            }
-        }
-        releasePlayer()
+        player?.release()
+        player = null
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -159,16 +133,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         when {
             grantResults.isEmpty() -> return
             grantResults[0] == PackageManager.PERMISSION_GRANTED -> initPlayerAndPlay()
-            else -> {
-                Toast.makeText(applicationContext, "访问存储空间的权限被拒绝", Toast.LENGTH_LONG).show()
-                finish()
-            }
+            else -> Toast.makeText(applicationContext, "访问存储空间的权限被拒绝", Toast.LENGTH_LONG).show()
         }
-    }
-
-    public override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable(KEY_VIDEO_ID, videoData?.video?.id)
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
@@ -179,16 +145,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         binding.lockView.visibility = visibility
     }
 
-    private fun initPlayerAndPlay() {
-        if (player == null) {
-            factory = MyMediaSourceFactory(DownloadTracker.dataSourceFactory)
-            player = initPlayer()
-            binding.playerView.player = player
-            videoData?.let { toPlay() }
-        }
-    }
-
-    private fun initPlayer(): ExoPlayer {
+    private fun createPlayer(): ExoPlayer {
+        factory = MyMediaSourceFactory(DownloadTracker.dataSourceFactory)
         return ExoPlayer.Builder(this)
             .setMediaSourceFactory(factory!!)
             .setLoadControl(defaultLoadControl())
@@ -278,26 +236,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
         setupClickListener(binding.fastSteps.next10mButton, STEPS[5])
     }
 
-    private fun showSourceList() {
-        videoData?.let {
-            val popupMenu = PopupMenu(this, binding.sourceView)
-            it.vodList.forEachIndexed { index, vod ->
-                popupMenu.menu.add(0, index, 0, getSourceName(vod.vodId))
-            }
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                videoData?.let {
-                    it.updateVod(menuItem.itemId)
-                    updateUI(it)
-                    switchSourceAndPlay()
-                }
-                true
-            }
-            popupMenu.show()
-        }
-    }
-
     private fun initSourceListView() {
-        binding.rvSources.adapter = EpisodeListAdapter(this)
+        binding.rvSources.adapter = SourceListAdapter(this)
         binding.rvSources.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
         binding.rvSources.addItemDecoration(SpaceItemDecoration(this))
     }
@@ -406,17 +346,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener,
             val currentEpisode = player?.currentMediaItemIndex ?: 0
             adapter.updateEpisodes(data.currentEpisodes(), currentEpisode)
         }
-    }
-
-    private fun defaultLoadControl(): DefaultLoadControl {
-        return DefaultLoadControl.Builder()
-            .setBufferDurationsMs(
-                30_000,
-                180_000,
-                5_000,
-                5_000
-            )
-            .build()
     }
 
     private fun switchSourceAndPlay() {
