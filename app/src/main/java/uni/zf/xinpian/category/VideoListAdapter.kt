@@ -12,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst
-import uni.zf.xinpian.objectbox.model.TagData
-import uni.zf.xinpian.player.PlayerActivity
+import uni.zf.xinpian.data.AppConst.KEY_VIDEO_ID
+import uni.zf.xinpian.json.model.TagData
+import uni.zf.xinpian.play.PlayActivity
 
-class VideoListAdapter(private val videoList: List<TagData>) : Adapter<VideoListAdapter.ViewHolder>() {
+class VideoListAdapter(private val tagDataList: List<TagData> = listOf()) : Adapter<VideoListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -23,13 +24,13 @@ class VideoListAdapter(private val videoList: List<TagData>) : Adapter<VideoList
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(videoList[position])
+        holder.bind(tagDataList[position])
     }
 
-    override fun getItemCount(): Int = videoList.size
+    override fun getItemCount(): Int = tagDataList.size
 
-    private fun updateLabelView(labelView: TextView, video: TagData) {
-        val labelText = when (video.definition) {
+    private fun updateLabelView(labelView: TextView, tagData: TagData) {
+        val labelText = when (tagData.definition) {
             1 -> "高清"
             3 -> "热门"
             else -> ""
@@ -49,20 +50,20 @@ class VideoListAdapter(private val videoList: List<TagData>) : Adapter<VideoList
             itemView.clipToOutline = true
         }
 
-        fun bind(video: TagData) {
-            Glide.with(imageView).load(imagDomain + video.path).into(imageView)
-            scoreView.text = video.score
-            statusView.text = video.mask
-            nameView.text = video.title
-            updateLabelView(labelView, video)
-            itemView.setOnClickListener { toPlay(it.context, video) }
+        fun bind(tagData: TagData) {
+            Glide.with(imageView).load(imagDomain + tagData.path).into(imageView)
+            scoreView.text = tagData.score
+            statusView.text = tagData.mask
+            nameView.text = tagData.title
+            updateLabelView(labelView, tagData)
+            itemView.setOnClickListener { toPlay(it.context, tagData) }
         }
     }
 
     companion object {
-        private fun toPlay(context: Context, video: TagData) {
-            val intent = Intent(context, PlayerActivity::class.java).apply {
-                putExtra(PlayerActivity.KEY_VIDEO_ID, video.id)
+        private fun toPlay(context: Context, tagData: TagData) {
+            val intent = Intent(context, PlayActivity::class.java).apply {
+                putExtra(KEY_VIDEO_ID, tagData.id)
             }
             context.startActivity(intent)
         }

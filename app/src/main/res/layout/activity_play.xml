@@ -109,8 +109,8 @@
         android:id="@+id/tv_introduction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
         android:gravity="start|center_vertical"
         android:text="@string/introduction"
         android:textSize="16sp"
@@ -146,9 +146,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:gravity="start|center_vertical"
+        app:layout_constraintBottom_toBottomOf="@id/tv_score"
         app:layout_constraintStart_toEndOf="@id/tv_score"
-        app:layout_constraintTop_toTopOf="@id/tv_score"
-        app:layout_constraintBottom_toBottomOf="@id/tv_score"/>
+        app:layout_constraintTop_toTopOf="@id/tv_score" />
 
     <TextView
         android:id="@+id/tv_sources"
@@ -157,9 +157,9 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
         android:gravity="start|center_vertical"
+        android:text="片源"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:text="片源"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_score" />
 
@@ -184,37 +184,49 @@
         app:layout_constraintTop_toBottomOf="@id/tv_sources" />
 
     <TextView
-        android:id="@+id/tv_episodes"
+        android:id="@+id/tv_items"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
         android:gravity="start|center_vertical"
+        android:text="选集"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:text="选集"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_sources" />
 
+    <TextView
+        android:id="@+id/tv_mask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:gravity="start|center_vertical"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_items"
+        app:layout_constraintEnd_toStartOf="@id/iv_items_more"
+        app:layout_constraintTop_toTopOf="@id/tv_items" />
+
     <ImageView
-        android:id="@+id/iv_episodes"
+        android:id="@+id/iv_items_more"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginEnd="10dp"
         android:src="@drawable/icon_next"
-        app:layout_constraintBottom_toBottomOf="@id/tv_episodes"
+        app:layout_constraintBottom_toBottomOf="@id/tv_items"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_episodes"
+        app:layout_constraintStart_toEndOf="@id/tv_mask"
+        app:layout_constraintTop_toTopOf="@id/tv_items"
         app:tint="@color/main" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_episodes"
+        android:id="@+id/rv_items"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_margin="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_episodes" />
+        app:layout_constraintTop_toBottomOf="@id/tv_items" />
 
     <TextView
         android:id="@+id/tv_recommend"
@@ -223,11 +235,11 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
         android:gravity="start|center_vertical"
+        android:text="猜你喜欢"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:text="猜你喜欢"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_episodes" />
+        app:layout_constraintTop_toBottomOf="@id/rv_items" />
 
     <ImageView
         android:id="@+id/iv_recommend"

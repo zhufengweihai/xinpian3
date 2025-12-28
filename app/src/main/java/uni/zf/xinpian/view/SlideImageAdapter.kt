@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
 import uni.zf.xinpian.common.AppData
-import uni.zf.xinpian.objectbox.model.SlideData
+import uni.zf.xinpian.json.model.SlideData
 import uni.zf.xinpian.player.PlayerActivity
 
 class SlideImageAdapter(private val videoList: List<SlideData>) : Adapter<SlideImageAdapter.ViewHolder>() {
@@ -27,7 +27,7 @@ class SlideImageAdapter(private val videoList: List<SlideData>) : Adapter<SlideI
 
     override fun getItemCount() = videoList.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.banner_image_view)
         val imgDomain = AppData.getInstance(itemView.context).imgDomain()
         fun bind(video: SlideData) {

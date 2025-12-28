@@ -3,6 +3,7 @@ package uni.zf.xinpian.json
 import android.content.Context
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.Serializer
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import uni.zf.xinpian.json.model.SlideList
 import java.io.File
@@ -17,25 +18,15 @@ fun Context.createSlideDataStore(id: Int) = DataStoreFactory.create(
 class SlideListSerializer : Serializer<SlideList> {
     override val defaultValue = SlideList()
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        prettyPrint = true
-        isLenient = true
-    }
-
     override suspend fun readFrom(input: InputStream): SlideList {
-        return json.decodeFromString(
-            deserializer = SlideList.serializer(),
-            string = input.readBytes().decodeToString()
-        )
+        return try {
+            Json.decodeFromString<SlideList>(input.readBytes().decodeToString())
+        } catch (_: SerializationException) {
+            defaultValue
+        }
     }
 
     override suspend fun writeTo(t: SlideList, output: OutputStream) {
-        output.write(
-            json.encodeToString(
-                serializer = SlideList.serializer(),
-                value = t
-            ).encodeToByteArray()
-        )
+        output.write(Json.encodeToString(value = t).encodeToByteArray())
     }
 }

@@ -1,7 +1,5 @@
 package uni.zf.xinpian.category
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import uni.zf.xinpian.R
-import uni.zf.xinpian.objectbox.model.CustomTag
-import uni.zf.xinpian.player.PlayerActivity
+import uni.zf.xinpian.json.model.CustomTag
 
 class TagAdapter(private val videoList: List<CustomTag>) : Adapter<TagAdapter.ViewHolder>() {
 
@@ -31,15 +28,6 @@ class TagAdapter(private val videoList: List<CustomTag>) : Adapter<TagAdapter.Vi
         fun bind(customTag: CustomTag) {
             textView.text = customTag.title
             textView.setOnClickListener {  }
-        }
-    }
-
-    companion object {
-        private fun toPlay(context: Context, video: CustomTag) {
-            val intent = Intent(context, PlayerActivity::class.java).apply {
-                putExtra(PlayerActivity.KEY_VIDEO_ID, video.id)
-            }
-            context.startActivity(intent)
         }
     }
 }

@@ -1,13 +1,16 @@
 package uni.zf.xinpian.json.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SlideData(
     val id: Int = 0,
-    @SerializedName("pos_id") val categoryId: String = "",
-    @SerializedName("jump_id") val jumpId: String = "",
+    @SerialName("pos_id") val categoryId: String = "",
+    @SerialName("jump_id") val jumpId: String = "",
     val thumbnail: String = "",
     val title: String = ""
 )
+
+@Serializable
+data class SlideList(val data: List<SlideData> = listOf())

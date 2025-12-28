@@ -1,12 +1,13 @@
 package uni.zf.xinpian.json.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SourceGroup(
     val id: Long? = null, // 有些是 0 或缺失，用 Long? 兼容
     val name: String,
-    val sourceList: List<SourceItem>,
+    @SerialName("source_list") val playList: List<SourceItem>,
     val sourceKey: String? = null,
     val vodId: Int? = null,
     val status: Int? = null,

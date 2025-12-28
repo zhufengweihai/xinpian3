@@ -7,10 +7,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.jsonObject
 import uni.zf.xinpian.App
 import uni.zf.xinpian.data.AppConst.KEY_VIDEO_ID
 import uni.zf.xinpian.data.AppConst.videoUrl
@@ -32,13 +33,12 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
 
     fun getVideoData() = videoDataStore.data
 
-    suspend fun requestVideoData() {
+    fun requestVideoData() {
         viewModelScope.launch {
             val json = requestUrl(videoUrl.format(videoId), createHeaders(app))
-            val gson = Gson()
-            val fullJsonObject = gson.fromJson(json, JsonObject::class.java)
-            val targetDataObj = fullJsonObject.getAsJsonObject("data")
-            val videoData = gson.fromJson(targetDataObj, VideoData::class.java)
+            if (json.isEmpty()) return@launch
+            val jsonObject = Json.parseToJsonElement(json).jsonObject
+            val videoData = Json.decodeFromJsonElement<VideoData>(jsonObject)
             videoDataStore.updateData { videoData }
         }
     }

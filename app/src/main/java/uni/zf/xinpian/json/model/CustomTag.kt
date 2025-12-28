@@ -1,12 +1,16 @@
 package uni.zf.xinpian.json.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-
 
 @Serializable
 data class CustomTag (
     val categoryId: String = "",
     val title: String = "",
-    @SerializedName("jump_address") val jumpAddress: String = ""
+    @SerialName("jump_address") val jumpAddress: String = ""
+)
+
+@Serializable
+data class CustomTags(
+    val list: List<CustomTag> = emptyList()
 )

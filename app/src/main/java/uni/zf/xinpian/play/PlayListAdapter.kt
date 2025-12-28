@@ -8,23 +8,24 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uni.zf.xinpian.R
 import uni.zf.xinpian.json.model.SourceGroup
+import uni.zf.xinpian.json.model.SourceItem
 import uni.zf.xinpian.player.EpisodeChangeListener
 
 @SuppressLint("NotifyDataSetChanged")
-open class SourceListAdapter(
+open class PlayListAdapter(
     private val listener: EpisodeChangeListener,
-    private var sources: List<SourceGroup> = emptyList(),
-    private var currentSource: Int = 0,
-) : RecyclerView.Adapter<SourceListAdapter.ViewHolder>() {
+    private var items: List<SourceItem> = emptyList(),
+    private var currentItem: Int = 0,
+) : RecyclerView.Adapter<PlayListAdapter.ViewHolder>() {
 
-    fun updateSources(currentSource: Int = 0) {
-        this.currentSource = currentSource
+    fun updateItems(currentItem: Int = 0) {
+        this.currentItem = currentItem
         notifyDataSetChanged()
     }
 
-    fun updateSources(sources: List<SourceGroup>, currentSource: Int = 0) {
-        this.sources = sources
-        this.currentSource = currentSource
+    fun updateItems(items: List<SourceItem>, currentItem: Int = 0) {
+        this.items = items
+        this.currentItem = currentItem
         notifyDataSetChanged()
     }
 
@@ -34,21 +35,21 @@ open class SourceListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(sources[position].name, isSelected(position))
+        holder.bind(items[position].sourceName, isSelected(position))
         holder.itemView.setOnClickListener { onItemClick(holder) }
     }
 
     protected open fun onItemClick(holder: ViewHolder) {
         val position = holder.bindingAdapterPosition
-        if (position == currentSource) return
-        currentSource = position
-        listener.onEpisode(currentSource)
+        if (position == currentItem) return
+        currentItem = position
+        listener.onEpisode(currentItem)
         notifyDataSetChanged()
     }
 
-    open fun isSelected(position: Int) = position == currentSource
+    open fun isSelected(position: Int) = position == currentItem
 
-    override fun getItemCount(): Int = sources.size
+    override fun getItemCount(): Int = items.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvSource: TextView = itemView.findViewById(R.id.tv_source)

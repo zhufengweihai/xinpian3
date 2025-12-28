@@ -3,12 +3,10 @@ package uni.zf.xinpian.data
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import uni.zf.xinpian.data.dao.CategoryDao
 import uni.zf.xinpian.data.dao.DownloadDao
 import uni.zf.xinpian.data.dao.SearchHistoryDao
 import uni.zf.xinpian.data.dao.VideoDao
 import uni.zf.xinpian.data.dao.WatchRecordDao
-import uni.zf.xinpian.data.model.Category
 import uni.zf.xinpian.data.model.DownloadItem
 import uni.zf.xinpian.data.model.DownloadVideo
 import uni.zf.xinpian.data.model.SearchHistory
@@ -18,7 +16,7 @@ import uni.zf.xinpian.data.model.WatchRecord
 
 @Database(
     entities = [Video::class, Vod::class, WatchRecord::class, SearchHistory::class, DownloadVideo::class,
-        DownloadItem::class, Category::class],
+        DownloadItem::class],
     version = 2,
     exportSchema = false
 )
@@ -32,7 +30,4 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun downloadDao(): DownloadDao
 
     abstract fun videoDao(): VideoDao
-
-    abstract fun categoryDao(): CategoryDao
-
 }

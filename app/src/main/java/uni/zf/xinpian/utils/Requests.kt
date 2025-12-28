@@ -1,11 +1,9 @@
 package uni.zf.xinpian.utils
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -40,24 +38,16 @@ private suspend fun repeatRequest(urls: List<String>, headers: Map<String, Strin
 }
 
 private suspend fun request(url: String, headers: Map<String, String>): String {
-    (0 until 3).forEach { _ ->
-        try {
-            val request = Request.Builder()
-                .url(url)
-                .apply { headers.forEach { (k, v) -> addHeader(k, v) } }
-                .build()
-            val result = withContext(Dispatchers.IO) {
-                client.newCall(request).execute().use {
-                    if (it.isSuccessful) {
-                        val data = it.body.string()
-                        if (data.isNotBlank() && !data.contains("异常请求")) return@withContext data
-                    }
-                }
-                ""
+    for (i in 0 until 3) {
+        val requestBuilder = Request.Builder()
+            .url(url)
+            .apply { headers.forEach { (k, v) -> addHeader(k, v) } }
+
+        val response = executeRequest(requestBuilder.build())
+        if (response?.code == 200) {
+            response.body.string().let {
+                if (it.isNotBlank() && !it.contains("异常请求")) return it
             }
-            if (result.isNotEmpty()) return result
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
         delay(1000)
     }
@@ -69,11 +59,11 @@ private suspend fun executeRequest(request: Request): Response? = coroutineScope
     suspendCancellableCoroutine {
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                it.resume(response) { }
+                it.resume(response) { _, _, _ -> }
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                it.resume(null) { }
+                it.resume(null) { _, _, _ -> }
             }
         })
     }

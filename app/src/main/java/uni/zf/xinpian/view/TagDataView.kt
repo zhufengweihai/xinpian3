@@ -10,8 +10,9 @@ import com.bumptech.glide.Glide
 import uni.zf.xinpian.category.VideoListAdapter
 import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.databinding.ViewTagDataBinding
-import uni.zf.xinpian.objectbox.model.DyTag
-import uni.zf.xinpian.objectbox.model.TagData
+import uni.zf.xinpian.json.model.DyTagList
+import uni.zf.xinpian.json.model.DyTag
+import uni.zf.xinpian.json.model.TagData
 
 class TagDataView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     ConstraintLayout(context, attrs, defStyleAttr) {
@@ -22,20 +23,20 @@ class TagDataView(context: Context, attrs: AttributeSet? = null, defStyleAttr: I
     private val binding = ViewTagDataBinding.inflate(LayoutInflater.from(context), this)
     private val imagDomain = AppData.getInstance(context).imgDomain()
 
-    fun setTagData(tagData: DyTag) {
-        binding.tagTextView.text = tagData.name
-        if (tagData.cover.isNotEmpty()) {
-            Glide.with(this).load(imagDomain + tagData.cover).into(binding.coverView)
+    fun setTagData(dyTag: DyTag) {
+        binding.tagTextView.text = dyTag.name
+        if (dyTag.cover.isNotEmpty()) {
+            Glide.with(this).load(imagDomain + dyTag.cover).into(binding.coverView)
             binding.coverView.visibility = VISIBLE
         } else {
             binding.coverView.visibility = GONE
         }
 
-        setupVideoListView(tagData.dataList)
+        setupVideoListView(dyTag.dataList)
     }
 
-    private fun setupVideoListView( videoList: List<TagData>) {
-        val adapter = VideoListAdapter(videoList)
+    private fun setupVideoListView(tagDataList: List<TagData>) {
+        val adapter = VideoListAdapter(tagDataList)
         binding.videoListView.layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
         binding.videoListView.adapter = adapter
         binding.videoListView.addItemDecoration(SpaceItemDecoration(context))

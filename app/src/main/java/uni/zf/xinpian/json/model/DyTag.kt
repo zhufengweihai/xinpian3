@@ -1,13 +1,30 @@
 package uni.zf.xinpian.json.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DyTag (
+data class DyTag(
     val name: String = "",
-    @SerializedName("category_id") val categoryId: Int = 0,
+    @SerialName("category_id") val categoryId: Int = 0,
     val cover: String = "",
-    @SerializedName("cover_jump_address") val coverJumpAddress: String = "",
-    val dataList : List<TagData> = listOf()
+    @SerialName("cover_jump_address") val coverVideoId: String = "",
+    val id: Int = 0,
+    @SerialName("data") val dataList: List<TagData> = listOf()
+)
+
+@Serializable
+data class TagData(
+    val id: Long = 0,
+    val title: String = "",
+    val score: String = "",
+    val finished: Int = 0,
+    val definition: Int = 0,
+    val path: String = "",
+    val mask: String = ""
+)
+
+@Serializable
+data class DyTagList(
+    val list: List<DyTag> = emptyList()
 )
