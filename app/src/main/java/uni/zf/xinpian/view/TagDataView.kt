@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide
 import uni.zf.xinpian.category.VideoListAdapter
 import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.databinding.ViewTagDataBinding
-import uni.zf.xinpian.json.model.DyTagList
 import uni.zf.xinpian.json.model.DyTag
 import uni.zf.xinpian.json.model.TagData
 

@@ -1,5 +1,6 @@
 package uni.zf.xinpian.category
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,13 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import uni.zf.xinpian.R
 import uni.zf.xinpian.json.model.CustomTag
 
-class TagAdapter(private val videoList: List<CustomTag>) : Adapter<TagAdapter.ViewHolder>() {
+class CustomTagAdapter(private var tagList: List<CustomTag> = listOf()) : Adapter<CustomTagAdapter.ViewHolder>() {
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateCustomTagList(tagList: List<CustomTag>) {
+        this.tagList = tagList
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -17,10 +24,10 @@ class TagAdapter(private val videoList: List<CustomTag>) : Adapter<TagAdapter.Vi
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(videoList[position])
+        holder.bind(tagList[position])
     }
 
-    override fun getItemCount() = videoList.size
+    override fun getItemCount() = tagList.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textView: TextView = itemView as TextView

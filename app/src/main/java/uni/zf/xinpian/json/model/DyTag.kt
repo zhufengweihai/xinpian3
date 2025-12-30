@@ -1,8 +1,12 @@
 package uni.zf.xinpian.json.model
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 
+@OptIn(ExperimentalSerializationApi::class)
+@JsonIgnoreUnknownKeys
 @Serializable
 data class DyTag(
     val name: String = "",
@@ -10,12 +14,14 @@ data class DyTag(
     val cover: String = "",
     @SerialName("cover_jump_address") val coverVideoId: String = "",
     val id: Int = 0,
-    @SerialName("data") val dataList: List<TagData> = listOf()
+    val dataList: List<TagData> = listOf()
 )
 
+@OptIn(ExperimentalSerializationApi::class)
+@JsonIgnoreUnknownKeys
 @Serializable
 data class TagData(
-    val id: Long = 0,
+    val id: Int = 0,
     val title: String = "",
     val score: String = "",
     val finished: Int = 0,

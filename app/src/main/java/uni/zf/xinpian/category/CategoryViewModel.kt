@@ -75,7 +75,7 @@ class CategoryViewModel(app: Application, ssh: SavedStateHandle) : AndroidViewMo
     fun requestDyTag() {
         viewModelScope.launch {
             try {
-                val json = OkHttpUtil.get(dyTagURL.format(app), createHeaders(app))
+                val json = OkHttpUtil.get(dyTagURL.format(categoryId), createHeaders(app))
                 if (json.isEmpty()) return@launch
                 val fullJsonObject = Json.parseToJsonElement(json).jsonObject
                 val dataArray = fullJsonObject["data"]?.jsonArray
