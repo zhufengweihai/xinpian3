@@ -2,10 +2,10 @@ package uni.zf.xinpian.utils
 
 import android.content.Context
 import uni.zf.xinpian.common.AppData
-import uni.zf.xinpian.data.AppConst.defaultSecret
+import uni.zf.xinpian.data.AppConst.DEFAULT_SECRET
 import uni.zf.xinpian.data.AppConst.host
-import uni.zf.xinpian.data.AppConst.packageName
-import uni.zf.xinpian.data.AppConst.version
+import uni.zf.xinpian.data.AppConst.PACKAGE_NAME
+import uni.zf.xinpian.data.AppConst.VERSION
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
@@ -26,14 +26,14 @@ fun createHeaders(context: Context): Map<String, String> {
         "timestamp" to timestamp,
         "signature" to signature,
         "User-Agent" to AppData.getInstance(context).userAgent,
-        "version" to version,
-        "X-Requested-With" to packageName,
+        "version" to VERSION,
+        "X-Requested-With" to PACKAGE_NAME,
         "Connection" to "keep-alive"
     )
 }
 
-fun generateSignature(timestamp: String, secret: String = defaultSecret): String {
-    return calcMD5("$version$timestamp$secret")
+fun generateSignature(timestamp: String, secret: String = DEFAULT_SECRET): String {
+    return calcMD5("$VERSION$timestamp$secret")
 }
 
 fun calcMD5(input: String?, toUpperCase: Boolean = false): String {

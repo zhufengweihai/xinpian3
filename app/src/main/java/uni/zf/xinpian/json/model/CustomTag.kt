@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CustomTag (
-    val categoryId: String = "",
     val title: String = "",
     @SerialName("jump_address") val jumpAddress: String = ""
 )

@@ -40,6 +40,6 @@ class HomeFragment : Fragment() {
     private fun createSectionsAdapter(categoryList: List<Category>) = object : FragmentStateAdapter(this) {
         override fun getItemCount() = categoryList.size
 
-        override fun createFragment(position: Int): Fragment = newCategoryFragment(categoryList[position])
+        override fun createFragment(position: Int): Fragment = newCategoryFragment(categoryList[position].id)
     }
 }

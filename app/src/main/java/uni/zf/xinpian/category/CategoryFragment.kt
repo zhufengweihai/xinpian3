@@ -10,20 +10,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
-import uni.zf.xinpian.json.model.Category
+import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
 import uni.zf.xinpian.json.model.CustomTag
 import uni.zf.xinpian.series.SeriesItemDecoration
 import uni.zf.xinpian.view.TagDataView
 
-const val arg_category = "category"
-
-fun newCategoryFragment(category: Category) = CategoryFragment().apply {
-    arguments = Bundle().apply { putParcelable(arg_category, category) }
+fun newCategoryFragment(categoryId: Int) = CategoryFragment().apply {
+    arguments = Bundle().apply { putInt(ARG_CATEGORY, categoryId) }
 }
 
 class CategoryFragment() : Fragment() {
-    private val category: Category? by lazy { arguments?.getParcelable(arg_category) }
     private val viewModel: CategoryViewModel by viewModels()
 
     private lateinit var binding: FragmentCategoryBinding
@@ -43,10 +40,9 @@ class CategoryFragment() : Fragment() {
     }
 
     private fun loadData() {
-        if (category == null) return
         viewModel.requestSlideData()
-        //viewModel.requestCustomTags()
-        //viewModel.requestDyTag()
+        viewModel.requestCustomTags()
+        viewModel.requestDyTag()
         lifecycleScope.launch {
             viewModel.getSlideList().collect {
                 binding.slideView.setVideoList(it.data, true)

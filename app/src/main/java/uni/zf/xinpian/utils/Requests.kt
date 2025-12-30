@@ -43,10 +43,11 @@ private suspend fun request(url: String, headers: Map<String, String>): String {
             .url(url)
             .apply { headers.forEach { (k, v) -> addHeader(k, v) } }
 
-        val response = executeRequest(requestBuilder.build())
-        if (response?.code == 200) {
-            response.body.string().let {
-                if (it.isNotBlank() && !it.contains("异常请求")) return it
+        executeRequest(requestBuilder.build()).use {
+            if (it?.isSuccessful ?: false) {
+                it.body.string().let {
+                    if (it.isNotBlank() && !it.contains("异常请求")) return it
+                }
             }
         }
         delay(1000)

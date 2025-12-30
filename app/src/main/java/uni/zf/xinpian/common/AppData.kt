@@ -5,32 +5,32 @@ import android.content.Context
 import android.webkit.WebSettings
 import androidx.core.content.edit
 import androidx.startup.Initializer
-import uni.zf.xinpian.data.AppConst.defaultImgDomains
-import uni.zf.xinpian.data.AppConst.defaultSecret
-import uni.zf.xinpian.data.AppConst.keyImgDomains
-import uni.zf.xinpian.data.AppConst.keySecret
-import uni.zf.xinpian.data.AppConst.networkMobile
-import uni.zf.xinpian.data.AppConst.networkWifi
-import uni.zf.xinpian.data.AppConst.userAgentSuffix
+import uni.zf.xinpian.data.AppConst.DEFAULT_IMG_DOMAINS
+import uni.zf.xinpian.data.AppConst.DEFAULT_SECRET
+import uni.zf.xinpian.data.AppConst.KEY_IMG_DOMAINS
+import uni.zf.xinpian.data.AppConst.KEY_SECRET
+import uni.zf.xinpian.data.AppConst.NETWORK_MOBILE
+import uni.zf.xinpian.data.AppConst.NETWORK_WIFI
+import uni.zf.xinpian.data.AppConst.USER_AGENT_SUFFIX
 import uni.zf.xinpian.utils.NetworkTypeUtils
 import uni.zf.xinpian.utils.prefs
 
 class AppData private constructor(val context: Context) {
     val userAgent = initUserAgent()
-    var secret = context.prefs.getString(keySecret, defaultSecret)!!
+    var secret = context.prefs.getString(KEY_SECRET, DEFAULT_SECRET)!!
         set(value) {
-            context.prefs.edit { putString(keySecret, value) }
+            context.prefs.edit { putString(KEY_SECRET, value) }
         }
-    var imgDomains = context.prefs.getString(keyImgDomains, defaultImgDomains)!!.split(",")
+    var imgDomains = context.prefs.getString(KEY_IMG_DOMAINS, DEFAULT_IMG_DOMAINS)!!.split(",")
         set(value) {
-            context.prefs.edit { putString(keyImgDomains, value.joinToString(",")) }
+            context.prefs.edit { putString(KEY_IMG_DOMAINS, value.joinToString(",")) }
         }
 
     fun imgDomain() = "https://" + imgDomains.random()
 
     private fun initUserAgent(): String {
-        val networkType = if (NetworkTypeUtils.isWifiConnected(context)) networkWifi else networkMobile
-        return WebSettings.getDefaultUserAgent(context) + userAgentSuffix.format(networkType)
+        val networkType = if (NetworkTypeUtils.isWifiConnected(context)) NETWORK_WIFI else NETWORK_MOBILE
+        return WebSettings.getDefaultUserAgent(context) + USER_AGENT_SUFFIX.format(networkType)
     }
 
     companion object {
