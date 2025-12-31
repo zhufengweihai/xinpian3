@@ -235,6 +235,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Epi
     }
 
     private fun loadData() {
+        viewModel.requestVideoData()
         lifecycleScope.launch {
             viewModel.getVideoData().collect {
                 play(it)

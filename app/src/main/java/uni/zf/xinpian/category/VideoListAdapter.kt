@@ -15,6 +15,7 @@ import uni.zf.xinpian.data.AppConst
 import uni.zf.xinpian.data.AppConst.KEY_VIDEO_ID
 import uni.zf.xinpian.json.model.TagData
 import uni.zf.xinpian.play.PlayActivity
+import uni.zf.xinpian.utils.ImageLoadUtil
 
 class VideoListAdapter(private val tagDataList: List<TagData> = listOf()) : Adapter<VideoListAdapter.ViewHolder>() {
 
@@ -45,13 +46,12 @@ class VideoListAdapter(private val tagDataList: List<TagData> = listOf()) : Adap
         private val labelView: TextView = itemView.findViewById(R.id.label_view)
         private val statusView: TextView = itemView.findViewById(R.id.status_view)
         private val nameView: TextView = itemView.findViewById(R.id.name_view)
-        private val imagDomain = AppConst.imgDomainUrl
         init {
             itemView.clipToOutline = true
         }
 
         fun bind(tagData: TagData) {
-            Glide.with(imageView).load(imagDomain + tagData.path).into(imageView)
+            ImageLoadUtil.loadImagesWithDomain(imageView,tagData.path)
             scoreView.text = tagData.score
             statusView.text = tagData.mask
             nameView.text = tagData.title

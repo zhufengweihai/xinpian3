@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
-import com.bumptech.glide.Glide
 import uni.zf.xinpian.category.VideoListAdapter
-import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.databinding.ViewTagDataBinding
 import uni.zf.xinpian.json.model.DyTag
 import uni.zf.xinpian.json.model.TagData
+import uni.zf.xinpian.utils.ImageLoadUtil
 
 class TagDataView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     ConstraintLayout(context, attrs, defStyleAttr) {
@@ -20,12 +19,11 @@ class TagDataView(context: Context, attrs: AttributeSet? = null, defStyleAttr: I
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     private val binding = ViewTagDataBinding.inflate(LayoutInflater.from(context), this)
-    private val imagDomain = AppData.getInstance(context).imgDomain()
 
     fun setTagData(dyTag: DyTag) {
         binding.tagTextView.text = dyTag.name
         if (dyTag.cover.isNotEmpty()) {
-            Glide.with(this).load(imagDomain + dyTag.cover).into(binding.coverView)
+            ImageLoadUtil.loadImagesWithDomain(binding.coverView,dyTag.cover)
             binding.coverView.visibility = VISIBLE
         } else {
             binding.coverView.visibility = GONE
