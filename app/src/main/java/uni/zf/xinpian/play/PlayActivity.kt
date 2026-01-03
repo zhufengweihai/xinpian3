@@ -36,22 +36,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
-import uni.zf.xinpian.category.VideoListAdapter
 import uni.zf.xinpian.databinding.ActivityPlayBinding
-import uni.zf.xinpian.download.DownloadTracker
 import uni.zf.xinpian.json.model.VideoData
 import uni.zf.xinpian.player.EpisodeChangeListener
 import uni.zf.xinpian.player.GestureControl
 import uni.zf.xinpian.player.GestureListener
 import uni.zf.xinpian.player.parser.MyMediaSourceFactory
 import uni.zf.xinpian.utils.TimeUtils.formatMs
+import uni.zf.xinpian.view.GridItemDecoration
 import uni.zf.xinpian.view.SpaceItemDecoration
 
 private val STEPS = intArrayOf(-600000, -60000, -10000, 10000, 60000, 600000)
 private const val VOLUME_ADJUSTMENT_FACTOR = 200
 
 @OptIn(UnstableApi::class)
-open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, EpisodeChangeListener {
+open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, SourceChangeListener,
+    EpisodeChangeListener {
     private val binding by lazy { ActivityPlayBinding.inflate(layoutInflater) }
     private lateinit var titleView: TextView
     private var player: ExoPlayer? = null
@@ -82,11 +82,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Epi
     private fun onBackPressedDispatcher() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (isFullScreen) {
-                    videoData?.let { toggleFullScreen()}
-                } else {
-                    finish()
-                }
+                if (isFullScreen) videoData?.let { toggleFullScreen() } else finish()
             }
         })
     }
@@ -122,9 +118,9 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Epi
     }
 
     private fun createPlayer(): ExoPlayer {
-        factory = MyMediaSourceFactory(DownloadTracker.dataSourceFactory)
+        //factory = MyMediaSourceFactory(DownloadTracker.dataSourceFactory)
         return ExoPlayer.Builder(this)
-            .setMediaSourceFactory(factory!!)
+            //.setMediaSourceFactory(DefaultMediaSourceFactory(MultiDataSourceFactory( this)))
             .setLoadControl(defaultLoadControl())
             .build().apply {
                 addListener(PlayerEventListener())
@@ -147,8 +143,10 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Epi
         binding.playerView.findViewById<View>(R.id.fullscreen).setOnClickListener { toggleFullScreen() }
         initLockView()
         initFastStepsView()
+        binding.ivIntroduction.setOnClickListener { videoData?.let { showDetailsDialog(it,this) } }
         initSourceListView()
         initPlayListView()
+        initRecommendListView()
     }
 
     private fun initBackView() {
@@ -216,18 +214,20 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Epi
         binding.rvSources.adapter = SourceListAdapter(this)
         binding.rvSources.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
         binding.rvSources.addItemDecoration(SpaceItemDecoration(this))
+        binding.ivSources.setOnClickListener { videoData?.let { showSourceListDialog(it, this) } }
     }
 
     private fun initPlayListView() {
         binding.rvItems.adapter = PlayListAdapter(this)
         binding.rvItems.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
         binding.rvItems.addItemDecoration(SpaceItemDecoration(this))
+        binding.ivItemsMore.setOnClickListener { videoData?.let { showPlayListDialog(it, this) } }
     }
 
     private fun initRecommendListView() {
-        binding.rvRecommend.adapter = VideoListAdapter()
+        binding.rvRecommend.adapter = RelatedVideoAdapter()
         binding.rvRecommend.layoutManager = GridLayoutManager(this, 3)
-        binding.rvRecommend.addItemDecoration(SpaceItemDecoration(this))
+        binding.rvRecommend.addItemDecoration(GridItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
     }
 
     private fun setupClickListener(button: TextView, step: Int) {
@@ -238,25 +238,44 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Epi
         viewModel.requestVideoData()
         lifecycleScope.launch {
             viewModel.getVideoData().collect {
+                videoData = it
                 play(it)
+                updateUI(it)
+                loadRelatedVideos(it)
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.getRelatedVideos().collect {
+                val adapter = binding.rvRecommend.adapter as RelatedVideoAdapter
+                adapter.updateRelatedVideos(it)
             }
         }
     }
 
+    private fun loadRelatedVideos(video: VideoData) {
+        if (video.doubanId == 0) {
+            viewModel.requestDoubanRecommend(video.doubanId)
+        } else if (video.id > 0) {
+            viewModel.requestRecommend()
+        }
+    }
+
     private fun play(video: VideoData) {
-        val mediaItems = buildMediaItems(video)
-        if (mediaItems.isEmpty()) return
-        val index = player!!.currentMediaItemIndex
-        val startIndex = if (index < mediaItems.size) index else 0
-        player!!.setMediaItems(mediaItems, startIndex, player!!.currentPosition)
-        player!!.prepare()
+        player?.let {
+            val mediaItems = buildMediaItems(video)
+            if (mediaItems.isEmpty()) return
+            val index = it.currentMediaItemIndex
+            val startIndex = if (index < mediaItems.size) index else 0
+            it.setMediaItems(mediaItems, startIndex, it.currentPosition)
+            it.prepare()
+        }
     }
 
     private fun buildMediaItems(video: VideoData): List<MediaItem> {
-        return video.sourceList[currentSource].playList.map {
+        return video.sourceGroups.elementAtOrNull(currentSource)?.playList?.map {
             val metadata = MediaMetadata.Builder().setTitle(it.sourceName).build()
             MediaItem.Builder().setUri(it.url).setMediaMetadata(metadata).build()
-        }
+        } ?: listOf()
     }
 
     private fun updateUI(video: VideoData) {
@@ -264,10 +283,19 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Epi
         binding.tvScore.text = "豆瓣评分：%s".format(video.score)
         binding.tvTypes.text = video.typesString()
         val sourceListAdapter = binding.rvSources.adapter as SourceListAdapter
-        sourceListAdapter.updateSources(video.sourceList, currentSource)
+        sourceListAdapter.updateSources(video.sourceGroups, currentSource)
         binding.tvMask.text = video.mask
         val playListAdapter = binding.rvItems.adapter as PlayListAdapter
-        playListAdapter.updateItems(video.sourceList[currentSource].playList)
+        if (video.sourceGroups.isNotEmpty()) {
+            playListAdapter.updateItems(video.sourceGroups[currentSource].playList)
+        }
+    }
+
+    override fun onSource(sourceIndex: Int) {
+        videoData?.let {
+            currentSource = sourceIndex
+            play(it)
+        }
     }
 
     override fun onEpisode(itemIndex: Int) {

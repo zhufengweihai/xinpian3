@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -7,257 +7,271 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:keepScreenOn="true"
+    android:orientation="vertical"
     tools:context=".player.PlayerActivity">
 
-    <androidx.media3.ui.PlayerView
-        android:id="@+id/player_view"
-        android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:background="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/player_layout"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
 
-    <TextView
-        android:id="@+id/position_view"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center"
-        android:background="@drawable/item_corners_10_background_80000000"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/player_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/player_view"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/volume_layout"
-        layout="@layout/item_volume_layout"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center"
-        android:background="@drawable/item_corners_10_background_80000000"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/player_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/position_view"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:background="@drawable/item_corners_10_background_80000000"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/player_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/lightness_layout"
-        layout="@layout/item_lightness_layout"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center"
-        android:background="@drawable/item_corners_10_background_80000000"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/player_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <include
+            android:id="@+id/volume_layout"
+            layout="@layout/item_volume_layout"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:background="@drawable/item_corners_10_background_80000000"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/player_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/loading_view"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:indeterminateTint="@color/white"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/player_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <include
+            android:id="@+id/lightness_layout"
+            layout="@layout/item_lightness_layout"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:background="@drawable/item_corners_10_background_80000000"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/player_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/lock_view"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_gravity="start|center_vertical"
-        android:layout_marginStart="30dp"
-        android:src="@drawable/icon_unlock"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/player_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ProgressBar
+            android:id="@+id/loading_view"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/player_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/fast_steps"
-        layout="@layout/layout_fast_steps"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_margin="@dimen/default_space"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/player_view" />
+        <ImageView
+            android:id="@+id/lock_view"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/icon_unlock"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/player_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/name_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp"
-        android:gravity="start|center_vertical"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fast_steps" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_introduction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="10dp"
-        android:gravity="start|center_vertical"
-        android:text="@string/introduction"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/name_view"
-        app:layout_constraintEnd_toStartOf="@id/iv_introduction"
-        app:layout_constraintTop_toTopOf="@id/name_view" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/iv_introduction"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginEnd="10dp"
-        android:src="@drawable/icon_next"
-        app:layout_constraintBottom_toBottomOf="@id/name_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/name_view"
-        app:tint="@color/main" />
+            <include
+                android:id="@+id/fast_steps"
+                layout="@layout/layout_fast_steps"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_margin="@dimen/default_space"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:gravity="start|center_vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/name_view" />
+            <TextView
+                android:id="@+id/name_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:gravity="start|center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fast_steps" />
 
-    <TextView
-        android:id="@+id/tv_types"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:gravity="start|center_vertical"
-        app:layout_constraintBottom_toBottomOf="@id/tv_score"
-        app:layout_constraintStart_toEndOf="@id/tv_score"
-        app:layout_constraintTop_toTopOf="@id/tv_score" />
+            <TextView
+                android:id="@+id/tv_introduction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start|center_vertical"
+                android:text="@string/introduction"
+                android:textColor="@color/main"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/name_view"
+                app:layout_constraintEnd_toStartOf="@id/iv_introduction"
+                app:layout_constraintTop_toTopOf="@id/name_view" />
 
-    <TextView
-        android:id="@+id/tv_sources"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp"
-        android:gravity="start|center_vertical"
-        android:text="片源"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_score" />
+            <ImageView
+                android:id="@+id/iv_introduction"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/icon_next"
+                app:layout_constraintBottom_toBottomOf="@id/name_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/name_view"
+                app:tint="@color/main" />
 
-    <ImageView
-        android:id="@+id/iv_sources"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginEnd="10dp"
-        android:src="@drawable/icon_next"
-        app:layout_constraintBottom_toBottomOf="@id/tv_sources"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_sources"
-        app:tint="@color/main" />
+            <TextView
+                android:id="@+id/tv_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:gravity="start|center_vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/name_view" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_sources"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_sources" />
+            <TextView
+                android:id="@+id/tv_types"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="start|center_vertical"
+                app:layout_constraintBottom_toBottomOf="@id/tv_score"
+                app:layout_constraintStart_toEndOf="@id/tv_score"
+                app:layout_constraintTop_toTopOf="@id/tv_score" />
 
-    <TextView
-        android:id="@+id/tv_items"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp"
-        android:gravity="start|center_vertical"
-        android:text="选集"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_sources" />
+            <TextView
+                android:id="@+id/tv_sources"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:gravity="start|center_vertical"
+                android:text="片源"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_score" />
 
-    <TextView
-        android:id="@+id/tv_mask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:gravity="start|center_vertical"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_items"
-        app:layout_constraintEnd_toStartOf="@id/iv_items_more"
-        app:layout_constraintTop_toTopOf="@id/tv_items" />
+            <ImageView
+                android:id="@+id/iv_sources"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/icon_next"
+                app:layout_constraintBottom_toBottomOf="@id/tv_sources"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_sources"
+                app:tint="@color/main" />
 
-    <ImageView
-        android:id="@+id/iv_items_more"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginEnd="10dp"
-        android:src="@drawable/icon_next"
-        app:layout_constraintBottom_toBottomOf="@id/tv_items"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_mask"
-        app:layout_constraintTop_toTopOf="@id/tv_items"
-        app:tint="@color/main" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_sources"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_sources" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_items"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_items" />
+            <TextView
+                android:id="@+id/tv_items"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:gravity="start|center_vertical"
+                android:text="选集"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_sources" />
 
-    <TextView
-        android:id="@+id/tv_recommend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp"
-        android:gravity="start|center_vertical"
-        android:text="猜你喜欢"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_items" />
+            <TextView
+                android:id="@+id/tv_mask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:gravity="start|center_vertical"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_items"
+                app:layout_constraintEnd_toStartOf="@id/iv_items_more"
+                app:layout_constraintTop_toTopOf="@id/tv_items" />
 
-    <ImageView
-        android:id="@+id/iv_recommend"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginEnd="10dp"
-        android:src="@drawable/icon_next"
-        app:layout_constraintBottom_toBottomOf="@id/tv_recommend"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_recommend"
-        app:tint="@color/main" />
+            <ImageView
+                android:id="@+id/iv_items_more"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/icon_next"
+                app:layout_constraintBottom_toBottomOf="@id/tv_items"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_items"
+                app:tint="@color/main" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_recommend"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_recommend" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_items"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_items" />
+
+            <TextView
+                android:id="@+id/tv_recommend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:gravity="start|center_vertical"
+                android:text="猜你喜欢"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_items" />
+
+            <ImageView
+                android:id="@+id/iv_recommend"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/icon_next"
+                app:layout_constraintBottom_toBottomOf="@id/tv_recommend"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_recommend"
+                app:tint="@color/main" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_recommend"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_recommend" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

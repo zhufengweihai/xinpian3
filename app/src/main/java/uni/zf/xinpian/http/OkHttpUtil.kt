@@ -28,7 +28,7 @@ object OkHttpUtil {
      * @return 响应体字符串
      * @throws IOException 所有重试失败后抛出异常（可在调用处统一捕获）
      */
-    suspend fun get(url: String, headers: Map<String, String> = defaultHeaders): String = request {
+    suspend fun get(url: String, headers: Map<String, String> = defaultHeaders) = request {
         Request.Builder()
             .url(url)
             .get()

@@ -8,11 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uni.zf.xinpian.R
 import uni.zf.xinpian.json.model.SourceGroup
-import uni.zf.xinpian.player.EpisodeChangeListener
 
 @SuppressLint("NotifyDataSetChanged")
 open class SourceListAdapter(
-    private val listener: EpisodeChangeListener,
+    private val listener: SourceChangeListener,
     private var sources: List<SourceGroup> = emptyList(),
     private var currentSource: Int = 0,
 ) : RecyclerView.Adapter<SourceListAdapter.ViewHolder>() {
@@ -42,7 +41,7 @@ open class SourceListAdapter(
         val position = holder.bindingAdapterPosition
         if (position == currentSource) return
         currentSource = position
-        listener.onEpisode(currentSource)
+        listener.onSource(currentSource)
         notifyDataSetChanged()
     }
 

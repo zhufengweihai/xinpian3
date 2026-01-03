@@ -39,9 +39,7 @@ class SlideView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int
     private fun setupViewPager(videoList: List<SlideData>) {
         binding.viewPager.adapter = SlideImageAdapter(videoList)
         binding.viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                updateCurrentView(position, videoList)
-            }
+            override fun onPageSelected(position: Int) = updateCurrentView(position, videoList)
         })
     }
 

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="500dp">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/icon_back"
+        app:layout_constraintBottom_toBottomOf="@id/tv_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_name" />
+
+    <TextView
+        android:id="@+id/tv_score_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="start|center_vertical"
+        android:text="评分："
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/tv_score"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_score_label"
+        app:layout_constraintEnd_toStartOf="@id/tv_actor_label"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/tv_score_label"
+        app:layout_constraintTop_toTopOf="@id/tv_score_label" />
+
+    <TextView
+        android:id="@+id/tv_actor_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="start|center_vertical"
+        android:text="主演："
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_score"
+        app:layout_constraintEnd_toStartOf="@id/tv_actor"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/tv_score"
+        app:layout_constraintTop_toTopOf="@id/tv_score" />
+
+    <TextView
+        android:id="@+id/tv_actor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:maxLines="2"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_actor_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/tv_actor_label"
+        app:layout_constraintTop_toTopOf="@id/tv_actor_label" />
+
+    <TextView
+        android:id="@+id/tv_type_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="start|center_vertical"
+        android:text="分类："
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/tv_type"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_score_label" />
+
+    <TextView
+        android:id="@+id/tv_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:maxLines="2"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_type_label"
+        app:layout_constraintEnd_toStartOf="@id/tv_category_label"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/tv_type_label"
+        app:layout_constraintTop_toTopOf="@id/tv_type_label" />
+
+    <TextView
+        android:id="@+id/tv_category_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="start|center_vertical"
+        android:text="类型："
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_type"
+        app:layout_constraintEnd_toStartOf="@id/tv_category"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/tv_type"
+        app:layout_constraintTop_toTopOf="@id/tv_type" />
+
+    <TextView
+        android:id="@+id/tv_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:maxLines="2"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_category_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/tv_category_label"
+        app:layout_constraintTop_toTopOf="@id/tv_category_label" />
+
+    <TextView
+        android:id="@+id/tv_director_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="start|center_vertical"
+        android:text="导演："
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/tv_director"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_type_label" />
+
+    <TextView
+        android:id="@+id/tv_director"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:maxLines="2"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_director_label"
+        app:layout_constraintEnd_toStartOf="@id/tv_area_label"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/tv_director_label"
+        app:layout_constraintTop_toTopOf="@id/tv_director_label" />
+
+    <TextView
+        android:id="@+id/tv_area_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="start|center_vertical"
+        android:text="地区："
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_director"
+        app:layout_constraintEnd_toStartOf="@id/tv_area"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/tv_director"
+        app:layout_constraintTop_toTopOf="@id/tv_director" />
+
+    <TextView
+        android:id="@+id/tv_area"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:maxLines="2"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_area_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/tv_area_label"
+        app:layout_constraintTop_toTopOf="@id/tv_area_label" />
+
+    <TextView
+        android:id="@+id/tv_year_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="start|center_vertical"
+        android:text="年代："
+        android:textSize="16sp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_director_label" />
+
+    <TextView
+        android:id="@+id/tv_year"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:maxLines="2"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_year_label"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/tv_year_label"
+        app:layout_constraintTop_toTopOf="@id/tv_year_label" />
+
+    <TextView
+        android:id="@+id/tv_description_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="start|center_vertical"
+        android:text="简介："
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_year_label" />
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:maxLines="10"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_description_label" />
+</androidx.constraintlayout.widget.ConstraintLayout>

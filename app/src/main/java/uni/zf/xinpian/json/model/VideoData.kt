@@ -39,10 +39,15 @@ data class VideoData(
     val area: String = "",
     val category: List<CategoryItem> = listOf(),
     val topCategory: CategoryItem = CategoryItem(0, ""),
-    @SerialName("source_list_source") val sourceList: List<SourceGroup> = listOf(),
+    @SerialName("source_list_source") val sourceGroups: List<SourceGroup> = listOf(),
     val cateId: Int = 0,
     val mask: String = "",
     val haveCollected: Boolean = false
 ){
     fun typesString() = types.joinToString(separator = "/") { it.name }
+    fun actorsString() = actors.joinToString(separator = "/") { it.name }
+
+    fun categoryString() = category.joinToString(separator = "/") { it.title }
+
+    fun directorsString() = directors.joinToString(separator = "/") { it.name }
 }
