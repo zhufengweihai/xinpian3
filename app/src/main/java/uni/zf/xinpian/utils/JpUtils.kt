@@ -32,6 +32,20 @@ fun createHeaders(context: Context): Map<String, String> {
     )
 }
 
+fun createHeaders(secret: String, userAgent: String): Map<String, String> {
+    val timestamp = (System.currentTimeMillis() / 1000).toString()
+    val signature = generateSignature(timestamp, secret)
+    return mapOf(
+        "Host" to host,
+        "timestamp" to timestamp,
+        "signature" to signature,
+        "User-Agent" to userAgent,
+        "version" to VERSION,
+        "X-Requested-With" to PACKAGE_NAME,
+        "Connection" to "keep-alive"
+    )
+}
+
 fun generateSignature(timestamp: String, secret: String = DEFAULT_SECRET): String {
     return calcMD5("$VERSION$timestamp$secret")
 }

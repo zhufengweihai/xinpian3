@@ -25,5 +25,6 @@ object AppConst{
     val appAuthUrl = "https://${jpUrlPrefix}.zxbwv.com/api/appAuthConfig"
     val videoUrl = "https://${jpUrlPrefix}.zxbwv.com/api/video/detailv2?id=%d"
     val recoUrl = "https://${jpUrlPrefix}.zxbwv.com/api/video/guessRecommend?id=%s&page=1"
+    val shortUrl = "https://${jpUrlPrefix}.zxfmj.com/api/play?count=10&type=1&page=%d&order=2&token=&init=0"
 }
 
