@@ -15,7 +15,7 @@ class ShortVideoPagingSource(private val secret: String, private val userAgent: 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ShortVideo> {
         val pageNumber = params.key ?: 0
         try {
-            val json = OkHttpUtil.get(shortUrl.format(pageNumber + 1), createHeaders(secret, userAgent))
+            val json = OkHttpUtil.get(shortUrl.format(pageNumber + 1))
             if (json.isEmpty()) return LoadResult.Page(listOf(), null, null)
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
             val dataArray = fullJsonObject["data"]?.jsonArray
