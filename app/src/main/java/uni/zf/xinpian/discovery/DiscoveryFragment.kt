@@ -14,11 +14,7 @@ class DiscoveryFragment : Fragment() {
     private var _binding: FragmentDiscoveryBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDiscoveryBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -46,10 +42,6 @@ class DiscoveryFragment : Fragment() {
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.text = tabs[position]
         }.attach()
-        
-        // Default to "Ranking" based on the first image if needed, 
-        // but usually we start from the first one. 
-        // Image 1 shows "排行榜" selected, Image 2 "专题", Image 3 "上映表".
     }
 
     override fun onDestroyView() {

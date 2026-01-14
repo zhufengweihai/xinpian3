@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.FragmentShortVideoBinding
 import uni.zf.xinpian.player.PlayerFactory
 
@@ -80,6 +81,7 @@ class ShortVideoFragment : Fragment() {
             }
             player.seekTo(position, 0)
             viewHolder.playerView.showController()
+            viewHolder.playerView.findViewById<View>(R.id.play_pause).visibility  = View.INVISIBLE
             player.prepare()
             player.play()
             currentPlayingPosition = position

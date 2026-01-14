@@ -8,7 +8,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import kotlinx.coroutines.flow.Flow
-import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.json.model.ShortVideo
 
 class ShortVideoViewModel(app: Application) : AndroidViewModel(app) {
@@ -22,8 +21,6 @@ class ShortVideoViewModel(app: Application) : AndroidViewModel(app) {
         ),
     ) {
         ShortVideoPagingSource(
-            AppData.getInstance(app).secret,
-            AppData.getInstance(app).userAgent
         )
     }.flow.cachedIn(viewModelScope)
 }
