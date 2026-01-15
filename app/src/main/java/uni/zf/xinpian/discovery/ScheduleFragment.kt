@@ -7,7 +7,24 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import uni.zf.xinpian.databinding.FragmentScheduleBinding
+
+private val filters = listOf(
+    "即将上映",
+    "2026",
+    "2025",
+    "2024",
+    "2023",
+    "2022",
+    "2021",
+    "2020",
+    "2019",
+    "2018",
+    "2017",
+    "2016",
+    "2015以前"
+)
 
 class ScheduleFragment : Fragment() {
     private var _binding: FragmentScheduleBinding? = null
@@ -29,27 +46,11 @@ class ScheduleFragment : Fragment() {
     }
 
     private fun setupFilters() {
-        val filters = listOf(
-            "即将上映",
-            "2026",
-            "2025",
-            "2024",
-            "2023",
-            "2022",
-            "2021",
-            "2020",
-            "2019",
-            "2018",
-            "2017",
-            "2016",
-            "2015以前"
-        )
-        binding.rvFilters.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvFilters.layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
         binding.rvFilters.adapter = ScheduleFilterAdapter(filters)
     }
 
     private fun setupScheduleList() {
-        // Mock data with different types for headers and items
         val items = listOf(
             ScheduleItem.Year("2026"),
             ScheduleItem.Date("· 04月03日"),
