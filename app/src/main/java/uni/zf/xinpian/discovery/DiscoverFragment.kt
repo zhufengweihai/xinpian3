@@ -9,7 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import uni.zf.xinpian.databinding.FragmentDiscoveryBinding
 
-class DiscoveryFragment : Fragment() {
+class DiscoverFragment : Fragment() {
 
     private var _binding: FragmentDiscoveryBinding? = null
     private val binding get() = _binding!!

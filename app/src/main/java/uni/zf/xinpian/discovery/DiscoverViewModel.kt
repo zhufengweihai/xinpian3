@@ -9,7 +9,7 @@ import androidx.paging.cachedIn
 import kotlinx.coroutines.flow.Flow
 import uni.zf.xinpian.json.model.MovieResponse
 
-class DiscoveryViewModel() : ViewModel() {
+class DiscoverViewModel() : ViewModel() {
     val soonDataFlow: Flow<PagingData<MovieResponse>> = Pager(
         PagingConfig(
             20,
