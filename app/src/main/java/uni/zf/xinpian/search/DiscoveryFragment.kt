@@ -46,9 +46,9 @@ class DiscoveryFragment : Fragment(), SearchParamListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDiscoveryBinding.inflate(inflater, container, false)
-        setupSearchView()
-        setupRecyclerViews()
-        initVideosView()
+//        setupSearchView()
+//        setupRecyclerViews()
+//        initVideosView()
         return binding.root
     }
 
@@ -71,7 +71,7 @@ class DiscoveryFragment : Fragment(), SearchParamListener {
         }
     }
 
-    private fun setupSearchView() {
+    /*private fun setupSearchView() {
         binding.searchView.setOnClickListener {
             startActivity(Intent(context, SearchActivity::class.java))
         }
@@ -114,7 +114,7 @@ class DiscoveryFragment : Fragment(), SearchParamListener {
                 videosAdapter.refresh()
             }
         }
-    }
+    }*/
 
     private fun where(): String {
         val conditions = mutableListOf<String>()

@@ -14,23 +14,20 @@ import uni.zf.xinpian.databinding.FragmentScheduleBinding
 class ScheduleFragment : Fragment() {
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
-    private val viewModel:DiscoverViewModel by viewModels()
+    private val viewModel: DiscoverViewModel by viewModels()
 
-            override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentScheduleBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvSchedule.adapter = ScheduleListAdapter()
+        val adapter = ScheduleListAdapter()
+        binding.rvSchedule.adapter = adapter
         lifecycleScope.launch {
             viewModel.soonDataFlow.collectLatest {
-                binding.rvSchedule.adapter = ScheduleListAdapter(it)
+                adapter.submitData(it)
             }
         }
     }

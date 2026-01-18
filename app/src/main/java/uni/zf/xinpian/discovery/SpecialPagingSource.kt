@@ -6,26 +6,26 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import uni.zf.xinpian.data.AppConst.discoverUrl
+import uni.zf.xinpian.data.AppConst.specialUrl
 import uni.zf.xinpian.http.OkHttpUtil
-import uni.zf.xinpian.json.model.DateMovieGroup
+import uni.zf.xinpian.json.model.Special
 
-class DiscoverPagingSource() : PagingSource<Int, DateMovieGroup>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DateMovieGroup> {
+class SpecialPagingSource() : PagingSource<Int, Special>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Special> {
         val pageNumber = params.key ?: 0
         try {
-            val json = OkHttpUtil.get(discoverUrl.format(pageNumber + 1))
+            val json = OkHttpUtil.get(specialUrl.format(pageNumber + 1))
             if (json.isEmpty()) return LoadResult.Page(listOf(), null, null)
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
-            val subArray = fullJsonObject["data"]?.jsonArray?.first()?.jsonArray
-            val videos = subArray?.map { Json.decodeFromJsonElement<DateMovieGroup>(it) } ?: listOf()
+            val dataArray = fullJsonObject["data"]?.jsonArray
+            val videos = dataArray?.map { Json.decodeFromJsonElement<Special>(it) } ?: listOf()
             return LoadResult.Page(videos, null, pageNumber.plus(1))
         } catch (e: Exception) {
             return LoadResult.Error(e)
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, DateMovieGroup>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Special>): Int? {
         return state.anchorPosition?.let {
             val anchorPage = state.closestPageToPosition(it)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)

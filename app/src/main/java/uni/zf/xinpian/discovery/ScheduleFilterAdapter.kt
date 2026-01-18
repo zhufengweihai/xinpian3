@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ItemScheduleFilterBinding
 
-class ScheduleFilterAdapter(private val filters: List<String>) : RecyclerView.Adapter<ScheduleFilterAdapter.ViewHolder>() {
+class ScheduleFilterAdapter(
+    private var filters: List<String> = listOf(),
+    private val onFilterSelected: ((Int) -> Unit)? = null
+) : RecyclerView.Adapter<ScheduleFilterAdapter.ViewHolder>() {
 
     private var selectedPosition = 0
 
@@ -28,13 +31,22 @@ class ScheduleFilterAdapter(private val filters: List<String>) : RecyclerView.Ad
             }
             
             setOnClickListener {
-                val oldPosition = selectedPosition
-                selectedPosition = holder.adapterPosition
-                notifyItemChanged(oldPosition)
-                notifyItemChanged(selectedPosition)
+                if (selectedPosition != holder.adapterPosition) {
+                    val oldPosition = selectedPosition
+                    selectedPosition = holder.adapterPosition
+                    notifyItemChanged(oldPosition)
+                    notifyItemChanged(selectedPosition)
+                    onFilterSelected?.invoke(selectedPosition)
+                }
             }
         }
     }
 
     override fun getItemCount(): Int = filters.size
+
+    fun updateData(newFilters: List<String>) {
+        this.filters = newFilters
+        this.selectedPosition = 0
+        notifyDataSetChanged()
+    }
 }

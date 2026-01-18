@@ -1,14 +1,27 @@
 package uni.zf.xinpian.discovery
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.databinding.ItemSpecialBinding
+import uni.zf.xinpian.json.model.Special
 
-data class SpecialItem(val title: String, val coverUrl: String)
+private val diffCallback = object : DiffUtil.ItemCallback<Special>() {
+    override fun areItemsTheSame(oldItem: Special, newItem: Special): Boolean {
+        return oldItem.topicId == newItem.topicId
+    }
 
-class SpecialsAdapter(private val items: List<SpecialItem>) : RecyclerView.Adapter<SpecialsAdapter.ViewHolder>() {
+    @SuppressLint("DiffUtilEquals")
+    override fun areContentsTheSame(oldItem: Special, newItem: Special): Boolean {
+        return oldItem == newItem
+    }
+}
+
+class SpecialsAdapter() : PagingDataAdapter<Special, SpecialsAdapter.ViewHolder>(diffCallback) {
 
     class ViewHolder(val binding: ItemSpecialBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -18,12 +31,10 @@ class SpecialsAdapter(private val items: List<SpecialItem>) : RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
-        holder.binding.apply {
-            tvTitle.text = item.title
-            Glide.with(holder.itemView.context).load(item.coverUrl).into(ivCover)
+        getItem(position)?.let {
+            val binding = holder.binding
+            binding.tvTitle.text = it.title
+            Glide.with(holder.itemView.context).load(it.coverUrl).into(binding.ivCover)
         }
     }
-
-    override fun getItemCount(): Int = items.size
 }

@@ -18,9 +18,5 @@ class ShortVideoViewModel(app: Application) : AndroidViewModel(app) {
             true,
             10,
             100
-        ),
-    ) {
-        ShortVideoPagingSource(
-        )
-    }.flow.cachedIn(viewModelScope)
+        ), pagingSourceFactory = ::ShortVideoPagingSource).flow.cachedIn(viewModelScope)
 }
