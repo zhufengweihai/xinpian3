@@ -19,7 +19,8 @@ class DiscoverPagingSource() : PagingSource<Int, DateMovieGroup>() {
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
             val subArray = fullJsonObject["data"]?.jsonArray?.first()?.jsonObject?.get("sub")?.jsonArray
             val videos = subArray?.map { Json.decodeFromJsonElement<DateMovieGroup>(it) } ?: listOf()
-            return LoadResult.Page(videos, null, pageNumber.plus(1))
+            val nextKey = if (videos.size < params.loadSize) null else pageNumber.plus(1)
+            return LoadResult.Page(videos, null, nextKey)
         } catch (e: Exception) {
             return LoadResult.Error(e)
         }

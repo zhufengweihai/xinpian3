@@ -45,7 +45,7 @@ class RankingFragment : Fragment() {
 
     private fun loadRankList(categoryId: Int) {
         lifecycleScope.launch {
-            val list = viewModel.getRankList(categoryId)
+            val list = viewModel.getWeekRankList(categoryId)
             binding.rvRanking.adapter = RankingAdapter(list)
         }
     }

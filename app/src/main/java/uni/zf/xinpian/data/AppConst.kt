@@ -29,6 +29,7 @@ object AppConst {
     val shortUrl = "https://${jpUrlPrefix}.zxfmj.com/api/play?count=10&type=1&page=%d&order=2&token=&init=0"
     val discoverUrl = "https://${jpUrlPrefix}.zxfmj.com/api/discover/list?type=1&page=%d&pageSize=20"
     val specialUrl = "https://${jpUrlPrefix}.zxfmj.com/api/special/list?page=%d"
-    val rankOptionsUrl = "https://yebcdc.zxfmj.com/api/weekRank/options"
+    val rankOptionsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/weekRank/options"
+    val weekRankUrl = "https://${jpUrlPrefix}.zxfmj.com/api/weekRank/list?category_id=%d"
 }
 

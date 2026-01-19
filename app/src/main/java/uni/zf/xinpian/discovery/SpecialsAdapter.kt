@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.databinding.ItemSpecialBinding
 import uni.zf.xinpian.json.model.Special
+import uni.zf.xinpian.utils.ImageLoadUtil.loadImagesWithDomain
 
 private val diffCallback = object : DiffUtil.ItemCallback<Special>() {
     override fun areItemsTheSame(oldItem: Special, newItem: Special): Boolean {
@@ -34,7 +35,7 @@ class SpecialsAdapter() : PagingDataAdapter<Special, SpecialsAdapter.ViewHolder>
         getItem(position)?.let {
             val binding = holder.binding
             binding.tvTitle.text = it.title
-            Glide.with(holder.itemView.context).load(it.coverUrl).into(binding.ivCover)
+            loadImagesWithDomain(binding.ivCover, it.coverUrl)
         }
     }
 }

@@ -19,7 +19,8 @@ class SpecialPagingSource() : PagingSource<Int, Special>() {
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
             val dataArray = fullJsonObject["data"]?.jsonArray
             val videos = dataArray?.map { Json.decodeFromJsonElement<Special>(it) } ?: listOf()
-            return LoadResult.Page(videos, null, pageNumber.plus(1))
+            val nextKey = if (videos.size < params.loadSize) null else pageNumber.plus(1)
+            return LoadResult.Page(videos, null, nextKey)
         } catch (e: Exception) {
             return LoadResult.Error(e)
         }

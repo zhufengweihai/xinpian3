@@ -31,7 +31,7 @@ class ScheduleItemAdapter(private val items: List<MovieDetail>) : RecyclerView.A
         private val ivVideo: ImageView = itemView.findViewById(R.id.iv_video)
         private val tvName: TextView = itemView.findViewById(R.id.tv_name)
         fun bind(movieDetail: MovieDetail) {
-            loadImagesWithDomain(ivVideo, movieDetail.mainImage)
+            loadImagesWithDomain(ivVideo, movieDetail.posterPath)
             tvName.text = movieDetail.title
         }
     }

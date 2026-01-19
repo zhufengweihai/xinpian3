@@ -11,10 +11,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import uni.zf.xinpian.data.AppConst.discoverUrl
 import uni.zf.xinpian.data.AppConst.rankOptionsUrl
+import uni.zf.xinpian.data.AppConst.weekRankUrl
 import uni.zf.xinpian.http.OkHttpUtil
-import uni.zf.xinpian.json.model.CustomTag
 import uni.zf.xinpian.json.model.DateMovieGroup
 import uni.zf.xinpian.json.model.Special
 import uni.zf.xinpian.json.model.VideoData
@@ -42,19 +41,29 @@ class DiscoverViewModel() : ViewModel() {
     ).flow.cachedIn(viewModelScope)
 
     suspend fun getWeekRankOptions(): List<WeekRankOption> {
-        val json = OkHttpUtil.get(rankOptionsUrl)
-        if (json.isEmpty()) return listOf()
-        val fullJsonObject = Json.parseToJsonElement(json).jsonObject
-        val dataArray = fullJsonObject["data"]?.jsonArray
-        return dataArray?.map { Json.decodeFromJsonElement<WeekRankOption>(it) } ?: listOf()
+        try {
+            val json = OkHttpUtil.get(rankOptionsUrl)
+            if (json.isEmpty()) return listOf()
+            val fullJsonObject = Json.parseToJsonElement(json).jsonObject
+            val dataArray = fullJsonObject["data"]?.jsonArray
+            return dataArray?.map { Json.decodeFromJsonElement<WeekRankOption>(it) } ?: listOf()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return listOf()
     }
 
-    suspend fun getRankList(categoryId: Int): List<VideoData> {
-        val url = "https://yebcdc.zxfmj.com/api/weekRank/list?category_id=$categoryId"
-        val json = OkHttpUtil.get(url)
-        if (json.isEmpty()) return listOf()
-        val fullJsonObject = Json.parseToJsonElement(json).jsonObject
-        val dataArray = fullJsonObject["data"]?.jsonArray
-        return dataArray?.map { Json.decodeFromJsonElement<VideoData>(it) } ?: listOf()
+    suspend fun getWeekRankList(categoryId: Int): List<VideoData> {
+        try {
+            val url = weekRankUrl.format(categoryId)
+            val json = OkHttpUtil.get(url)
+            if (json.isEmpty()) return listOf()
+            val fullJsonObject = Json.parseToJsonElement(json).jsonObject
+            val dataArray = fullJsonObject["data"]?.jsonArray
+            return dataArray?.map { Json.decodeFromJsonElement<VideoData>(it) } ?: listOf()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return listOf()
     }
 }
