@@ -14,7 +14,7 @@ import uni.zf.xinpian.databinding.FragmentScheduleBinding
 class ScheduleFragment : Fragment() {
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: DiscoverViewModel by viewModels()
+    private val viewModel: ScheduleViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentScheduleBinding.inflate(inflater, container, false)
@@ -26,7 +26,7 @@ class ScheduleFragment : Fragment() {
         val adapter = ScheduleListAdapter()
         binding.rvSchedule.adapter = adapter
         lifecycleScope.launch {
-            viewModel.soonDataFlow.collectLatest {
+            viewModel.scheduleDataFlow.collectLatest {
                 adapter.submitData(it)
             }
         }

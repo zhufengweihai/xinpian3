@@ -17,7 +17,7 @@ class DiscoverPagingSource() : PagingSource<Int, DateMovieGroup>() {
             val json = OkHttpUtil.get(discoverUrl.format(pageNumber + 1))
             if (json.isEmpty()) return LoadResult.Page(listOf(), null, null)
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
-            val subArray = fullJsonObject["data"]?.jsonArray?.first()?.jsonArray
+            val subArray = fullJsonObject["data"]?.jsonArray?.first()?.jsonObject?.get("sub")?.jsonArray
             val videos = subArray?.map { Json.decodeFromJsonElement<DateMovieGroup>(it) } ?: listOf()
             return LoadResult.Page(videos, null, pageNumber.plus(1))
         } catch (e: Exception) {

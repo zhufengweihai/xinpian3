@@ -11,6 +11,7 @@ import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ItemScheduleVideoBinding
 import uni.zf.xinpian.discovery.ScheduleItemAdapter.ViewHolder
 import uni.zf.xinpian.json.model.MovieDetail
+import uni.zf.xinpian.utils.ImageLoadUtil.loadImagesWithDomain
 
 class ScheduleItemAdapter(private val items: List<MovieDetail>) : RecyclerView.Adapter<ViewHolder>
     () {
@@ -30,7 +31,7 @@ class ScheduleItemAdapter(private val items: List<MovieDetail>) : RecyclerView.A
         private val ivVideo: ImageView = itemView.findViewById(R.id.iv_video)
         private val tvName: TextView = itemView.findViewById(R.id.tv_name)
         fun bind(movieDetail: MovieDetail) {
-            Glide.with(ivVideo).load(movieDetail.mainImage).into(ivVideo)
+            loadImagesWithDomain(ivVideo, movieDetail.mainImage)
             tvName.text = movieDetail.title
         }
     }
