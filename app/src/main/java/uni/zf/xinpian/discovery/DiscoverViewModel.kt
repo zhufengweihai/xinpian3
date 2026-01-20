@@ -15,6 +15,7 @@ import uni.zf.xinpian.data.AppConst.rankOptionsUrl
 import uni.zf.xinpian.data.AppConst.weekRankUrl
 import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.model.DateMovieGroup
+import uni.zf.xinpian.json.model.RankingItem
 import uni.zf.xinpian.json.model.Special
 import uni.zf.xinpian.json.model.VideoData
 import uni.zf.xinpian.json.model.WeekRankOption
@@ -53,14 +54,14 @@ class DiscoverViewModel() : ViewModel() {
         return listOf()
     }
 
-    suspend fun getWeekRankList(categoryId: Int): List<VideoData> {
+    suspend fun getWeekRankList(categoryId: Int): List<RankingItem> {
         try {
             val url = weekRankUrl.format(categoryId)
             val json = OkHttpUtil.get(url)
             if (json.isEmpty()) return listOf()
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
             val dataArray = fullJsonObject["data"]?.jsonArray
-            return dataArray?.map { Json.decodeFromJsonElement<VideoData>(it) } ?: listOf()
+            return dataArray?.map { Json.decodeFromJsonElement<RankingItem>(it) } ?: listOf()
         } catch (e: Exception) {
             e.printStackTrace()
         }
