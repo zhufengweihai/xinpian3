@@ -15,28 +15,16 @@ import androidx.paging.LoadState.Loading
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.FragmentListBinding
-import uni.zf.xinpian.search.ORDER_BY
+import uni.zf.xinpian.json.model.FilterOption
 import uni.zf.xinpian.search.SearchActivity
-import uni.zf.xinpian.search.SearchParamListener
-import uni.zf.xinpian.search.SearchType
-import uni.zf.xinpian.search.SearchType.AREAS
-import uni.zf.xinpian.search.SearchType.CATEGORIES
-import uni.zf.xinpian.search.SearchType.GENRES
-import uni.zf.xinpian.search.SearchType.SORTS
-import uni.zf.xinpian.search.SearchType.YEARS
 import uni.zf.xinpian.series.SeriesItemDecoration
-import uni.zf.xinpian.video.EvenVideoListAdapter
 
-class ListFragment : Fragment(), SearchParamListener {
-    private var categoryIndex: Int = 0
-    private var area: Int = 0
-    private var genre: Int = 0
-    private var year: Int = 0
-    private var orderBy = ORDER_BY[0]
-
+class ListFragment : Fragment(), FilterOptionListener {
+    private val filterOptions = FilterOptions()
     private val viewModel: ListViewModel by viewModels()
     private val videosAdapter = EvenVideoListAdapter()
     private lateinit var binding: FragmentListBinding
@@ -52,11 +40,15 @@ class ListFragment : Fragment(), SearchParamListener {
 
     private fun loadData() {
         lifecycleScope.launch {
-            viewModel.getFilterGroups().forEach {
-                (binding.typeView.adapter as SearchParamAdapter).setOptions(it.options)
-                (binding.areaView.adapter as SearchParamAdapter).setOptions(it.options)
-                (binding.yearView.adapter as SearchParamAdapter).setOptions(it.options)
-                (binding.sortView.adapter as SearchParamAdapter).setOptions(it.options)
+            val filterGroups = viewModel.getFilterGroups()
+            (binding.typeView.adapter as FilterOptionAdapter).setOptions(filterGroups[0])
+            (binding.areaView.adapter as FilterOptionAdapter).setOptions(filterGroups[1])
+            (binding.yearView.adapter as FilterOptionAdapter).setOptions(filterGroups[2])
+            (binding.sortView.adapter as FilterOptionAdapter).setOptions(filterGroups[3])
+        }
+        lifecycleScope.launch {
+            viewModel.videoFlow.collectLatest {
+                videosAdapter.submitData(it)
             }
         }
     }
@@ -74,8 +66,8 @@ class ListFragment : Fragment(), SearchParamListener {
         binding.sortView.setupRecyclerView()
     }
 
-    private fun RecyclerView.setupRecyclerView(): SearchParamAdapter {
-        val adapter = SearchParamAdapter(selectedPosition = 0, listener = this@ListFragment)
+    private fun RecyclerView.setupRecyclerView(): FilterOptionAdapter {
+        val adapter = FilterOptionAdapter(listener = this@ListFragment)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         this.adapter = adapter
         return adapter
@@ -105,17 +97,13 @@ class ListFragment : Fragment(), SearchParamListener {
         }
     }
 
-    override fun onSearchParam(type: SearchType, current: Int) {
-        when (type) {
-            CATEGORIES -> {
-                categoryIndex = current
-                genre = 0
-            }
-
-            AREAS -> area = current
-            YEARS -> year = current
-            GENRES -> genre = current
-            SORTS -> orderBy = ORDER_BY[current]
+    override fun onFilterOption(key:String, option: FilterOption) {
+        when (key) {
+            "key" -> filterOptions.type = option.id
+            "area" -> filterOptions.area = option.id
+            "year" -> filterOptions.year = option.id
+            "sort" -> filterOptions.sort = option.id
         }
+        viewModel.updateFilterOptions(filterOptions)
     }
 }

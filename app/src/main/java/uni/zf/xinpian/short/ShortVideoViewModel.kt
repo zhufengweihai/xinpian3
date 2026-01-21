@@ -14,7 +14,7 @@ class ShortVideoViewModel(app: Application) : AndroidViewModel(app) {
     val dataFlow: Flow<PagingData<ShortVideo>> = Pager(
         PagingConfig(
             10,
-            5,
+            6,
             true,
             10,
             100

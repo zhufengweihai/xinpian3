@@ -1,4 +1,4 @@
-package uni.zf.xinpian.record
+package uni.zf.xinpian.history
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.model.WatchRecord
-import uni.zf.xinpian.history.WatchHistoryAdapter
+import uni.zf.xinpian.utils.getSourceName
+import uni.zf.xinpian.utils.loadImages
 
-class WatchRecordAdapter(private val callBack: CallBack) : RecyclerView.Adapter<WatchHistoryAdapter.ViewHolder>() {
+class WatchHistoryAdapter(private val callBack: CallBack) : RecyclerView.Adapter<WatchHistoryAdapter.ViewHolder>() {
 
     private var watchList: List<WatchRecord> = emptyList()
 
@@ -22,13 +23,13 @@ class WatchRecordAdapter(private val callBack: CallBack) : RecyclerView.Adapter<
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WatchHistoryAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_watch_record, parent, false)
-        return WatchHistoryAdapter.ViewHolder(view)
+        return ViewHolder(view)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: WatchHistoryAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val watchRecord = watchList[holder.bindingAdapterPosition]
         Glide.with(holder.imageView).load(watchRecord.image).into(holder.imageView)
         holder.titleView.text = watchRecord.name
@@ -49,6 +50,7 @@ class WatchRecordAdapter(private val callBack: CallBack) : RecyclerView.Adapter<
         val percentView: TextView = itemView.findViewById(R.id.percent_view)
         val deleteButton: ImageView = itemView.findViewById(R.id.delete_button)
         val episodeView: TextView = itemView.findViewById(R.id.episode_view)
+        //val sourceView: TextView = itemView.findViewById(R.id.source_view)
 
         init {
             itemView.findViewById<ViewGroup>(R.id.cover_view).clipToOutline = true
