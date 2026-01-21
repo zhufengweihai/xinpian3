@@ -408,9 +408,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
 
         private fun togglePlayPause() {
             player?.let {
-                if (!isLock) {
-                    if (it.isPlaying) it.pause() else it.play()
-                }
+                if (!isLock) if (it.isPlaying) it.pause() else it.play()
             }
         }
     }

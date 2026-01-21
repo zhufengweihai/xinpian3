@@ -9,16 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
-import uni.zf.xinpian.data.model.WatchRecord
-import uni.zf.xinpian.utils.getSourceName
-import uni.zf.xinpian.utils.loadImages
+import uni.zf.xinpian.data.model.WatchHistory
 
 class WatchHistoryAdapter(private val callBack: CallBack) : RecyclerView.Adapter<WatchHistoryAdapter.ViewHolder>() {
 
-    private var watchList: List<WatchRecord> = emptyList()
+    private var watchList: List<WatchHistory> = emptyList()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setWatchList(watchList: List<WatchRecord>) {
+    fun setWatchList(watchList: List<WatchHistory>) {
         this.watchList = watchList
         notifyDataSetChanged()
     }
@@ -30,15 +28,14 @@ class WatchHistoryAdapter(private val callBack: CallBack) : RecyclerView.Adapter
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val watchRecord = watchList[holder.bindingAdapterPosition]
-        Glide.with(holder.imageView).load(watchRecord.image).into(holder.imageView)
-        holder.titleView.text = watchRecord.name
-        holder.statusView.text = watchRecord.status
-        holder.percentView.text = holder.percentView.resources.getString(R.string.watch_to, watchRecord.percent)
-        holder.deleteButton.setOnClickListener { callBack.deleteRecord(watchRecord) }
-        holder.itemView.setOnClickListener { callBack.toPlay(watchRecord) }
-        holder.episodeView.text = watchRecord.currentEpisode
-        //holder.sourceView.text = getSourceName(watchRecord.vodId)
+        val watchHistory = watchList[holder.bindingAdapterPosition]
+        Glide.with(holder.imageView).load(watchHistory.image).into(holder.imageView)
+        holder.titleView.text = watchHistory.title
+        holder.statusView.text = watchHistory.status
+        holder.percentView.text = holder.percentView.resources.getString(R.string.watch_to, watchHistory.percent)
+        holder.deleteButton.setOnClickListener { callBack.deleteHistory(watchHistory) }
+        holder.itemView.setOnClickListener { callBack.toPlay(watchHistory) }
+        holder.episodeView.text = watchHistory.currentEpisode
     }
 
     override fun getItemCount(): Int = watchList.size
@@ -50,7 +47,6 @@ class WatchHistoryAdapter(private val callBack: CallBack) : RecyclerView.Adapter
         val percentView: TextView = itemView.findViewById(R.id.percent_view)
         val deleteButton: ImageView = itemView.findViewById(R.id.delete_button)
         val episodeView: TextView = itemView.findViewById(R.id.episode_view)
-        //val sourceView: TextView = itemView.findViewById(R.id.source_view)
 
         init {
             itemView.findViewById<ViewGroup>(R.id.cover_view).clipToOutline = true
@@ -58,7 +54,7 @@ class WatchHistoryAdapter(private val callBack: CallBack) : RecyclerView.Adapter
     }
 
     interface CallBack {
-        fun deleteRecord(watchRecord: WatchRecord)
-        fun toPlay(watchRecord: WatchRecord)
+        fun deleteHistory(watchHistory: WatchHistory)
+        fun toPlay(watchHistory: WatchHistory)
     }
 }

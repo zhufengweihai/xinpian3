@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.media3.common.util.UnstableApi
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import uni.zf.xinpian.discovery.DiscoverFragment
+import uni.zf.xinpian.list.ListFragment
 import uni.zf.xinpian.short.ShortVideoFragment
 
 class MainFragmentStateAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
@@ -24,7 +25,7 @@ class MainFragmentStateAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) 
     override fun createFragment(position: Int): Fragment = when (position) {
         HOME_FRAGMENT_POSITION -> HomeFragment()
         SHORT_FRAGMENT_POSITION -> ShortVideoFragment()
-        LIST_FRAGMENT_POSITION -> ShortVideoFragment()
+        LIST_FRAGMENT_POSITION -> ListFragment()
         DISCOVERY_FRAGMENT_POSITION -> DiscoverFragment()
         else -> throw IllegalArgumentException("Invalid position: $position")
     }

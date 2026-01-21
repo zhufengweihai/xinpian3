@@ -68,10 +68,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_rec -> binding.viewPager.setCurrentItem(0, false)
-                R.id.nav_search -> binding.viewPager.setCurrentItem(1, false)
-                R.id.nav_download -> binding.viewPager.setCurrentItem(2, false)
-                R.id.nav_record -> binding.viewPager.setCurrentItem(3, false)
+                R.id.nav_home -> binding.viewPager.setCurrentItem(0, false)
+                R.id.nav_short -> binding.viewPager.setCurrentItem(1, false)
+                R.id.nav_search -> binding.viewPager.setCurrentItem(2, false)
+                R.id.nav_discover -> binding.viewPager.setCurrentItem(3, false)
                 else -> return@setOnItemSelectedListener false
             }
             true

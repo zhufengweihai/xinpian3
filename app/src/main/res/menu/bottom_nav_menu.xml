@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_rec"
-        android:title="@string/title_rec" />
+        android:id="@+id/nav_home"
+        android:title="首页" />
+
+    <item
+        android:id="@+id/nav_short"
+        android:title="短剧" />
 
     <item
         android:id="@+id/nav_search"
         android:title="@string/title_search" />
 
     <item
-        android:id="@+id/nav_download"
-        android:title="@string/title_download" />
-
-    <item
-        android:id="@+id/nav_record"
-        android:title="@string/title_record" />
+        android:id="@+id/nav_discover"
+        android:title="发现" />
 
     <!--item
         android:id="@+id/nav_my"
