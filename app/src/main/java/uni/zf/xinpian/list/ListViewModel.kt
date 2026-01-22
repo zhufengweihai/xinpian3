@@ -1,5 +1,8 @@
 package uni.zf.xinpian.list
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -19,8 +22,9 @@ import uni.zf.xinpian.data.AppConst.filteredVideoUrl
 import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.model.FilterGroup
 import uni.zf.xinpian.json.model.VideoData
+import uni.zf.xinpian.utils.createHeaders
 
-class ListViewModel() : ViewModel() {
+class ListViewModel(val app: Application) : AndroidViewModel(app) {
     private val filterOptions = MutableStateFlow(FilterOptions())
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -48,7 +52,7 @@ class ListViewModel() : ViewModel() {
 
     suspend fun getFilterGroups(): List<FilterGroup> {
         try {
-            val json = OkHttpUtil.get(filterOptionsUrl)
+            val json = OkHttpUtil.get(filterOptionsUrl, createHeaders(app, filterOptionsUrl))
             if (json.isEmpty()) return listOf()
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
             val dataArray = fullJsonObject["data"]?.jsonArray

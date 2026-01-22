@@ -18,11 +18,11 @@ fun generateJpUrlPrefix(): String {
     }
 }
 
-fun createHeaders(context: Context): Map<String, String> {
+fun createHeaders(context: Context, url: String = ""): Map<String, String> {
     val timestamp = (System.currentTimeMillis() / 1000).toString()
     val signature = generateSignature(timestamp, AppData.getInstance(context).secret)
     return mapOf(
-        "Host" to host,
+        "Host" to if (url.isEmpty()) host else url.substringAfter("://").substringBefore("/"),
         "timestamp" to timestamp,
         "signature" to signature,
         "User-Agent" to AppData.getInstance(context).userAgent,

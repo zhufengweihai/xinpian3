@@ -26,9 +26,8 @@ import uni.zf.xinpian.json.model.SlideData
 import uni.zf.xinpian.json.model.SlideList
 import uni.zf.xinpian.utils.createHeaders
 
-class CategoryViewModel(app: Application, ssh: SavedStateHandle) : AndroidViewModel(app) {
+class CategoryViewModel(val app: Application, ssh: SavedStateHandle) : AndroidViewModel(app) {
     private val categoryId = ssh.get<Int>(ARG_CATEGORY) ?: 0
-    private val app = getApplication<Application>()
     private val slideDataStore = app.createSlideDataStore(categoryId)
     private val customTagDataStore = app.createCustomTagDataStore(categoryId)
     private val dyTagDataStore = app.createDyTagDataStore(categoryId)

@@ -55,14 +55,18 @@ object OkHttpUtil {
      * 高阶函数封装Request构建逻辑，对外暴露极简API
      */
     private suspend fun request(requestBuilder: () -> Request): String = withContext(Dispatchers.IO) {
-        val request = requestBuilder()
-        val response = okHttpClient.newCall(request).execute()
-        // 自动关闭响应体，use函数会在lambda执行完毕后自动调用close()，Kotlin语法糖，绝对安全！
-        val responseBody = response.body.use { it.string() }
-        if (response.isSuccessful) {
-            responseBody
-        } else {
-            throw IOException("请求失败，响应码: ${response.code}, 响应信息: ${response.message}")
+        try {
+            val request = requestBuilder()
+            val response = okHttpClient.newCall(request).execute()
+            // 自动关闭响应体，use函数会在lambda执行完毕后自动调用close()，Kotlin语法糖，绝对安全！
+            val responseBody = response.body.use { it.string() }
+            if (response.isSuccessful) {
+                responseBody
+            } else {
+                throw IOException("请求失败，响应码: ${response.code}, 响应信息: ${response.message}")
+            }
+        } catch (e: Exception) {
+            throw IOException("请求失败，请检查网络连接", e)
         }
     }
 }

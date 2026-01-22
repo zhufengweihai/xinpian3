@@ -31,7 +31,7 @@ object AppConst {
     val specialUrl = "https://${jpUrlPrefix}.zxfmj.com/api/special/list?page=%d"
     val rankOptionsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/weekRank/options"
     val weekRankUrl = "https://${jpUrlPrefix}.zxfmj.com/api/weekRank/list?category_id=%d"
-    val filterOptionsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/crumb/filterOptions?fcate_pid="
+    val filterOptionsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/crumb/filterOptions"
     val filteredVideoUrl = "https://${jpUrlPrefix}.zxfmj" +
             ".com/api/crumb/list?fcate_pid=%1s&category_id=%2s&area=%3s&year=%4s&type=%5s&sort=%6s&page=%7s"
 }
