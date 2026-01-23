@@ -58,15 +58,11 @@ object OkHttpUtil {
         try {
             val request = requestBuilder()
             val response = okHttpClient.newCall(request).execute()
-            // 自动关闭响应体，use函数会在lambda执行完毕后自动调用close()，Kotlin语法糖，绝对安全！
-            val responseBody = response.body.use { it.string() }
-            if (response.isSuccessful) {
-                responseBody
-            } else {
-                throw IOException("请求失败，响应码: ${response.code}, 响应信息: ${response.message}")
-            }
+            val text = if (response.isSuccessful) response.body.string() else ""
+            response.body.close()
+            return@withContext text
         } catch (e: Exception) {
-            throw IOException("请求失败，请检查网络连接", e)
+            throw IOException("请求发生未知错误: ${e.message}", e)
         }
     }
 }

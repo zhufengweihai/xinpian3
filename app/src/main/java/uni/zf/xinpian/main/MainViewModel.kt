@@ -20,7 +20,7 @@ import uni.zf.xinpian.json.model.Category
 import uni.zf.xinpian.json.model.CategoryList
 import uni.zf.xinpian.utils.createHeaders
 
-class MainViewModel(app: Application) : AndroidViewModel(app) {
+class MainViewModel(private val app: Application) : AndroidViewModel(app) {
     private val categoryDataStore = getApplication<Application>().categoryDataStore
 
     fun getCategoryList() = categoryDataStore.data
@@ -57,7 +57,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun requestCategoryList() {
         viewModelScope.launch {
             try {
-                val json = OkHttpUtil.get(AppConst.categoryUrl)
+                val json = OkHttpUtil.get(AppConst.categoryUrl, createHeaders(app))
                 if (json.isEmpty()) return@launch
                 val fullJsonObject = Json.parseToJsonElement(json).jsonObject
                 val dataArray = fullJsonObject["data"]?.jsonArray
