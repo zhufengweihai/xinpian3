@@ -2,8 +2,6 @@ package uni.zf.xinpian.list
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -21,14 +19,14 @@ import uni.zf.xinpian.data.AppConst.filterOptionsUrl
 import uni.zf.xinpian.data.AppConst.filteredVideoUrl
 import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.model.FilterGroup
-import uni.zf.xinpian.json.model.VideoData
+import uni.zf.xinpian.json.model.TagData
 import uni.zf.xinpian.utils.createHeaders
 
 class ListViewModel(val app: Application) : AndroidViewModel(app) {
     private val filterOptions = MutableStateFlow(FilterOptions())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val videoFlow: Flow<PagingData<VideoData>> = filterOptions.flatMapLatest {
+    val videoFlow: Flow<PagingData<TagData>> = filterOptions.flatMapLatest {
         val config = PagingConfig(
             15,
             9,
@@ -47,7 +45,8 @@ class ListViewModel(val app: Application) : AndroidViewModel(app) {
     }
 
     fun updateFilterOptions(options: FilterOptions) {
-        filterOptions.value = options
+        // 创建一个新的FilterOptions实例以确保StateFlow能检测到变化
+        filterOptions.value = options.copy()
     }
 
     suspend fun getFilterGroups(): List<FilterGroup> {

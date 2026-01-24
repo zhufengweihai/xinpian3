@@ -99,7 +99,7 @@ class ListFragment : Fragment(), FilterOptionListener {
 
     override fun onFilterOption(key:String, option: FilterOption) {
         when (key) {
-            "key" -> filterOptions.type = option.id
+            "type" -> filterOptions.type = option.id
             "area" -> filterOptions.area = option.id
             "year" -> filterOptions.year = option.id
             "sort" -> filterOptions.sort = option.id
