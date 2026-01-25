@@ -24,12 +24,8 @@ class SlideView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int
     private val handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable? = null
 
-    fun setVideoList(videoList: List<SlideData>, corner: Boolean) {
+    fun setVideoList(videoList: List<SlideData>) {
         if (videoList.isEmpty()) return
-        if (corner) {
-            clipToOutline = true
-            setBackgroundResource(R.drawable.shape_rounded_corners)
-        }
         setupViewPager(videoList)
         setupIndicators(videoList.size)
         displayInLoop(videoList)

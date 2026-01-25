@@ -13,8 +13,9 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import uni.zf.xinpian.R
+import uni.zf.xinpian.data.AppConst.KEY_VIDEO_ID
 import uni.zf.xinpian.json.model.TagData
-import uni.zf.xinpian.player.PlayerActivity
+import uni.zf.xinpian.play.PlayActivity
 import uni.zf.xinpian.utils.ImageLoadUtil
 
 private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TagData>() {
@@ -76,8 +77,8 @@ open class EvenVideoListAdapter : PagingDataAdapter<TagData, EvenVideoListAdapte
         }
 
         private fun toPlay(context: Context, video: TagData) {
-            val intent = Intent(context, PlayerActivity::class.java).apply {
-                putExtra(PlayerActivity.KEY_VIDEO_ID, video.id)
+            val intent = Intent(context, PlayActivity::class.java).apply {
+                putExtra(KEY_VIDEO_ID, video.id)
             }
             context.startActivity(intent)
         }

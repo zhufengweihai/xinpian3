@@ -1,6 +1,7 @@
 package uni.zf.xinpian.category
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,11 +31,19 @@ class CustomTagAdapter(private var tagList: List<CustomTag> = listOf()) : Adapte
     override fun getItemCount() = tagList.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textView: TextView = itemView as TextView
+        private val tvTag: TextView = itemView.findViewById(R.id.tv_tag)
 
         fun bind(customTag: CustomTag) {
-            textView.text = customTag.title
-            textView.setOnClickListener {  }
+            tvTag.text = customTag.title
+            tvTag.setOnClickListener {
+                tvTag.context.startActivity(
+                    Intent(
+                        tvTag.context,
+                        CustomTagActivity::class.java
+                    ).apply {
+
+                    })
+            }
         }
     }
 }
