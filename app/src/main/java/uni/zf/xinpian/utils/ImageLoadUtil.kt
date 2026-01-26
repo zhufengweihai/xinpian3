@@ -20,16 +20,23 @@ private val MAIN_HANDLER = Handler(Looper.getMainLooper())
  * 包含：单链接加载、图片列表失败重试下一个（基础版+增强版）
  */
 object ImageLoadUtil {
-    fun loadImagesWithDomain(imageView: ImageView, url: String) {
-        loadImages(imageView, AppData.getInstance(imageView.context).imgDomains.map { "https://$it$url" })
+    fun loadImages(imageView: ImageView, url: String) {
+        val context = imageView.context
+        if (url.startsWith("http")) {
+            Glide.with(context)
+                .load(url)
+                .placeholder(android.R.color.transparent)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .skipMemoryCache(false)
+                .into(imageView)
+        } else {
+            val imgList = AppData.getInstance(context).imgDomains.map { "https://$it$url" }
+            loadImages(imageView, imgList)
+        }
     }
 
     @SuppressLint("CheckResult")
-    fun loadImages(
-        imageView: ImageView,
-        imgList: List<String>,
-        currentIndex: Int = 0
-    ) {
+    fun loadImages(imageView: ImageView, imgList: List<String>, currentIndex: Int = 0) {
         if (imgList.isEmpty() || currentIndex >= imgList.size) return
         val currentImgUrl = imgList[currentIndex]
         Glide.with(imageView.context)

@@ -30,7 +30,7 @@ class SlideImageAdapter(private val videoList: List<SlideData>) : Adapter<SlideI
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.banner_image_view)
         fun bind(slideData: SlideData) {
-            ImageLoadUtil.loadImagesWithDomain(imageView, slideData.thumbnail)
+            ImageLoadUtil.loadImages(imageView, slideData.thumbnail)
             itemView.setOnClickListener { toPlay(itemView.context, slideData) }
         }
 

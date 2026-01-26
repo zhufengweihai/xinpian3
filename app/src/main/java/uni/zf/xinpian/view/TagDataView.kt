@@ -27,7 +27,7 @@ class TagDataView(context: Context, attrs: AttributeSet? = null, defStyleAttr: I
     fun setTagData(dyTag: DyTag) {
         binding.tagTextView.text = dyTag.name
         if (dyTag.cover.isNotEmpty()) {
-            ImageLoadUtil.loadImagesWithDomain(binding.coverView, dyTag.cover)
+            ImageLoadUtil.loadImages(binding.coverView, dyTag.cover)
             binding.coverView.visibility = VISIBLE
         } else {
             binding.coverView.visibility = GONE

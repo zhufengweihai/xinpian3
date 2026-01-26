@@ -12,12 +12,12 @@ import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ActivityCustomTagBinding
 import uni.zf.xinpian.series.SeriesItemDecoration
-import uni.zf.xinpian.utils.ImageLoadUtil.loadImagesWithDomain
+import uni.zf.xinpian.utils.ImageLoadUtil.loadImages
 
 class CustomTagActivity : AppCompatActivity() {
     private val viewModel: CustomTagViewModel by viewModels()
     private lateinit var binding: ActivityCustomTagBinding
-    private val adapter = VideoListAdapter()
+    private val adapter = EvenVideoListAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,6 +28,7 @@ class CustomTagActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        binding.ivBack.setOnClickListener { finish() }
         binding.rvVideoList.adapter = adapter
         binding.rvVideoList.layoutManager = GridLayoutManager(this, 3)
         binding.rvVideoList.addItemDecoration(SeriesItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
@@ -38,7 +39,7 @@ class CustomTagActivity : AppCompatActivity() {
     private fun loadData() {
         lifecycleScope.launch {
             viewModel.getCustomTagData()?.let {
-                loadImagesWithDomain(binding.ivCover, it.coverUrl)
+                loadImages(binding.ivCover, it.coverUrl)
                 binding.tvTitle.text = it.title
                 binding.tvContent.text = it.content
                 adapter.updateVideoList(it.videoList)

@@ -58,7 +58,7 @@ open class EvenVideoListAdapter : PagingDataAdapter<TagData, EvenVideoListAdapte
         }
 
         fun bind(video: TagData) {
-            ImageLoadUtil.loadImagesWithDomain(imageView, video.path)
+            ImageLoadUtil.loadImages(imageView, video.path)
             scoreView.text = video.score
             statusView.text = video.mask
             nameView.text = video.title

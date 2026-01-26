@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import uni.zf.xinpian.databinding.ItemRankingBinding
 import uni.zf.xinpian.json.model.RankingItem
-import uni.zf.xinpian.utils.ImageLoadUtil.loadImagesWithDomain
+import uni.zf.xinpian.utils.ImageLoadUtil.loadImages
 
 class RankingAdapter(private val items: List<RankingItem>) : RecyclerView.Adapter<RankingAdapter.ViewHolder>() {
 
@@ -24,7 +24,7 @@ class RankingAdapter(private val items: List<RankingItem>) : RecyclerView.Adapte
             tvCast.text = "主演：${item.actors.joinToString(", ")}"
             tvDesc.text = item.description
             tvHot.text = "🔥 热度：${item.hotSort}" // Placeholder for hotness
-            loadImagesWithDomain(ivPoster, item.posterPath)
+            loadImages(ivPoster, item.posterPath)
             val rank = position + 1
             if (rank <= 3) {
                 ivRankMedal.visibility = View.VISIBLE

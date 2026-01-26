@@ -16,7 +16,7 @@ import uni.zf.xinpian.json.model.TagData
 import uni.zf.xinpian.play.PlayActivity
 import uni.zf.xinpian.utils.ImageLoadUtil
 
-class VideoListAdapter(private var tagDataList: List<TagData> = listOf()) : Adapter<VideoListAdapter.ViewHolder>() {
+class EvenVideoListAdapter(private var tagDataList: List<TagData> = listOf()) : Adapter<EvenVideoListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -53,6 +53,8 @@ class VideoListAdapter(private var tagDataList: List<TagData> = listOf()) : Adap
         private val nameView: TextView = itemView.findViewById(R.id.name_view)
         init {
             itemView.clipToOutline = true
+            itemView.layoutParams.height = itemView.resources.getDimensionPixelSize(R.dimen.v_image_height)
+            itemView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         }
 
         fun bind(tagData: TagData) {

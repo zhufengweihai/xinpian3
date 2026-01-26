@@ -47,7 +47,7 @@ class RelatedVideoAdapter(private var relatedVideoList: List<RelatedVideo> = lis
             if (relatedVideo.imageUrl.startsWith("http")){
                 Glide.with(imageView.context).load(relatedVideo.imageUrl).into(imageView)
             }else {
-                ImageLoadUtil.loadImagesWithDomain(imageView, relatedVideo.imageUrl)
+                ImageLoadUtil.loadImages(imageView, relatedVideo.imageUrl)
             }
 
             nameView.text = relatedVideo.title

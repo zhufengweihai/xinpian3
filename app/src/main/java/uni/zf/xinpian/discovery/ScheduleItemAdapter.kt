@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ItemScheduleVideoBinding
 import uni.zf.xinpian.discovery.ScheduleItemAdapter.ViewHolder
 import uni.zf.xinpian.json.model.MovieDetail
-import uni.zf.xinpian.utils.ImageLoadUtil.loadImagesWithDomain
+import uni.zf.xinpian.utils.ImageLoadUtil.loadImages
 
 class ScheduleItemAdapter(private val items: List<MovieDetail>) : RecyclerView.Adapter<ViewHolder>
     () {
@@ -31,7 +30,7 @@ class ScheduleItemAdapter(private val items: List<MovieDetail>) : RecyclerView.A
         private val ivVideo: ImageView = itemView.findViewById(R.id.iv_video)
         private val tvName: TextView = itemView.findViewById(R.id.tv_name)
         fun bind(movieDetail: MovieDetail) {
-            loadImagesWithDomain(ivVideo, movieDetail.posterPath)
+            loadImages(ivVideo, movieDetail.posterPath)
             tvName.text = movieDetail.title
         }
     }
