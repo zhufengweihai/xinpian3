@@ -1,5 +1,6 @@
 package uni.zf.xinpian.category
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -17,7 +18,7 @@ import uni.zf.xinpian.json.model.TagData
 import uni.zf.xinpian.play.PlayActivity
 import uni.zf.xinpian.utils.ImageLoadUtil
 
-class VideoListAdapter(private val tagDataList: List<TagData> = listOf()) : Adapter<VideoListAdapter.ViewHolder>() {
+class VideoListAdapter(private var tagDataList: List<TagData> = listOf()) : Adapter<VideoListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -38,6 +39,12 @@ class VideoListAdapter(private val tagDataList: List<TagData> = listOf()) : Adap
         }
         labelView.visibility = if (labelText.isEmpty()) View.GONE else View.VISIBLE
         labelView.text = labelText
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateVideoList(videoList: List<TagData>) {
+        tagDataList = videoList
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

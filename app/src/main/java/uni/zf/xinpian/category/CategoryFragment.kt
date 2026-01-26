@@ -23,21 +23,11 @@ class CategoryFragment() : Fragment() {
     private lateinit var binding: FragmentCategoryBinding
     private lateinit var dyTagAdapter: DyTagListAdapter
     private lateinit var cumTagAdapter: CustomTagAdapter
-    private var isDataLoaded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCategoryBinding.inflate(inflater, container, false)
         init()
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (!isDataLoaded && savedInstanceState == null) {
-            loadData()
-            isDataLoaded = true
-        }
-        setupSwipeRefresh()
     }
 
     private fun init() {
@@ -47,6 +37,8 @@ class CategoryFragment() : Fragment() {
         binding.tagListView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.tagListView.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
         binding.tagListView.adapter = cumTagAdapter
+        loadData()
+        setupSwipeRefresh()
     }
 
     private fun setupSwipeRefresh() {

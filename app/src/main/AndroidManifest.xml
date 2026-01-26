@@ -73,6 +73,10 @@
             android:name=".download.DownloadItemActivity"
             android:exported="false"
             android:theme="@style/Theme.Xinpian.NoActionBar" />
+        <activity
+            android:name=".list.ListActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Xinpian.NoActionBar" />
 
         <service
             android:name=".download.VideoDownloadService"

@@ -16,7 +16,10 @@ object AppConst {
     const val ARG_CATEGORY = "category"
     const val ARG_DY_TAG = "DyTag"
     const val ARG_TAG_TITLE = "tagTitle"
+    const val ARG_TAG_URL = "customTagDataUrl"
+    const val ARG_FILTER_OPTIONS = "filterOptions"
     const val KEY_VIDEO_ID = "video_id"
+    const val CUSTOM_TAG_START = "/videos"
     private val jpUrlPrefix = generateJpUrlPrefix()
     val host = "${jpUrlPrefix}.zxbwv.com"
     val baseUrl = "https://${jpUrlPrefix}.zxfmj.com"

@@ -9,7 +9,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import uni.zf.xinpian.R
+import uni.zf.xinpian.data.AppConst.ARG_FILTER_OPTIONS
+import uni.zf.xinpian.data.AppConst.ARG_TAG_URL
+import uni.zf.xinpian.data.AppConst.baseUrl
 import uni.zf.xinpian.json.model.CustomTag
+import uni.zf.xinpian.list.ListActivity
 
 class CustomTagAdapter(private var tagList: List<CustomTag> = listOf()) : Adapter<CustomTagAdapter.ViewHolder>() {
 
@@ -35,14 +39,22 @@ class CustomTagAdapter(private var tagList: List<CustomTag> = listOf()) : Adapte
 
         fun bind(customTag: CustomTag) {
             tvTag.text = customTag.title
-            tvTag.setOnClickListener {
-                tvTag.context.startActivity(
-                    Intent(
-                        tvTag.context,
-                        CustomTagActivity::class.java
-                    ).apply {
+            tvTag.setOnClickListener { startCustomTagActivity(customTag) }
+        }
 
-                    })
+        private fun startCustomTagActivity(customTag: CustomTag) {
+            val context = tvTag.context
+            val address = customTag.jumpAddress
+            if (address.startsWith("/videos/special")) {
+                val suffix = address.replace("/videos", "/api").replace("-", "/")
+                context.startActivity(
+                    Intent(context, CustomTagActivity::class.java)
+                        .apply { putExtra(ARG_TAG_URL, baseUrl + suffix) })
+            } else if (address.startsWith("/videos/category")) {
+                val options = address.substringAfter("/videos/category?")
+                context.startActivity(
+                    Intent(context, ListActivity::class.java)
+                        .apply { putExtra(ARG_FILTER_OPTIONS, options) })
             }
         }
     }
