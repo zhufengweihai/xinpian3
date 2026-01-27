@@ -1,4 +1,4 @@
-package uni.zf.xinpian.short
+package uni.zf.xinpian.shorts
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -6,15 +6,15 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import uni.zf.xinpian.data.AppConst.shortUrl
+import uni.zf.xinpian.data.AppConst.shortListUrl
 import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.model.ShortVideo
 
-class ShortVideoPagingSource() : PagingSource<Int, ShortVideo>() {
+class ShortListPagingSource() : PagingSource<Int, ShortVideo>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ShortVideo> {
         val pageNumber = params.key ?: 0
         try {
-            val json = OkHttpUtil.get(shortUrl.format(pageNumber + 1))
+            val json = OkHttpUtil.get(shortListUrl.format(pageNumber + 1))
             if (json.isEmpty()) return LoadResult.Page(listOf(), null, null)
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
             val dataArray = fullJsonObject["data"]?.jsonArray

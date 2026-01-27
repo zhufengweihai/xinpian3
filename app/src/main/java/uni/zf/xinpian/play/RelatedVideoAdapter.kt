@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
-import uni.zf.xinpian.data.AppConst.KEY_VIDEO_ID
+import uni.zf.xinpian.data.AppConst.ARG_VIDEO_ID
 import uni.zf.xinpian.data.model.RelatedVideo
 import uni.zf.xinpian.utils.ImageLoadUtil
 
@@ -58,7 +58,7 @@ class RelatedVideoAdapter(private var relatedVideoList: List<RelatedVideo> = lis
     companion object {
         private fun toPlay(context: Context, relatedVideo: RelatedVideo) {
             val intent = Intent(context, PlayActivity::class.java).apply {
-                putExtra(KEY_VIDEO_ID, relatedVideo.videoId)
+                putExtra(ARG_VIDEO_ID, relatedVideo.videoId)
             }
             context.startActivity(intent)
         }

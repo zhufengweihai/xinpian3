@@ -37,7 +37,7 @@ object PlayerFactory {
         return simpleCache!!
     }
 
-    fun createPlayer(context: Context): ExoPlayer {
+    fun createPlayer(context: Context, autoPlay: Boolean = true): ExoPlayer {
         // 2. 配置 LoadControl (缓冲策略)
         // 目标：增加最大缓冲以抵抗网络波动，减少重缓冲；保持较小的起播缓冲以秒开。
         val loadControl = DefaultLoadControl.Builder()
@@ -80,7 +80,7 @@ object PlayerFactory {
             .setTrackSelector(trackSelector)
             .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory)) // 绑定带缓存的 Source
             .setHandleAudioBecomingNoisy(true) // 耳机拔出自动暂停
-            .build().apply { playWhenReady = true }
+            .build().apply { playWhenReady = autoPlay }
     }
 
     fun releaseCache() {

@@ -19,24 +19,28 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.jsoup.Jsoup
 import uni.zf.xinpian.App
-import uni.zf.xinpian.data.AppConst.KEY_VIDEO_ID
+import uni.zf.xinpian.data.AppConst.ARG_VIDEO_ID
 import uni.zf.xinpian.data.AppConst.recoUrl
 import uni.zf.xinpian.data.AppConst.videoUrl
 import uni.zf.xinpian.download.DownloadTracker
 import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.createVideoDataStore
 import uni.zf.xinpian.data.model.RelatedVideo
-import uni.zf.xinpian.json.model.CustomTag
 import uni.zf.xinpian.json.model.VideoData
 import uni.zf.xinpian.utils.createHeaders
 import java.net.URL
 
 class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {
-    private val videoId = savedStateHandle.get<Int>(KEY_VIDEO_ID) ?: 0
+    private val videoId = savedStateHandle.get<Int>(ARG_VIDEO_ID) ?: 0
     private val app = getApplication<Application>()
     private val videoDataStore = app.createVideoDataStore(videoId)
     private val relatedVideoDao by lazy { App.INSTANCE.appDb.relatedVideoDao() }
     private val downloadDao by lazy { App.INSTANCE.appDb.downloadDao() }
+
+    private val jsonConfig = Json {
+        isLenient = true  // 允许非严格格式的 JSON
+        ignoreUnknownKeys = true  // 忽略未知键
+    }
 
     fun getVideoData() = videoDataStore.data
 
@@ -49,7 +53,7 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
                 if (json.isEmpty()) return@launch
                 val jsonObject = Json.parseToJsonElement(json).jsonObject
                 jsonObject["data"]?.jsonObject?.let {
-                    val videoData = Json.decodeFromJsonElement<VideoData>(it)
+                    val videoData = jsonConfig.decodeFromJsonElement<VideoData>(it)
                     videoDataStore.updateData { videoData }
                 }
             } catch (e: Exception) {

@@ -1,4 +1,4 @@
-package uni.zf.xinpian.short
+package uni.zf.xinpian.shorts
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -10,7 +10,7 @@ import androidx.paging.cachedIn
 import kotlinx.coroutines.flow.Flow
 import uni.zf.xinpian.json.model.ShortVideo
 
-class ShortVideoViewModel(app: Application) : AndroidViewModel(app) {
+class ShortListViewModel(app: Application) : AndroidViewModel(app) {
     val dataFlow: Flow<PagingData<ShortVideo>> = Pager(
         PagingConfig(
             10,
@@ -18,5 +18,5 @@ class ShortVideoViewModel(app: Application) : AndroidViewModel(app) {
             true,
             10,
             100
-        ), pagingSourceFactory = ::ShortVideoPagingSource).flow.cachedIn(viewModelScope)
+        ), pagingSourceFactory = ::ShortListPagingSource).flow.cachedIn(viewModelScope)
 }

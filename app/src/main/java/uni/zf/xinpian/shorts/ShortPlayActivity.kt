@@ -1,14 +1,13 @@
-package uni.zf.xinpian.short
+package uni.zf.xinpian.shorts
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.OptIn
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -16,44 +15,41 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView.switchTargetView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
-import uni.zf.xinpian.databinding.FragmentShortVideoBinding
+import uni.zf.xinpian.databinding.ActivityShortPlayBinding
 import uni.zf.xinpian.player.PlayerFactory
 
-class ShortVideoFragment : Fragment() {
-    private lateinit var binding: FragmentShortVideoBinding
-    private val viewModel: ShortVideoViewModel by viewModels()
+class ShortPlayActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityShortPlayBinding
+    private val viewModel: ShortPlayViewModel by viewModels()
     private lateinit var player: ExoPlayer
-    private var isDataLoaded = false
+    private lateinit var adapter: ShortPlayAdapter
     private var currentPlayingPosition = -1
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        binding = ActivityShortPlayBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-    @OptIn(UnstableApi::class)
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentShortVideoBinding.inflate(inflater, container, false)
-        player = PlayerFactory.createPlayer(requireContext())
-        val adapter = ShortVideoAdapter(player)
+        init()
+    }
+
+    private fun init() {
+        player = PlayerFactory.createPlayer(this)
+        adapter = ShortPlayAdapter(player)
         binding.viewPager.adapter = adapter
-
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 playVideo(position)
             }
         })
-
-        lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onResume(owner: LifecycleOwner) {
-                if (!isDataLoaded && isVisible) {
-                    lifecycleScope.launch {
-                        viewModel.dataFlow.collectLatest { adapter.submitData(it) }
-                    }
-                    isDataLoaded = true
-                }
-            }
-        })
-
         player.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 if (playbackState == ExoPlayer.STATE_ENDED) {
@@ -65,7 +61,11 @@ class ShortVideoFragment : Fragment() {
             }
         })
 
-        return binding.root
+        lifecycleScope.launch {
+            viewModel.getShortVideo()?.let {
+                adapter.updateShortVideo(it)
+            }
+        }
     }
 
     @OptIn(UnstableApi::class)
@@ -73,23 +73,21 @@ class ShortVideoFragment : Fragment() {
         val recyclerView = binding.viewPager.getChildAt(0) as RecyclerView
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(position)
         val oldHolder = recyclerView.findViewHolderForAdapterPosition(currentPlayingPosition)
-        if (viewHolder is ShortVideoAdapter.VideoViewHolder) {
-            if (oldHolder is ShortVideoAdapter.VideoViewHolder) {
+        if (viewHolder is ShortPlayAdapter.VideoViewHolder) {
+            if (oldHolder is ShortPlayAdapter.VideoViewHolder) {
                 switchTargetView(player, oldHolder.playerView, viewHolder.playerView)
             } else {
                 switchTargetView(player, null, viewHolder.playerView)
             }
             player.seekTo(position, 0)
-            viewHolder.playerView.showController()
-            viewHolder.playerView.findViewById<View>(R.id.play_pause).visibility  = View.INVISIBLE
             player.prepare()
             player.play()
             currentPlayingPosition = position
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         player.release()
     }
 

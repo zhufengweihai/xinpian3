@@ -1,11 +1,11 @@
 package uni.zf.xinpian.category
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import uni.zf.xinpian.R
@@ -17,10 +17,11 @@ import uni.zf.xinpian.list.ListActivity
 
 class CustomTagAdapter(private var tagList: List<CustomTag> = listOf()) : Adapter<CustomTagAdapter.ViewHolder>() {
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateCustomTagList(tagList: List<CustomTag>) {
-        this.tagList = tagList
-        notifyDataSetChanged()
+    fun updateCustomTagList(newTagList: List<CustomTag>) {
+        val diffCallback = CustomTagDiffCallback(this.tagList, newTagList)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        this.tagList = newTagList
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -56,6 +57,23 @@ class CustomTagAdapter(private var tagList: List<CustomTag> = listOf()) : Adapte
                     Intent(context, ListActivity::class.java)
                         .apply { putExtra(ARG_FILTER_OPTIONS, options) })
             }
+        }
+    }
+    
+    class CustomTagDiffCallback(
+        private val oldList: List<CustomTag>,
+        private val newList: List<CustomTag>
+    ) : DiffUtil.Callback() {
+        override fun getOldListSize() = oldList.size
+        
+        override fun getNewListSize() = newList.size
+        
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].jumpAddress == newList[newItemPosition].jumpAddress
+        }
+        
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition] == newList[newItemPosition]
         }
     }
 }

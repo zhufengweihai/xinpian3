@@ -5,7 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
@@ -83,6 +85,17 @@ class CategoryViewModel(val app: Application, ssh: SavedStateHandle) : AndroidVi
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+    
+    fun isDataLoaded(): Boolean {
+        // 检查所有数据存储是否已有数据，避免每次都重新加载
+        return runBlocking {
+            val slideData = slideDataStore.data.firstOrNull()
+            val customTagData = customTagDataStore.data.firstOrNull()
+            val dyTagData = dyTagDataStore.data.firstOrNull()
+            
+            slideData != null && customTagData != null && dyTagData != null
         }
     }
 }

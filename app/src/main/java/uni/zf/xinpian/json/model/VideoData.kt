@@ -19,9 +19,11 @@ data class VideoData(
     @SerialName("imdb_url") val imdbUrl: String = "",
     val changed: Long = 0,
     val definition: Int = 0,
-    val duration: Int = 0,
+    val duration: String = "",
     @SerialName("episode_duration") val episodeDuration: String = "",
-    @SerialName("episodes_count") val episodesCount: Int = 0,
+    @SerialName("episodes_count")
+    @Serializable(with = SafeIntSerializer::class)
+    val episodesCount: Int = 0,
     val finished: Int = 0,
     @SerialName("is_look") val isLook: Int = 0,
     val shared: Int = 0,

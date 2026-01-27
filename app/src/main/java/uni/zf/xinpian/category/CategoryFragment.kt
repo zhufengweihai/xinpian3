@@ -65,12 +65,14 @@ class CategoryFragment() : Fragment() {
 
     private fun collectDataWithRefresh() {
         var pendingDataLoads = 3 // 跟踪待加载的数据项数量（slide、custom tags、dy tags）
+        var refreshComplete = false
 
         lifecycleScope.launch {
             viewModel.getSlideList().collect {
                 binding.slideView.setVideoList(it.data)
                 pendingDataLoads--
-                if (pendingDataLoads == 0) {
+                if (pendingDataLoads == 0 && !refreshComplete) {
+                    refreshComplete = true
                     binding.swipeRefreshLayout.isRefreshing = false
                 }
             }
@@ -80,7 +82,8 @@ class CategoryFragment() : Fragment() {
             viewModel.getCustomTagList().collect {
                 if (it.list.isNotEmpty()) cumTagAdapter.updateCustomTagList(it.list)
                 pendingDataLoads--
-                if (pendingDataLoads == 0) {
+                if (pendingDataLoads == 0 && !refreshComplete) {
+                    refreshComplete = true
                     binding.swipeRefreshLayout.isRefreshing = false
                 }
             }
@@ -90,7 +93,8 @@ class CategoryFragment() : Fragment() {
             viewModel.getDyTagList().collect {
                 dyTagAdapter.updateDyTagList(it.list)
                 pendingDataLoads--
-                if (pendingDataLoads == 0) {
+                if (pendingDataLoads == 0 && !refreshComplete) {
+                    refreshComplete = true
                     binding.swipeRefreshLayout.isRefreshing = false
                 }
             }
@@ -114,6 +118,14 @@ class CategoryFragment() : Fragment() {
             viewModel.getDyTagList().collect {
                 dyTagAdapter.updateDyTagList(it.list)
             }
+        }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        // 当fragment变为可见时，确保显示正确的数据
+        if (!viewModel.isDataLoaded()) {
+            loadData()
         }
     }
 }

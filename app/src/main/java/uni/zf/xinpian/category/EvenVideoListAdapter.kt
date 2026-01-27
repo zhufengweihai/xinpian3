@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import uni.zf.xinpian.R
-import uni.zf.xinpian.data.AppConst.KEY_VIDEO_ID
+import uni.zf.xinpian.data.AppConst.ARG_VIDEO_ID
 import uni.zf.xinpian.json.model.TagData
 import uni.zf.xinpian.play.PlayActivity
 import uni.zf.xinpian.utils.ImageLoadUtil
@@ -70,7 +70,7 @@ class EvenVideoListAdapter(private var tagDataList: List<TagData> = listOf()) : 
     companion object {
         private fun toPlay(context: Context, tagData: TagData) {
             val intent = Intent(context, PlayActivity::class.java).apply {
-                putExtra(KEY_VIDEO_ID, tagData.id)
+                putExtra(ARG_VIDEO_ID, tagData.id)
             }
             context.startActivity(intent)
         }
