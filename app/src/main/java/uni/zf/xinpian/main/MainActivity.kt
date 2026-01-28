@@ -26,6 +26,7 @@ import uni.UNI69B4A3A.UniUpgradeCenterResult
 import uni.UNI69B4A3A.default
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ActivityMainBinding
+import uni.zf.xinpian.search.SearchVideoActivity
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -60,6 +61,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.refreshImgDomains(this@MainActivity)
     }
     private fun setupUI() {
+        binding.inputView.setOnClickListener {
+            startActivity(Intent(this, SearchVideoActivity::class.java))
+        }
         binding.viewPager.apply {
             adapter = MainFragmentStateAdapter(this@MainActivity)
             isUserInputEnabled = false
