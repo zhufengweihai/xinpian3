@@ -43,5 +43,8 @@ object AppConst {
     val filterOptionsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/crumb/filterOptions"
     val filteredVideoUrl = "https://${jpUrlPrefix}.zxfmj" +
             ".com/api/crumb/list?fcate_pid=%s&category_id=%s&area=%s&year=%s&type=%s&sort=%s&page=%%d"
+    val recommendUrl = "https://${jpUrlPrefix}.zxfmj.com/api/search/recommend"
+    val searchCategoryUrl = "https://${jpUrlPrefix}.zxfmj.com/api/v2/settings/topCategory"
+    val categoryVideoUrl = "https://${jpUrlPrefix}.zxfmj.com/api/search/searchList?category_id=%d&page=%%d"
 }
 
