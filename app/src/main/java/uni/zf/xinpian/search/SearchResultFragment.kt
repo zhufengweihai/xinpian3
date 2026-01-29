@@ -21,8 +21,8 @@ fun newSearchResultFragment(categoryId: Int) = SearchResultFragment().apply {
 
 class SearchResultFragment : Fragment() {
     private var binding: FragmentSearchResultBinding? = null
-    private lateinit var adapter: CategoryVideoAdapter
-    private val viewModel: CategoryViewModel by viewModels()
+    private lateinit var adapter: SearchResultAdapter
+    private val viewModel: SearchResultViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSearchResultBinding.inflate(inflater, container, false)
@@ -31,7 +31,7 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun init() {
-        adapter = CategoryVideoAdapter()
+        adapter = SearchResultAdapter()
         binding!!.rvCategoryVideo.adapter = adapter
         lifecycleScope.launch {
             viewModel.videoFlow.collectLatest(adapter::submitData)

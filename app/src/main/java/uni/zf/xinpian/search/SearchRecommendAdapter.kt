@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uni.zf.xinpian.R
+import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
+import uni.zf.xinpian.data.AppConst.ARG_KEYWORD
 import uni.zf.xinpian.data.AppConst.ARG_VIDEO_ID
 import uni.zf.xinpian.json.model.RecommendItem
 
@@ -34,8 +36,8 @@ class SearchRecommendAdapter(private var items: List<RecommendItem> = listOf()) 
 
     private fun toResult(context: Context, item: RecommendItem) {
         val intent = Intent(context, SearchResultActivity::class.java).apply {
-            putExtra(ARG_VIDEO_ID, item.id)
-            putExtra(ARG_VIDEO_ID, item.title)
+            putExtra(ARG_CATEGORY, item.id)
+            putExtra(ARG_KEYWORD, item.title)
         }
         context.startActivity(intent)
     }

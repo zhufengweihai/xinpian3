@@ -35,7 +35,6 @@ class SearchResultActivity : AppCompatActivity() {
 
         setupListeners()
         initInputView()
-        initCategoryViewPager2()
         loadData()
     }
 
@@ -69,22 +68,18 @@ class SearchResultActivity : AppCompatActivity() {
     }
 
     private fun initTabCategory(categories: List<Category>) {
+        binding.vpCategory.adapter = createSectionsAdapter(categories)
+        binding.vpCategory.isUserInputEnabled = false
         TabLayoutMediator(binding.tabCategory, binding.vpCategory) { tab, pos ->
             tab.text = categories[pos].name
         }.attach()
-        binding.vpCategory.adapter = createSectionsAdapter(categories)
+
     }
 
     private fun createSectionsAdapter(categoryList: List<Category>) = object : FragmentStateAdapter(this) {
         override fun getItemCount() = categoryList.size
 
         override fun createFragment(position: Int): Fragment = newSearchResultFragment(categoryList[position].id)
-    }
-
-    private fun initCategoryViewPager2() {
-        binding.vpCategory.apply {
-            isUserInputEnabled = false
-        }
     }
 
     private fun loadData() {

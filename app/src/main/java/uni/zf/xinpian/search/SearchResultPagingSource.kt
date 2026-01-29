@@ -7,17 +7,17 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import uni.zf.xinpian.http.OkHttpUtil
-import uni.zf.xinpian.json.model.SearchListItem
+import uni.zf.xinpian.json.model.SearchResultItem
 
-class SearchResultPagingSource(private val url: String) : PagingSource<Int, SearchListItem>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchListItem> {
+class SearchResultPagingSource(private val url: String) : PagingSource<Int, SearchResultItem>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchResultItem> {
         val pageNumber = params.key ?: 0
         try {
             val json = OkHttpUtil.get(url.format(pageNumber + 1))
             if (json.isEmpty()) return LoadResult.Page(listOf(), null, null)
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
             val dataArray = fullJsonObject["data"]?.jsonArray
-            val videos = dataArray?.map { Json.decodeFromJsonElement<SearchListItem>(it) } ?: listOf()
+            val videos = dataArray?.map { Json.decodeFromJsonElement<SearchResultItem>(it) } ?: listOf()
             val nextKey = if (videos.size < params.loadSize) null else pageNumber.plus(1)
             return LoadResult.Page(videos, null, nextKey)
         } catch (e: Exception) {
@@ -25,7 +25,7 @@ class SearchResultPagingSource(private val url: String) : PagingSource<Int, Sear
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, SearchListItem>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, SearchResultItem>): Int? {
         return state.anchorPosition?.let {
             val anchorPage = state.closestPageToPosition(it)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)

@@ -13,13 +13,14 @@ import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.data.AppConst.ARG_KEYWORD
 import uni.zf.xinpian.data.AppConst.searchUrl
 import uni.zf.xinpian.json.model.SearchListItem
+import uni.zf.xinpian.json.model.SearchResultItem
 
 class SearchResultViewModel(val app: Application, ssh: SavedStateHandle) : AndroidViewModel(app) {
     private val categoryId = ssh.get<Int>(ARG_CATEGORY) ?: 0
     private val keyword = ssh.get<String>(ARG_KEYWORD) ?: ""
 
 
-    val videoFlow: Flow<PagingData<SearchListItem>> = Pager(
+    val videoFlow: Flow<PagingData<SearchResultItem>> = Pager(
         PagingConfig(
             20,
             3,
