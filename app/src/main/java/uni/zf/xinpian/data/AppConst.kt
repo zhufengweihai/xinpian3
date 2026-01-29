@@ -20,6 +20,7 @@ object AppConst {
     const val ARG_FILTER_OPTIONS = "filterOptions"
     const val ARG_VIDEO_ID = "video_id"
     const val ARG_SHORT_ID = "vid"
+    const val ARG_KEYWORD = "keyword"
     const val CUSTOM_TAG_START = "/videos"
     private val jpUrlPrefix = generateJpUrlPrefix()
     val host = "${jpUrlPrefix}.zxbwv.com"
@@ -46,5 +47,6 @@ object AppConst {
     val recommendUrl = "https://${jpUrlPrefix}.zxfmj.com/api/search/recommend"
     val searchCategoryUrl = "https://${jpUrlPrefix}.zxfmj.com/api/v2/settings/topCategory"
     val categoryVideoUrl = "https://${jpUrlPrefix}.zxfmj.com/api/search/searchList?category_id=%d&page=%%d"
+    val searchUrl = "https://${jpUrlPrefix}.zxfmj.com/api/v2/search/videoV2?key=%s&category_id=%d&page=%%d&pageSize=20"
 }
 

@@ -10,19 +10,22 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import kotlinx.coroutines.flow.Flow
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
-import uni.zf.xinpian.data.AppConst.categoryVideoUrl
+import uni.zf.xinpian.data.AppConst.ARG_KEYWORD
+import uni.zf.xinpian.data.AppConst.searchUrl
 import uni.zf.xinpian.json.model.SearchListItem
 
-class CategoryViewModel(val app: Application, ssh: SavedStateHandle) : AndroidViewModel(app) {
+class SearchResultViewModel(val app: Application, ssh: SavedStateHandle) : AndroidViewModel(app) {
     private val categoryId = ssh.get<Int>(ARG_CATEGORY) ?: 0
+    private val keyword = ssh.get<String>(ARG_KEYWORD) ?: ""
+
 
     val videoFlow: Flow<PagingData<SearchListItem>> = Pager(
         PagingConfig(
-            10,
+            20,
             3,
             true,
-            10,
+            20,
             100
         )
-    ) { SearchVideoPagingSource(categoryVideoUrl.format(categoryId)) }.flow.cachedIn(viewModelScope)
+    ) { SearchResultPagingSource(searchUrl.format(keyword, categoryId)) }.flow.cachedIn(viewModelScope)
 }

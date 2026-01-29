@@ -1,5 +1,6 @@
 package uni.zf.xinpian.search
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -11,7 +12,7 @@ import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst.ARG_VIDEO_ID
 import uni.zf.xinpian.json.model.RecommendItem
 
-class SearchRecommendAdapter(private val items: List<RecommendItem> = listOf()) :
+class SearchRecommendAdapter(private var items: List<RecommendItem> = listOf()) :
     RecyclerView.Adapter<SearchRecommendAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -23,6 +24,12 @@ class SearchRecommendAdapter(private val items: List<RecommendItem> = listOf()) 
         val textView = holder.itemView as TextView
         textView.text = items[position].title
         textView.setOnClickListener { toResult(textView.context, items[position]) }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateItems(items: List<RecommendItem>) {
+        this.items = items
+        notifyDataSetChanged()
     }
 
     private fun toResult(context: Context, item: RecommendItem) {

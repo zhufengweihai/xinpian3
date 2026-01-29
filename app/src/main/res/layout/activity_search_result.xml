@@ -80,7 +80,7 @@
         app:layout_constraintTop_toBottomOf="@id/search_container"
         app:tabIndicatorColor="@color/main"
         app:tabSelectedTextColor="@color/main"
-        app:tabTextColor="#AAAAAA" />
+        app:tabTextAppearance="@style/TabTextAppearance" />
 
     <!-- ViewPager2 for category content -->
     <androidx.viewpager2.widget.ViewPager2
@@ -88,7 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toTopOf="@id/search_result_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tab_category" />

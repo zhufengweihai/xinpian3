@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.databinding.FragmentSearchResultBinding
+import kotlin.getValue
 
 fun newSearchResultFragment(categoryId: Int) = SearchResultFragment().apply {
     arguments = Bundle().apply {
@@ -20,7 +22,7 @@ fun newSearchResultFragment(categoryId: Int) = SearchResultFragment().apply {
 class SearchResultFragment : Fragment() {
     private var binding: FragmentSearchResultBinding? = null
     private lateinit var adapter: CategoryVideoAdapter
-    private lateinit var viewModel: CategoryViewModel
+    private val viewModel: CategoryViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSearchResultBinding.inflate(inflater, container, false)

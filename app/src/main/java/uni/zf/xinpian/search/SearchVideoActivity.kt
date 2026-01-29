@@ -1,6 +1,5 @@
 package uni.zf.xinpian.search
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
@@ -17,6 +16,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
+import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
+import uni.zf.xinpian.data.AppConst.ARG_KEYWORD
 import uni.zf.xinpian.data.model.SearchHistory
 import uni.zf.xinpian.databinding.ActivitySearchVideoBinding
 import uni.zf.xinpian.json.model.Category
@@ -27,7 +28,7 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
     private lateinit var recommendAdapter: SearchRecommendAdapter
     private val historyViewModel: SearchHistoryViewModel by viewModels()
     private val viewModel: SearchViewModel by viewModels()
-
+    private var categories: List<Category> = listOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,7 +41,6 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
         setupListeners()
         initInputView()
         initRecommendSearchView()
-        initCategoryViewPager2()
         loadData()
     }
 
@@ -69,21 +69,23 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
     }
 
     private fun hideKeyboard() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.inputView.windowToken, 0)
     }
 
     private fun searchVideo(keyword: String) {
         historyViewModel.saveSearchHistory(SearchHistory(keyword))
+        val categoryId = categories[binding.vpCategory.currentItem].id
         val intent = Intent(this, SearchResultActivity::class.java).apply {
-
+            putExtra(ARG_CATEGORY, categoryId)
+            putExtra(ARG_KEYWORD, keyword)
         }
         startActivity(intent)
     }
 
     private fun initRecommendSearchView() {
         binding.recommendSearchView.apply {
-            layoutManager = GridLayoutManager(this@SearchVideoActivity, 4)
+            layoutManager = GridLayoutManager(this@SearchVideoActivity, 3)
             addItemDecoration(SpaceItemDecoration(this@SearchVideoActivity))
             recommendAdapter = SearchRecommendAdapter()
             adapter = recommendAdapter
@@ -91,27 +93,26 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
     }
 
     private fun initTabCategory(categories: List<Category>) {
+        binding.vpCategory.adapter = createSectionsAdapter(categories)
+        binding.vpCategory.isUserInputEnabled = false
         TabLayoutMediator(binding.tabCategory, binding.vpCategory) { tab, pos ->
             tab.text = categories[pos].name
         }.attach()
-        binding.vpCategory.adapter = createSectionsAdapter(categories)
     }
 
     private fun createSectionsAdapter(categoryList: List<Category>) = object : FragmentStateAdapter(this) {
         override fun getItemCount() = categoryList.size
 
-        override fun createFragment(position: Int): Fragment = newInstance(categoryList[position].id)
-    }
-
-    private fun initCategoryViewPager2() {
-        binding.vpCategory.apply {
-            isUserInputEnabled = false
-        }
+        override fun createFragment(position: Int): Fragment = newSearchCategoryFragment(categoryList[position].id)
     }
 
     private fun loadData() {
         lifecycleScope.launch {
-            initTabCategory(viewModel.getCategoryList(this@SearchVideoActivity))
+            categories = viewModel.getCategoryList(this@SearchVideoActivity)
+            initTabCategory(categories)
+        }
+        lifecycleScope.launch {
+            recommendAdapter.updateItems(viewModel.getSearchRecommend(this@SearchVideoActivity))
         }
     }
 
