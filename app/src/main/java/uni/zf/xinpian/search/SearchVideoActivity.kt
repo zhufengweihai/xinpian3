@@ -27,7 +27,7 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
     private val binding: ActivitySearchVideoBinding by lazy { ActivitySearchVideoBinding.inflate(layoutInflater) }
     private lateinit var recommendAdapter: SearchRecommendAdapter
     private val historyViewModel: SearchHistoryViewModel by viewModels()
-    private val viewModel: SearchViewModel by viewModels()
+    private val viewModel: SearchVideoViewModel by viewModels()
     private var categories: List<Category> = listOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

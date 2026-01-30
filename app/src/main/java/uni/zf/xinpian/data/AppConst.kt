@@ -12,6 +12,7 @@ object AppConst {
     const val DEFAULT_IMG_DOMAINS =
         "static.ztcuc.com,img4.ztcuc.com,img.ztcuc.com,oxcljymt.top,lnijywwg.top,pxluvojc.top"
     const val VERSION = "417"
+    const val DEFAULT_CATEGORY_ID = "88"
     const val PACKAGE_NAME = "com.qihoo.jp22"
     const val ARG_CATEGORY = "category"
     const val ARG_DY_TAG = "DyTag"

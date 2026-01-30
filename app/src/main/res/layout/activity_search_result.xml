@@ -79,6 +79,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_container"
         app:tabIndicatorColor="@color/main"
+        app:tabPaddingBottom="3dp"
+        app:tabPaddingEnd="3dp"
+        app:tabPaddingStart="3dp"
+        app:tabPaddingTop="3dp"
         app:tabSelectedTextColor="@color/main"
         app:tabTextAppearance="@style/TabTextAppearance" />
 

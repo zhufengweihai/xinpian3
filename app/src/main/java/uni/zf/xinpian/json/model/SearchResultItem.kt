@@ -1,23 +1,32 @@
 package uni.zf.xinpian.json.model;
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import java.util.List;
 
 import kotlinx.serialization.SerialName;
 import kotlinx.serialization.Serializable;
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 
 @Serializable
 data class Area(
-    @SerialName("area") val area: String // 地区名称（如"香港"）
+    val area: String // 地区名称（如"香港"）
 )
 
-/**
- * 年份项（years数组的单个元素）
- */
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+@JsonIgnoreUnknownKeys
+data class ResCategory(
+    val id: Int,
+    val name: String
+)
+
 @Serializable
 data class Year(
     @SerialName("year") val year: String // 年份（如"2025"）
 )
 
+@OptIn(ExperimentalSerializationApi::class)
+@JsonIgnoreUnknownKeys
 @Serializable
 data class SearchResultItem(
     val actors: List<String>, // 演员列表（如["古天乐","梁家辉"]）
@@ -31,19 +40,21 @@ data class SearchResultItem(
     @SerialName("original_name") val originalName: String, // 原始名称（如"風林火山"）
     val pinyin: String, // 全拼（如"fenglinhuoshan"）
     @SerialName("pinyin_short") val pinyinShort: String, // 拼音缩写（如"flhs"）
-    @SerialName("res_categories") val resCategories: List<CategoryItem>, // 资源分类列表
+    @SerialName("res_categories") val resCategories: List<ResCategory>, // 资源分类列表
     val score: String, // 评分（如6.4）
     val status: Int, // 状态（1=正常）
     val thumbnail: String, // 缩略图地址
     val title: String, // 影视标题（如"风林火山"）
-    @SerialName("top_category") val topCategory: CategoryItem, // 顶级分类（单个对象）
+    @SerialName("top_category") val topCategory: ResCategory, // 顶级分类（单个对象）
     @SerialName("tvimg") val tvImgUrl: String, // TV端图片地址
     val type: Int, // 类型标识（1=电影）
     val types: List<String>, // 题材类型（如["犯罪"]）
     val years: List<Year> // 年份列表（如需简化可参考areas修改）
 ) {
-    fun info(): String {
-        return years.joinToString("/") + "/" + areas.joinToString("/") + "/" + types.joinToString("/")
-
-    }
+    fun info() = "${years.joinToString("/") { it.year }}/${areas.joinToString("/") { it.area }}/${
+        resCategories
+            .joinToString("/") {
+                it.name
+            }
+    }"
 }

@@ -10,6 +10,10 @@ import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.model.SearchResultItem
 
 class SearchResultPagingSource(private val url: String) : PagingSource<Int, SearchResultItem>() {
+    private val jsonConfig = Json {
+        isLenient = true  // 允许非严格格式的 JSON
+        ignoreUnknownKeys = true  // 忽略未知键
+    }
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchResultItem> {
         val pageNumber = params.key ?: 0
         try {
@@ -17,7 +21,7 @@ class SearchResultPagingSource(private val url: String) : PagingSource<Int, Sear
             if (json.isEmpty()) return LoadResult.Page(listOf(), null, null)
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
             val dataArray = fullJsonObject["data"]?.jsonArray
-            val videos = dataArray?.map { Json.decodeFromJsonElement<SearchResultItem>(it) } ?: listOf()
+            val videos = dataArray?.map { jsonConfig.decodeFromJsonElement<SearchResultItem>(it) } ?: listOf()
             val nextKey = if (videos.size < params.loadSize) null else pageNumber.plus(1)
             return LoadResult.Page(videos, null, nextKey)
         } catch (e: Exception) {
