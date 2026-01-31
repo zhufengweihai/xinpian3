@@ -31,7 +31,7 @@ class ListFragment : Fragment(), FilterOptionListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentListBinding.inflate(inflater, container, false)
-        setupSearchView()
+        //setupSearchView()
         setupRecyclerViews()
         loadData()
         initVideosView()
@@ -50,12 +50,6 @@ class ListFragment : Fragment(), FilterOptionListener {
             viewModel.videoFlow.collectLatest {
                 videosAdapter.submitData(it)
             }
-        }
-    }
-
-    private fun setupSearchView() {
-        binding.searchView.setOnClickListener {
-            startActivity(Intent(context, SearchActivity::class.java))
         }
     }
 

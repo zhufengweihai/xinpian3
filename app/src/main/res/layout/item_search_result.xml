@@ -29,7 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"
             android:background="@color/red"
-            android:padding="2dp"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="3dp"
             android:textColor="@color/white"
             android:textSize="11sp" />
     </FrameLayout>

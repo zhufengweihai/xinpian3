@@ -3,6 +3,7 @@ package uni.zf.xinpian.search
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,9 +37,10 @@ class SearchResultAdapter : PagingDataAdapter<SearchResultItem, SearchResultAdap
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it, keyword) }
+        getItem(position)?.let { holder.bind(it, keyword, position) }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateKeyword(keyword: String) {
         this.keyword = keyword
         notifyDataSetChanged()
@@ -53,9 +55,10 @@ class SearchResultAdapter : PagingDataAdapter<SearchResultItem, SearchResultAdap
         private val tvDesc: TextView = itemView.findViewById(R.id.tv_desc)
 
         @SuppressLint("SetTextI18n")
-        fun bind(item: SearchResultItem, keyword: String) {
+        fun bind(item: SearchResultItem, keyword: String, position: Int) {
             loadImages(ivImage, item.thumbnail)
-            tvLabel.text = "电影"
+            tvLabel.text = item.topCategory.name
+            if (position % 2 == 0) tvLabel.setBackgroundColor(Color.BLUE)
             tvTitle.highlightText(item.title, keyword)
             tvActors.text = item.actors.joinToString("/")
             tvInfo.text = item.info()

@@ -72,15 +72,75 @@
 
     <!-- 横幅广告 -->
     <ImageView
-        android:id="@+id/banner_image"
+        android:id="@+id/iv_banner"
         android:layout_width="0dp"
         android:layout_height="120dp"
         android:layout_marginTop="10dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_container" />
+
+    <TextView
+        android:id="@+id/history_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:gravity="start|center_vertical"
+        android:text="@string/search_history"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_banner" />
+
+    <TextView
+        android:id="@+id/delete_all_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="5dp"
+        android:text="@string/delete_all"
+        android:textColor="@color/red"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/finish_view"
+        app:layout_constraintTop_toBottomOf="@id/iv_banner" />
+
+    <TextView
+        android:id="@+id/finish_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/finish"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_banner" />
+
+    <ImageView
+        android:id="@+id/delete_view"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_banner" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_history_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@id/recommend_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/history_label" />
 
     <!-- 推荐搜索标题 -->
     <TextView
@@ -88,14 +148,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:gravity="start|center_vertical"
         android:text="推荐搜索"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner_image" />
+        app:layout_constraintTop_toBottomOf="@id/search_history_view" />
 
     <!-- 推荐搜索关键词 -->
     <androidx.recyclerview.widget.RecyclerView

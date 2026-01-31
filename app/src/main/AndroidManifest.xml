@@ -52,7 +52,8 @@
             android:theme="@style/Theme.Xinpian.NoActionBar" />
         <activity
             android:name=".history.WatchHistoryActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Xinpian.NoActionBar"/>
         <activity
             android:name="io.dcloud.uniapp.UniAppActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|smallestScreenSize|screenLayout|screenSize|mcc|mnc|fontScale|navigation|uiMode"

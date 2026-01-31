@@ -2,11 +2,14 @@ package uni.zf.xinpian.search
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -16,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
+import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.data.AppConst.ARG_KEYWORD
 import uni.zf.xinpian.data.model.SearchHistory
@@ -26,6 +30,7 @@ import uni.zf.xinpian.view.SpaceItemDecoration
 class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
     private val binding: ActivitySearchVideoBinding by lazy { ActivitySearchVideoBinding.inflate(layoutInflater) }
     private lateinit var recommendAdapter: SearchRecommendAdapter
+    private lateinit var historyAdapter: SearchHistoryAdapter
     private val historyViewModel: SearchHistoryViewModel by viewModels()
     private val viewModel: SearchVideoViewModel by viewModels()
     private var categories: List<Category> = listOf()
@@ -40,6 +45,7 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
         }
         setupListeners()
         initInputView()
+        initSearchHistoryView()
         initRecommendSearchView()
         loadData()
     }
@@ -47,6 +53,9 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
     private fun setupListeners() {
         binding.clearView.setOnClickListener { binding.inputView.text.clear() }
         binding.searchView.setOnClickListener { handleSearchAction() }
+        binding.deleteView.setOnClickListener { toggleDeleteMode(true) }
+        binding.finishView.setOnClickListener { toggleDeleteMode(false) }
+        binding.deleteAllView.setOnClickListener { showDeleteAllConfirmation() }
     }
 
     private fun initInputView() {
@@ -81,6 +90,45 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
             putExtra(ARG_KEYWORD, keyword)
         }
         startActivity(intent)
+    }
+
+    private fun showDeleteAllConfirmation() {
+        AlertDialog.Builder(this, R.style.CustomAlertDialogTheme)
+            .setMessage(R.string.delete_all_confirm)
+            .setPositiveButton("确定") { _, _ ->
+                historyViewModel.deleteAllSearchHistory()
+            }
+            .setNegativeButton("取消") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun toggleDeleteMode(delete: Boolean) {
+        val visibility = if (delete) VISIBLE else GONE
+        binding.deleteAllView.visibility = visibility
+        binding.finishView.visibility = visibility
+        binding.deleteView.visibility = if (delete) GONE else VISIBLE
+        historyAdapter.setDeleteMode(delete)
+    }
+
+    private fun initSearchHistoryView() {
+        binding.searchHistoryView.apply {
+            layoutManager = GridLayoutManager(this@SearchVideoActivity, 4)
+            addItemDecoration(SpaceItemDecoration(this@SearchVideoActivity))
+            historyAdapter = SearchHistoryAdapter(this@SearchVideoActivity)
+            adapter = historyAdapter
+        }
+        lifecycleScope.launch {
+            historyViewModel.getAllSearchHistory().collect {
+                historyAdapter.setHistories(it)
+                if (it.isEmpty()) {
+                    binding.deleteAllView.visibility = GONE
+                    binding.historyLabel.visibility = GONE
+                    binding.finishView.visibility = GONE
+                    binding.deleteView.visibility = GONE
+                    binding.searchHistoryView.visibility = GONE
+                }
+            }
+        }
     }
 
     private fun initRecommendSearchView() {

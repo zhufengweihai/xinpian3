@@ -26,6 +26,8 @@ import uni.UNI69B4A3A.UniUpgradeCenterResult
 import uni.UNI69B4A3A.default
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ActivityMainBinding
+import uni.zf.xinpian.history.WatchHistoryActivity
+import uni.zf.xinpian.list.ListActivity
 import uni.zf.xinpian.search.SearchVideoActivity
 import java.io.File
 
@@ -63,6 +65,12 @@ class MainActivity : AppCompatActivity() {
     private fun setupUI() {
         binding.inputView.setOnClickListener {
             startActivity(Intent(this, SearchVideoActivity::class.java))
+        }
+        binding.ivHistory.setOnClickListener {
+            startActivity(Intent(this, WatchHistoryActivity::class.java))
+        }
+        binding.ivList.setOnClickListener {
+            startActivity(Intent(this, ListActivity::class.java))
         }
         binding.viewPager.apply {
             adapter = MainFragmentStateAdapter(this@MainActivity)
