@@ -27,8 +27,7 @@ fun createHeaders(context: Context, url: String = ""): Map<String, String> {
         "signature" to signature,
         "User-Agent" to AppData.getInstance(context).userAgent,
         "version" to VERSION,
-        "X-Requested-With" to PACKAGE_NAME,
-        "Connection" to "keep-alive"
+        "X-Requested-With" to PACKAGE_NAME
     )
 }
 
@@ -41,8 +40,7 @@ fun createHeaders(secret: String, userAgent: String): Map<String, String> {
         "signature" to signature,
         "User-Agent" to userAgent,
         "version" to VERSION,
-        "X-Requested-With" to PACKAGE_NAME,
-        "Connection" to "keep-alive"
+        "X-Requested-With" to PACKAGE_NAME
     )
 }
 

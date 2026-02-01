@@ -5,6 +5,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import java.io.IOException
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -54,15 +55,18 @@ object OkHttpUtil {
      * 私有化统一请求逻辑，抽离公共代码，极致解耦
      * 高阶函数封装Request构建逻辑，对外暴露极简API
      */
-    private suspend fun request(requestBuilder: () -> Request): String = withContext(Dispatchers.IO) {
+    private suspend fun request(requestBuilder: () -> Request) = withContext(Dispatchers.IO) {
+        var response: Response? = null
         try {
             val request = requestBuilder()
-            val response = okHttpClient.newCall(request).execute()
+            response = okHttpClient.newCall(request).execute()
             val text = if (response.isSuccessful) response.body.string() else ""
-            response.body.close()
+            response.close()
             return@withContext text
         } catch (e: Exception) {
             throw IOException("请求发生未知错误: ${e.message}", e)
+        }finally {
+            response?.close()
         }
     }
 }

@@ -2,7 +2,9 @@ package uni.zf.xinpian.json.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 
+@JsonIgnoreUnknownKeys
 @Serializable
 data class RankingItem(
     val id: Int, // 电影业务ID
@@ -15,4 +17,6 @@ data class RankingItem(
     @SerialName("category_name") val categoryName: String, // 分类名称（如"电影"）
     val types: List<String>, // 电影类型列表（如["喜剧","动画"]）
     val actors: List<String> // 主演列表
-)
+) {
+    fun actorsString() = actors.joinToString(separator = "、")
+}

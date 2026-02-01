@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import uni.zf.xinpian.category.TagVideoListActivity
-import uni.zf.xinpian.data.AppConst.ARG_DY_TAG
-import uni.zf.xinpian.data.AppConst.ARG_TAG_TITLE
+import uni.zf.xinpian.category.CustomTagActivity
+import uni.zf.xinpian.data.AppConst.ARG_TAG_URL
+import uni.zf.xinpian.data.AppConst.specialDetailUrl
 import uni.zf.xinpian.databinding.ItemSpecialBinding
 import uni.zf.xinpian.json.model.Special
 import uni.zf.xinpian.utils.ImageLoadUtil.loadImages
@@ -42,9 +42,8 @@ class SpecialsAdapter() : PagingDataAdapter<Special, SpecialsAdapter.ViewHolder>
             binding.root.setOnClickListener {
                 val context = binding.root.context
                 context.startActivity(
-                Intent(context, TagVideoListActivity::class.java).apply {
-                    putExtra(ARG_DY_TAG, special.topicId)
-                    putExtra(ARG_TAG_TITLE, special.title)
+                Intent(context, CustomTagActivity::class.java).apply {
+                    putExtra(ARG_TAG_URL, specialDetailUrl.format(special.topicId))
                 })
             }
         }

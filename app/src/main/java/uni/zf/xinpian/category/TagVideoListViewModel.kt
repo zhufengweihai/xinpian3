@@ -14,6 +14,7 @@ import uni.zf.xinpian.data.AppConst.ARG_TAG_TITLE
 import uni.zf.xinpian.data.AppConst.tagVideoListUrl
 import uni.zf.xinpian.json.model.TagData
 import uni.zf.xinpian.list.VideoPagingSource
+import uni.zf.xinpian.utils.createHeaders
 
 class TagVideoListViewModel(val app: Application, ssh: SavedStateHandle) : AndroidViewModel(app) {
     private val id = ssh.get<Int>(ARG_DY_TAG) ?: 0
@@ -28,8 +29,6 @@ class TagVideoListViewModel(val app: Application, ssh: SavedStateHandle) : Andro
             120
         )
     ) {
-        VideoPagingSource(
-            tagVideoListUrl.format(id)
-        )
+        VideoPagingSource(tagVideoListUrl.format(id), createHeaders(app, tagVideoListUrl))
     }.flow.cachedIn(viewModelScope)
 }

@@ -8,12 +8,13 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.model.TagData
+import uni.zf.xinpian.utils.createHeaders
 
-class VideoPagingSource(private val url: String) : PagingSource<Int, TagData>() {
+class VideoPagingSource(private val url: String, val headers: Map<String, String>) : PagingSource<Int, TagData>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TagData> {
         val pageNumber = params.key ?: 0
         try {
-            val json = OkHttpUtil.get(url.format(pageNumber + 1))
+            val json = OkHttpUtil.get(url.format(pageNumber + 1), headers)
             if (json.isEmpty()) return LoadResult.Page(listOf(), null, null)
             val fullJsonObject = Json.parseToJsonElement(json).jsonObject
             val dataArray = fullJsonObject["data"]?.jsonArray

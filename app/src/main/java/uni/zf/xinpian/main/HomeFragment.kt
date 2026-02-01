@@ -17,7 +17,7 @@ import uni.zf.xinpian.json.model.CategoryList
 
 class HomeFragment : Fragment() {
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var binding:FragmentHomeBinding
+    private lateinit var binding: FragmentHomeBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         loadData()

@@ -11,7 +11,7 @@ object AppConst {
     const val KEY_IMG_DOMAINS = "imgDomains"
     const val DEFAULT_IMG_DOMAINS =
         "static.ztcuc.com,img4.ztcuc.com,img.ztcuc.com,oxcljymt.top,lnijywwg.top,pxluvojc.top"
-    const val VERSION = "417"
+    const val VERSION = "423"
     const val DEFAULT_CATEGORY_ID = "88"
     const val PACKAGE_NAME = "com.qihoo.jp22"
     const val ARG_CATEGORY = "category"
@@ -40,6 +40,7 @@ object AppConst {
     val shortUrl = "https://${jpUrlPrefix}.970xw.com/api/detail?token=&vid=%d"
     val discoverUrl = "https://${jpUrlPrefix}.zxfmj.com/api/discover/list?type=1&page=%d&pageSize=20"
     val specialUrl = "https://${jpUrlPrefix}.zxfmj.com/api/special/list?page=%d"
+    val specialDetailUrl = "https://${jpUrlPrefix}.zxfmj.com/api/special/detail?id=%d"
     val rankOptionsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/weekRank/options"
     val weekRankUrl = "https://${jpUrlPrefix}.zxfmj.com/api/weekRank/list?category_id=%d"
     val filterOptionsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/crumb/filterOptions"

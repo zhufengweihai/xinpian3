@@ -41,12 +41,11 @@ class ListViewModel(val app: Application, ssh: SavedStateHandle) : AndroidViewMo
             150
         )
         Pager(config) {
-            VideoPagingSource(
-                filteredVideoUrl.format(
-                    it.fcatePid, it.categoryId, it.area, it.year,
-                    it.type, it.sort
-                )
+            val url = filteredVideoUrl.format(
+                it.fcatePid, it.categoryId, it.area, it.year,
+                it.type, it.sort
             )
+            VideoPagingSource(url, createHeaders(app, filteredVideoUrl))
         }.flow.cachedIn(viewModelScope)
     }
 
