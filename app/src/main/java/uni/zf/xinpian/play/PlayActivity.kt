@@ -232,8 +232,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
             layoutManager = GridLayoutManager(context, 3)
             addItemDecoration(BottomItemDecoration(context))
         }
-        bottomSheetView.findViewById<TextView>(R.id.tv_back).setOnClickListener { bottomSheetDialog.dismiss() }
-        bottomSheetView.findViewById<TextView>(R.id.iv_back).setOnClickListener { bottomSheetDialog.dismiss() }
+        bottomSheetView.findViewById<View>(R.id.tv_back).setOnClickListener { bottomSheetDialog.dismiss() }
+        bottomSheetView.findViewById<View>(R.id.iv_back).setOnClickListener { bottomSheetDialog.dismiss() }
         bottomSheetDialog.show()
     }
 
@@ -258,8 +258,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
             layoutManager = GridLayoutManager(context, 3)
             addItemDecoration(BottomItemDecoration(context))
         }
-        bottomSheetView.findViewById<TextView>(R.id.tv_back).setOnClickListener { bottomSheetDialog.dismiss() }
-        bottomSheetView.findViewById<TextView>(R.id.iv_back).setOnClickListener { bottomSheetDialog.dismiss() }
+        bottomSheetView.findViewById<View>(R.id.tv_back).setOnClickListener { bottomSheetDialog.dismiss() }
+        bottomSheetView.findViewById<View>(R.id.iv_back).setOnClickListener { bottomSheetDialog.dismiss() }
         bottomSheetDialog.show()
     }
 

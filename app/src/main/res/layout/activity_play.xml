@@ -118,14 +118,15 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fast_steps" />
+                app:layout_constraintTop_toBottomOf="@id/fast_steps"
+                tools:text="名字"/>
 
             <TextView
                 android:id="@+id/tv_introduction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
-                android:text="@string/introduction"
+                android:text="简介"
                 android:textColor="@color/main"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@id/name_view"
@@ -180,8 +181,8 @@
 
             <ImageView
                 android:id="@+id/iv_sources"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:padding="10dp"
                 android:src="@drawable/icon_next"
                 app:layout_constraintBottom_toBottomOf="@id/tv_sources"
@@ -215,18 +216,20 @@
                 android:id="@+id/tv_mask"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
+                android:paddingVertical="5dp"
                 android:gravity="start|center_vertical"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_items"
                 app:layout_constraintEnd_toStartOf="@id/iv_items_more"
-                app:layout_constraintTop_toTopOf="@id/tv_items" />
+                app:layout_constraintTop_toTopOf="@id/tv_items"
+                tools:text="第一集"/>
 
             <ImageView
                 android:id="@+id/iv_items_more"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:padding="10dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:paddingVertical="10dp"
+                android:paddingEnd="10dp"
                 android:src="@drawable/icon_next"
                 app:layout_constraintBottom_toBottomOf="@id/tv_items"
                 app:layout_constraintEnd_toEndOf="parent"
