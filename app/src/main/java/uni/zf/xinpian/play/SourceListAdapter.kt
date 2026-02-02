@@ -14,6 +14,7 @@ open class SourceListAdapter(
     private val listener: SourceChangeListener,
     private var sources: List<SourceGroup> = emptyList(),
     private var currentSource: Int = 0,
+    private val isGrid: Boolean = false
 ) : RecyclerView.Adapter<SourceListAdapter.ViewHolder>() {
 
     fun updateSources(currentSource: Int = 0) {
@@ -29,6 +30,9 @@ open class SourceListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_source, parent, false)
+        if (isGrid) {
+            view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        }
         return ViewHolder(view)
     }
 

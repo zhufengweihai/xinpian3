@@ -14,7 +14,10 @@
         android:background="@color/background"
         app:tabIndicatorHeight="0dp"
         app:tabMode="scrollable"
-        app:tabPaddingEnd="8dp" />
+        app:tabPaddingBottom="5dp"
+        app:tabPaddingEnd="10dp"
+        app:tabPaddingStart="0dp"
+        app:tabPaddingTop="5dp" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_rank"

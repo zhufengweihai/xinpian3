@@ -115,7 +115,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="15dp"
                 android:gravity="start|center_vertical"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fast_steps" />
@@ -150,6 +150,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:gravity="start|center_vertical"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/name_view" />
 
@@ -159,6 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:gravity="start|center_vertical"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_score"
                 app:layout_constraintStart_toEndOf="@id/tv_score"
                 app:layout_constraintTop_toTopOf="@id/tv_score" />
@@ -180,7 +182,7 @@
                 android:id="@+id/iv_sources"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_marginEnd="10dp"
+                android:padding="10dp"
                 android:src="@drawable/icon_next"
                 app:layout_constraintBottom_toBottomOf="@id/tv_sources"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -213,7 +215,7 @@
                 android:id="@+id/tv_mask"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
+                android:padding="5dp"
                 android:gravity="start|center_vertical"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_items"
@@ -224,7 +226,7 @@
                 android:id="@+id/iv_items_more"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_marginEnd="10dp"
+                android:padding="10dp"
                 android:src="@drawable/icon_next"
                 app:layout_constraintBottom_toBottomOf="@id/tv_items"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -252,17 +254,6 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rv_items" />
-
-            <ImageView
-                android:id="@+id/iv_recommend"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/icon_next"
-                app:layout_constraintBottom_toBottomOf="@id/tv_recommend"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_recommend"
-                app:tint="@color/main" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_recommend"

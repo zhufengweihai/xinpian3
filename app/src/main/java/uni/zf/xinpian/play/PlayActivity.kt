@@ -1,12 +1,14 @@
 package uni.zf.xinpian.play
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.graphics.Color
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -34,10 +36,13 @@ import androidx.media3.ui.PlayerView.ControllerVisibilityListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ActivityPlayBinding
 import uni.zf.xinpian.json.model.VideoData
+import uni.zf.xinpian.player.BottomItemDecoration
 import uni.zf.xinpian.player.EpisodeChangeListener
 import uni.zf.xinpian.player.GestureControl
 import uni.zf.xinpian.player.GestureListener
@@ -143,7 +148,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         binding.playerView.findViewById<View>(R.id.fullscreen).setOnClickListener { toggleFullScreen() }
         initLockView()
         initFastStepsView()
-        binding.ivIntroduction.setOnClickListener { videoData?.let { showDetailsDialog(it,this) } }
+        binding.tvIntroduction.setOnClickListener { videoData?.let { showDetailsDialog(it, this) } }
+        binding.ivIntroduction.setOnClickListener { videoData?.let { showDetailsDialog(it, this) } }
         initSourceListView()
         initPlayListView()
         initRecommendListView()
@@ -214,14 +220,47 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         binding.rvSources.adapter = SourceListAdapter(this)
         binding.rvSources.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
         binding.rvSources.addItemDecoration(SpaceItemDecoration(this))
-        binding.ivSources.setOnClickListener { videoData?.let { showSourceListDialog(it, this) } }
+        binding.ivSources.setOnClickListener { videoData?.let { showSourceListDialog(it) } }
+    }
+
+    fun showSourceListDialog(videoData: VideoData) {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetView = LayoutInflater.from(this).inflate(R.layout.dialog_sources, null)
+        bottomSheetDialog.setContentView(bottomSheetView)
+        bottomSheetView.findViewById<RecyclerView>(R.id.rv_source_grid).apply {
+            adapter = SourceListAdapter(this@PlayActivity, videoData.sourceGroups, currentSource, true)
+            layoutManager = GridLayoutManager(context, 3)
+            addItemDecoration(BottomItemDecoration(context))
+        }
+        bottomSheetView.findViewById<TextView>(R.id.tv_back).setOnClickListener { bottomSheetDialog.dismiss() }
+        bottomSheetView.findViewById<TextView>(R.id.iv_back).setOnClickListener { bottomSheetDialog.dismiss() }
+        bottomSheetDialog.show()
     }
 
     private fun initPlayListView() {
         binding.rvItems.adapter = PlayListAdapter(this)
         binding.rvItems.layoutManager = LinearLayoutManager(this, HORIZONTAL, false)
         binding.rvItems.addItemDecoration(SpaceItemDecoration(this))
-        binding.ivItemsMore.setOnClickListener { videoData?.let { showPlayListDialog(it, this) } }
+        binding.ivItemsMore.setOnClickListener { videoData?.let { showPlayListDialog(it) } }
+    }
+
+    fun showPlayListDialog(videoData: VideoData) {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetView = LayoutInflater.from(this).inflate(R.layout.dialog_play_list, null)
+        bottomSheetDialog.setContentView(bottomSheetView)
+        bottomSheetView.findViewById<RecyclerView>(R.id.rv_playlist).apply {
+            this.adapter = PlayListAdapter(
+                this@PlayActivity,
+                videoData.sourceGroups[currentSource].playList,
+                player?.currentMediaItemIndex ?: 0,
+                true
+            )
+            layoutManager = GridLayoutManager(context, 3)
+            addItemDecoration(BottomItemDecoration(context))
+        }
+        bottomSheetView.findViewById<TextView>(R.id.tv_back).setOnClickListener { bottomSheetDialog.dismiss() }
+        bottomSheetView.findViewById<TextView>(R.id.iv_back).setOnClickListener { bottomSheetDialog.dismiss() }
+        bottomSheetDialog.show()
     }
 
     private fun initRecommendListView() {

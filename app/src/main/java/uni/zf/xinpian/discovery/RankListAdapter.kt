@@ -49,7 +49,7 @@ class RankListAdapter(private var items: List<RankingItem> = listOf()) :
             tvTitle.text = item.title
             tvActors.text = "主演：" + item.actorsString()
             tvDesc.text = item.description
-            tvHot.text = "热度：" + item.hotSort.toString()
+            tvHot.text = "\uD83D\uDD25 热度：" + item.hotSort.toString()
             tvNumber.text = (number + 1).toString()
             itemView.setOnClickListener { toPlay(itemView.context, item.id) }
         }

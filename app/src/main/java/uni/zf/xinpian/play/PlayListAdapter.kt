@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uni.zf.xinpian.R
-import uni.zf.xinpian.json.model.SourceGroup
 import uni.zf.xinpian.json.model.SourceItem
 import uni.zf.xinpian.player.EpisodeChangeListener
 
@@ -16,6 +15,7 @@ open class PlayListAdapter(
     private val listener: EpisodeChangeListener,
     private var items: List<SourceItem> = emptyList(),
     private var currentItem: Int = 0,
+    private val isGrid: Boolean = false
 ) : RecyclerView.Adapter<PlayListAdapter.ViewHolder>() {
 
     fun updateItems(currentItem: Int = 0) {
@@ -31,6 +31,9 @@ open class PlayListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_source, parent, false)
+        if (isGrid) {
+            view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        }
         return ViewHolder(view)
     }
 
