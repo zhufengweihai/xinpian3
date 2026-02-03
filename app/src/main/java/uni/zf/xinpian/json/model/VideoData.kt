@@ -4,6 +4,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonIgnoreUnknownKeys
+import uni.zf.xinpian.data.model.WatchHistory
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -52,4 +53,19 @@ data class VideoData(
     fun categoryString() = category.joinToString(separator = "/") { it.title }
 
     fun directorsString() = directors.joinToString(separator = "/") { it.name }
+
+    fun toWatchHistory(currentSource:Int,currentItem: Int, currentPos: Long, percent: String): WatchHistory {
+        return WatchHistory(
+            videoId = id,
+            sourceId = sourceGroups[currentSource].id,
+            title = title,
+            currentItem = currentItem,
+            currentPos = currentPos,
+            sourceName = sourceGroups[currentSource].playList[currentItem].sourceName,
+            percent = percent,
+            thumbnail = thumbnail,
+            mask = this.mask,
+            lastWatchTime = System.currentTimeMillis()
+        )
+    }
 }

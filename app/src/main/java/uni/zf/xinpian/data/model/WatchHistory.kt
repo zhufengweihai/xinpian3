@@ -10,10 +10,10 @@ data class WatchHistory(
     var sourceId: Long,
     var title: String = "",
     var currentItem: Int = 0,
-    var currentEpisode: String = "",
+    var sourceName: String = "",
     var currentPos: Long = 0,
     var percent: String = "",
-    var image: String = "",
-    var status: String = "",
+    var thumbnail: String = "",
+    var mask: String = "",
     var lastWatchTime: Long = 0
 )

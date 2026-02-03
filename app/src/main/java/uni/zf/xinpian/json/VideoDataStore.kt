@@ -15,10 +15,10 @@ fun Context.createVideoDataStore(id: Int) = DataStoreFactory.create(
     produceFile = { File(filesDir, "video_$id.json") }
 )
 
-class VideoSerializer : Serializer<VideoData> {
-    override val defaultValue = VideoData()
+class VideoSerializer : Serializer<VideoData?> {
+    override val defaultValue = null
 
-    override suspend fun readFrom(input: InputStream): VideoData {
+    override suspend fun readFrom(input: InputStream): VideoData? {
         return try {
             Json.decodeFromString<VideoData>(input.readBytes().decodeToString())
         } catch (_: SerializationException) {
@@ -26,7 +26,7 @@ class VideoSerializer : Serializer<VideoData> {
         }
     }
 
-    override suspend fun writeTo(t: VideoData, output: OutputStream) {
+    override suspend fun writeTo(t: VideoData?, output: OutputStream) {
         output.write(Json.encodeToString(value = t).encodeToByteArray())
     }
 }

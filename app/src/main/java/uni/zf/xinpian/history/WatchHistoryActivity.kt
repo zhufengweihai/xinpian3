@@ -11,9 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
+import uni.zf.xinpian.data.AppConst.ARG_VIDEO_ID
 import uni.zf.xinpian.data.model.WatchHistory
 import uni.zf.xinpian.databinding.ActivityWatchHistoryBinding
-import uni.zf.xinpian.player.PlayerActivity
+import uni.zf.xinpian.play.PlayActivity
 import uni.zf.xinpian.view.DividerItemDecoration
 import uni.zf.xinpian.view.showConfirmationDialog
 
@@ -73,8 +74,8 @@ class WatchHistoryActivity : AppCompatActivity(), WatchHistoryAdapter.CallBack {
     }
 
     override fun toPlay(watchHistory: WatchHistory) {
-        startActivity(Intent(this, PlayerActivity::class.java).apply {
-            putExtra(PlayerActivity.KEY_VIDEO_ID, watchHistory.videoId)
+        startActivity(Intent(this, PlayActivity::class.java).apply {
+            putExtra(ARG_VIDEO_ID, watchHistory.videoId)
         })
     }
 }

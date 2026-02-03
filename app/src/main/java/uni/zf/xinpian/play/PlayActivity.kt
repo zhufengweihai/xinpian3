@@ -1,7 +1,6 @@
 package uni.zf.xinpian.play
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.graphics.Color
@@ -48,11 +47,13 @@ import uni.zf.xinpian.player.GestureControl
 import uni.zf.xinpian.player.GestureListener
 import uni.zf.xinpian.player.parser.MyMediaSourceFactory
 import uni.zf.xinpian.utils.TimeUtils.formatMs
+import uni.zf.xinpian.utils.toPercent
 import uni.zf.xinpian.view.GridItemDecoration
 import uni.zf.xinpian.view.SpaceItemDecoration
 
 private val STEPS = intArrayOf(-600000, -60000, -10000, 10000, 60000, 600000)
 private const val VOLUME_ADJUSTMENT_FACTOR = 200
+private const val MIN_WATCH_TIME = 5000L
 
 @OptIn(UnstableApi::class)
 open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, SourceChangeListener,
@@ -62,6 +63,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     private var player: ExoPlayer? = null
     private var playbackPosition = 0L
     private var currentSource = 0
+    private var currentItem = 0
+    private var currentPos: Long = 0
     private var factory: MyMediaSourceFactory? = null
     private val viewModel: PlayViewModel by viewModels()
     private var videoData: VideoData? = null
@@ -106,6 +109,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         super.onStop()
         playbackPosition = player?.currentPosition ?: 0
         player?.pause()
+        saveWatchHistory()
     }
 
     override fun onDestroy() {
@@ -277,10 +281,13 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         viewModel.requestVideoData()
         lifecycleScope.launch {
             viewModel.getVideoData().collect {
-                videoData = it
-                play(it)
-                updateUI(it)
-                loadRelatedVideos(it)
+                it?.let {
+                    videoData = it
+                    initWatchHistory()
+                    play(it)
+                    updateUI(it)
+                    loadRelatedVideos(it)
+                }
             }
         }
         lifecycleScope.launch {
@@ -291,8 +298,18 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         }
     }
 
+    private suspend fun initWatchHistory() {
+        viewModel.getWatchHistory()?.let { wh ->
+            videoData?.let {
+                currentSource = it.sourceGroups.indexOfFirst { it.id == wh.sourceId }.takeIf { it != -1 } ?: 0
+                currentItem = wh.currentItem
+                currentPos = wh.currentPos
+            }
+        }
+    }
+
     private fun loadRelatedVideos(video: VideoData) {
-        if (video.doubanId == 0) {
+        if (video.doubanId > 0) {
             viewModel.requestDoubanRecommend(video.doubanId)
         } else if (video.id > 0) {
             viewModel.requestRecommend()
@@ -303,9 +320,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         player?.let {
             val mediaItems = buildMediaItems(video)
             if (mediaItems.isEmpty()) return
-            val index = it.currentMediaItemIndex
-            val startIndex = if (index < mediaItems.size) index else 0
-            it.setMediaItems(mediaItems, startIndex, it.currentPosition)
+            val startIndex = if (currentItem < mediaItems.size) currentItem else 0
+            it.setMediaItems(mediaItems, startIndex, currentPos)
             it.prepare()
         }
     }
@@ -333,6 +349,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     override fun onSource(sourceIndex: Int) {
         videoData?.let {
             currentSource = sourceIndex
+            currentItem = player?.currentMediaItemIndex ?: 0
+            currentPos = player?.currentPosition ?: 0
             play(it)
         }
     }
@@ -347,6 +365,23 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
 
     override fun onDownload(itemIndex: Int) {
     }
+
+    private fun saveWatchHistory() {
+        if (player == null) return
+        if (player!!.currentPosition < MIN_WATCH_TIME) return
+        videoData?.let {
+            viewModel.saveWatchHistory(
+                it.toWatchHistory(
+                    currentSource,
+                    player!!.currentMediaItemIndex,
+                    player!!.currentPosition,
+                    getPercent()
+                )
+            )
+        }
+    }
+
+    private fun getPercent() = toPercent(player?.let { it.currentPosition.toDouble() / it.duration } ?: 0.0)
 
     private inner class PlayerEventListener : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: Int) {

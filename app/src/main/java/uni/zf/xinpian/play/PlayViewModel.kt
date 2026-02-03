@@ -26,6 +26,8 @@ import uni.zf.xinpian.download.DownloadTracker
 import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.createVideoDataStore
 import uni.zf.xinpian.data.model.RelatedVideo
+import uni.zf.xinpian.data.model.WatchHistory
+import uni.zf.xinpian.data.model.WatchRecord
 import uni.zf.xinpian.json.model.VideoData
 import uni.zf.xinpian.utils.createHeaders
 import java.net.URL
@@ -34,6 +36,7 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
     private val videoId = savedStateHandle.get<Int>(ARG_VIDEO_ID) ?: 0
     private val app = getApplication<Application>()
     private val videoDataStore = app.createVideoDataStore(videoId)
+    private val watchHistoryDao by lazy { App.INSTANCE.appDb.watchHistoryDao() }
     private val relatedVideoDao by lazy { App.INSTANCE.appDb.relatedVideoDao() }
     private val downloadDao by lazy { App.INSTANCE.appDb.downloadDao() }
 
@@ -45,6 +48,14 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
     fun getVideoData() = videoDataStore.data
 
     fun getRelatedVideos(): Flow<List<RelatedVideo>> = relatedVideoDao.getRelatedVideos(videoId)
+
+    fun saveWatchHistory(watchHistory: WatchHistory) {
+        viewModelScope.launch {
+            watchHistoryDao.insertOrUpdate(watchHistory)
+        }
+    }
+
+    suspend fun getWatchHistory() = watchHistoryDao.getWatchHistory(videoId)
 
     fun requestVideoData() {
         viewModelScope.launch {
@@ -97,8 +108,8 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
         }
     }
 
-    fun parseRelatedVideos(url: String): List<RelatedVideo> {
-        val document = Jsoup.parse(URL(url), 3000)
+    fun parseRelatedVideos(url: String): List<RelatedVideo> {ARG_VIDEO_ID
+        val document = Jsoup.parse(URL(url), 10000)
         val recElements = document.select("div.recommendations-bd")
         if (recElements.isEmpty()) return emptyList()
         val dtElements = recElements.select("dt")

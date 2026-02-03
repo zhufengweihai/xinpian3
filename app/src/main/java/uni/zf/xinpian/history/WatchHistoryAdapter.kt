@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.model.WatchHistory
+import uni.zf.xinpian.utils.ImageLoadUtil.loadImages
 
 class WatchHistoryAdapter(private val callBack: CallBack) : RecyclerView.Adapter<WatchHistoryAdapter.ViewHolder>() {
 
@@ -29,13 +30,13 @@ class WatchHistoryAdapter(private val callBack: CallBack) : RecyclerView.Adapter
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val watchHistory = watchList[holder.bindingAdapterPosition]
-        Glide.with(holder.imageView).load(watchHistory.image).into(holder.imageView)
+        loadImages(holder.imageView, watchHistory.thumbnail)
         holder.titleView.text = watchHistory.title
-        holder.statusView.text = watchHistory.status
+        holder.statusView.text = watchHistory.mask
         holder.percentView.text = holder.percentView.resources.getString(R.string.watch_to, watchHistory.percent)
         holder.deleteButton.setOnClickListener { callBack.deleteHistory(watchHistory) }
         holder.itemView.setOnClickListener { callBack.toPlay(watchHistory) }
-        holder.episodeView.text = watchHistory.currentEpisode
+        holder.episodeView.text = watchHistory.sourceName
     }
 
     override fun getItemCount(): Int = watchList.size
