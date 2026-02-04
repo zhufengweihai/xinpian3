@@ -86,7 +86,7 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
                         it.jsonObject["score"]?.jsonPrimitive?.content ?: ""
                     )
                 } ?: emptyList()
-                relatedVideoDao.insertRelatedVideos(relatedVideos)
+                relatedVideoDao.updateRelatedVideos(videoId, relatedVideos)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -132,7 +132,7 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
             val imageUrl = imgElements.attr("data-src")
             val title = imgElements.attr("alt")
             if (title.isNotEmpty() && imageUrl.isNotEmpty() && doubanId.isNotEmpty()) {
-                relatedMovies.add(RelatedVideo(videoId, title, imageUrl, doubanId.toInt()))
+                relatedMovies.add(RelatedVideo(videoId, title, imageUrl, doubanId.toInt(), fromDouban = true))
             }
         }
         return relatedMovies

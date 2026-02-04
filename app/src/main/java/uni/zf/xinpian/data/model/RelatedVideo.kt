@@ -16,4 +16,5 @@ data class RelatedVideo(
     @SerialName("path") val imageUrl: String,
     @SerialName("id") val relatedId: Int,
     val score: String = "",
+    val fromDouban: Boolean = false
 )

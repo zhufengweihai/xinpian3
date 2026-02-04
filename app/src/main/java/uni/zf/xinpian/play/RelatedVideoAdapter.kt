@@ -10,13 +10,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import com.bumptech.glide.Glide
 import uni.zf.xinpian.R
+import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
+import uni.zf.xinpian.data.AppConst.ARG_KEYWORD
 import uni.zf.xinpian.data.AppConst.ARG_VIDEO_ID
+import uni.zf.xinpian.data.AppConst.DEFAULT_CATEGORY_ID
 import uni.zf.xinpian.data.model.RelatedVideo
+import uni.zf.xinpian.search.SearchResultActivity
 import uni.zf.xinpian.utils.ImageLoadUtil
 
-class RelatedVideoAdapter(private var relatedVideoList: List<RelatedVideo> = listOf()) : Adapter<RelatedVideoAdapter.ViewHolder>() {
+class RelatedVideoAdapter(private var relatedVideoList: List<RelatedVideo> = listOf()) :
+    Adapter<RelatedVideoAdapter.ViewHolder>() {
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateRelatedVideos(relatedVideoList: List<RelatedVideo>) {
@@ -39,14 +43,15 @@ class RelatedVideoAdapter(private var relatedVideoList: List<RelatedVideo> = lis
         private val imageView: ImageView = itemView.findViewById(R.id.video_image)
         private val scoreView: TextView = itemView.findViewById(R.id.score_view)
         private val nameView: TextView = itemView.findViewById(R.id.name_view)
+
         init {
             itemView.clipToOutline = true
         }
 
         fun bind(relatedVideo: RelatedVideo) {
-            if (relatedVideo.imageUrl.startsWith("http")){
-                Glide.with(imageView.context).load(relatedVideo.imageUrl).into(imageView)
-            }else {
+            if (relatedVideo.fromDouban) {
+                ImageLoadUtil.loadDoubanImage(imageView, relatedVideo.imageUrl)
+            } else {
                 ImageLoadUtil.loadImages(imageView, relatedVideo.imageUrl)
             }
 
@@ -57,10 +62,18 @@ class RelatedVideoAdapter(private var relatedVideoList: List<RelatedVideo> = lis
 
     companion object {
         private fun toPlay(context: Context, relatedVideo: RelatedVideo) {
-            val intent = Intent(context, PlayActivity::class.java).apply {
-                putExtra(ARG_VIDEO_ID, relatedVideo.videoId)
+            if (relatedVideo.fromDouban) {
+                val intent = Intent(context, SearchResultActivity::class.java).apply {
+                    putExtra(ARG_CATEGORY, DEFAULT_CATEGORY_ID)
+                    putExtra(ARG_KEYWORD, relatedVideo.title)
+                }
+                context.startActivity(intent)
+            } else {
+                val intent = Intent(context, PlayActivity::class.java).apply {
+                    putExtra(ARG_VIDEO_ID, relatedVideo.videoId)
+                }
+                context.startActivity(intent)
             }
-            context.startActivity(intent)
         }
     }
 }
