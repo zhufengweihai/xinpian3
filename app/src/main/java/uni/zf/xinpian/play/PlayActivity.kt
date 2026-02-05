@@ -53,7 +53,7 @@ import uni.zf.xinpian.view.SpaceItemDecoration
 
 private val STEPS = intArrayOf(-600000, -60000, -10000, 10000, 60000, 600000)
 private const val VOLUME_ADJUSTMENT_FACTOR = 200
-private const val MIN_WATCH_TIME = 5000L
+private const val MIN_WATCH_TIME = 3000L
 
 @OptIn(UnstableApi::class)
 open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, SourceChangeListener,
@@ -280,14 +280,18 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     private fun loadData() {
         viewModel.requestVideoData()
         lifecycleScope.launch {
-            viewModel.getVideoData().collect {
-                it?.let {
-                    videoData = it
-                    initWatchHistory()
-                    play(it)
-                    updateUI(it)
-                    loadRelatedVideos(it)
+            try {
+                viewModel.getVideoData().collect {
+                    it?.let {
+                        videoData = it
+                        initWatchHistory()
+                        play(it)
+                        updateUI(it)
+                        loadRelatedVideos(it)
+                    }
                 }
+            }catch (e: Exception){
+                e.printStackTrace()
             }
         }
         lifecycleScope.launch {
@@ -309,11 +313,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     }
 
     private fun loadRelatedVideos(video: VideoData) {
-        if (video.doubanId > 0) {
-            viewModel.requestDoubanRecommend(video.doubanId)
-        } else if (video.id > 0) {
-            viewModel.requestRecommend()
-        }
+        viewModel.requestRelatedVideos(video)
     }
 
     private fun play(video: VideoData) {

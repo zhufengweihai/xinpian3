@@ -1,19 +1,11 @@
 package uni.zf.xinpian.json
 
-import android.content.Context
-import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.Serializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import uni.zf.xinpian.json.model.CustomTags
-import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
-
-fun Context.createCustomTagDataStore(id: Int) = DataStoreFactory.create(
-    CustomTagSerializer(),
-    produceFile = { File(filesDir, "custom_tag_$id.json") }
-)
 
 class CustomTagSerializer : Serializer<CustomTags> {
     override val defaultValue = CustomTags()

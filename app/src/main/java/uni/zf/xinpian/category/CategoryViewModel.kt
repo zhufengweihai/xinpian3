@@ -12,14 +12,12 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
+import uni.zf.xinpian.App
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.data.AppConst.dyTagURL
 import uni.zf.xinpian.data.AppConst.slideUrl
 import uni.zf.xinpian.data.AppConst.tagsUrl
 import uni.zf.xinpian.http.OkHttpUtil
-import uni.zf.xinpian.json.createCustomTagDataStore
-import uni.zf.xinpian.json.createDyTagDataStore
-import uni.zf.xinpian.json.createSlideDataStore
 import uni.zf.xinpian.json.model.CustomTag
 import uni.zf.xinpian.json.model.CustomTags
 import uni.zf.xinpian.json.model.DyTag
@@ -30,9 +28,9 @@ import uni.zf.xinpian.utils.createHeaders
 
 class CategoryViewModel(val app: Application, ssh: SavedStateHandle) : AndroidViewModel(app) {
     private val categoryId = ssh.get<Int>(ARG_CATEGORY) ?: 0
-    private val slideDataStore = app.createSlideDataStore(categoryId)
-    private val customTagDataStore = app.createCustomTagDataStore(categoryId)
-    private val dyTagDataStore = app.createDyTagDataStore(categoryId)
+    private val slideDataStore =  (app as App).getSlideDataStore(categoryId)
+    private val customTagDataStore = (app as App).getCustomTagDataStore(categoryId)
+    private val dyTagDataStore = (app as App).getDyTagDataStore(categoryId)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getSlideList() = slideDataStore.data

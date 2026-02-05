@@ -26,14 +26,13 @@ import uni.zf.xinpian.data.model.RelatedVideo
 import uni.zf.xinpian.data.model.WatchHistory
 import uni.zf.xinpian.download.DownloadTracker
 import uni.zf.xinpian.http.OkHttpUtil
-import uni.zf.xinpian.json.createVideoDataStore
 import uni.zf.xinpian.json.model.VideoData
 import uni.zf.xinpian.utils.createHeaders
 
 class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {
     private val videoId = savedStateHandle.get<Int>(ARG_VIDEO_ID) ?: 0
     private val app = getApplication<Application>()
-    private val videoDataStore = app.createVideoDataStore(videoId)
+    private val videoDataStore = (application as App).getVideoDataStore(videoId)
     private val watchHistoryDao by lazy { App.INSTANCE.appDb.watchHistoryDao() }
     private val relatedVideoDao by lazy { App.INSTANCE.appDb.relatedVideoDao() }
     private val downloadDao by lazy { App.INSTANCE.appDb.downloadDao() }
@@ -71,39 +70,48 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
         }
     }
 
-    fun requestRecommend() {
+    fun requestRelatedVideos(video: VideoData) {
         viewModelScope.launch {
-            try {
-                val json = OkHttpUtil.get(recoUrl.format(videoId), createHeaders(app))
-                if (json.isEmpty()) return@launch
-                val jsonArray = Json.parseToJsonElement(json).jsonObject["data"]?.jsonArray
-                val relatedVideos = jsonArray?.map {
-                    RelatedVideo(
-                        videoId,
-                        it.jsonObject["title"]?.jsonPrimitive?.content ?: "",
-                        it.jsonObject["path"]?.jsonPrimitive?.content ?: "",
-                        it.jsonObject["id"]?.jsonPrimitive?.int ?: 0,
-                        it.jsonObject["score"]?.jsonPrimitive?.content ?: ""
-                    )
-                } ?: emptyList()
-                relatedVideoDao.updateRelatedVideos(videoId, relatedVideos)
-            } catch (e: Exception) {
-                e.printStackTrace()
+            var relatedVideos = listOf<RelatedVideo>()
+            if (video.doubanId > 0) {
+                relatedVideos = requestDoubanRecommend(video.doubanId)
             }
+            if (relatedVideos.isEmpty() && video.id > 0) {
+                relatedVideos = requestRecommend()
+            }
+            relatedVideoDao.insertRelatedVideos(relatedVideos)
         }
     }
 
-    fun requestDoubanRecommend(doubanId: Int) {
-        viewModelScope.launch {
-            try {
-                val relatedVideos = withContext(Dispatchers.IO) {
-                    parseRelatedVideos(doubanId)
-                }
-                relatedVideoDao.insertRelatedVideos(relatedVideos)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+    suspend fun requestRecommend(): List<RelatedVideo> {
+        try {
+            val json = OkHttpUtil.get(recoUrl.format(videoId), createHeaders(app))
+            if (json.isEmpty()) return listOf()
+            val jsonArray = Json.parseToJsonElement(json).jsonObject["data"]?.jsonArray
+            return jsonArray?.map {
+                RelatedVideo(
+                    videoId,
+                    it.jsonObject["title"]?.jsonPrimitive?.content ?: "",
+                    it.jsonObject["path"]?.jsonPrimitive?.content ?: "",
+                    it.jsonObject["id"]?.jsonPrimitive?.int ?: 0,
+                    it.jsonObject["score"]?.jsonPrimitive?.content ?: ""
+                )
+            } ?: emptyList()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+        return listOf()
+    }
+
+    suspend fun requestDoubanRecommend(doubanId: Int): List<RelatedVideo> {
+        try {
+            return withContext(Dispatchers.IO) {
+                parseRelatedVideos(doubanId)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return listOf()
     }
 
     fun parseRelatedVideos(doubanId: Int): List<RelatedVideo> {

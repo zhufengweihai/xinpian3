@@ -10,18 +10,18 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import uni.zf.xinpian.App
 import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.data.AppConst
 import uni.zf.xinpian.data.AppConst.imgDomainUrl
 import uni.zf.xinpian.data.AppConst.initUrl
 import uni.zf.xinpian.http.OkHttpUtil
-import uni.zf.xinpian.json.categoryDataStore
 import uni.zf.xinpian.json.model.Category
 import uni.zf.xinpian.json.model.CategoryList
 import uni.zf.xinpian.utils.createHeaders
 
 class MainViewModel(private val app: Application) : AndroidViewModel(app) {
-    private val categoryDataStore = getApplication<Application>().categoryDataStore
+    private val categoryDataStore = (app as App).categoryDataStore
 
     fun getCategoryList() = categoryDataStore.data
 
