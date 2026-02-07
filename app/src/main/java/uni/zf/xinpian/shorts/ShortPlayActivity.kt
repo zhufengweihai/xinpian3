@@ -18,7 +18,7 @@ import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ActivityShortPlayBinding
-import uni.zf.xinpian.player.PlayerFactory
+import uni.zf.xinpian.play.PlayerFactory
 
 class ShortPlayActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShortPlayBinding

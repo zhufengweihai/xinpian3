@@ -1,4 +1,4 @@
-package uni.zf.xinpian.player
+package uni.zf.xinpian.play
 
 import android.content.Context
 import androidx.annotation.OptIn
@@ -13,10 +13,12 @@ import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.exoplayer.upstream.DefaultAllocator
 import okhttp3.OkHttpClient
+import uni.zf.xinpian.play.parse.CustomMediaSourceFactory
 import java.io.File
 
 @OptIn(UnstableApi::class) // Media3 的很多高级配置仍标记为 Unstable，这是正常的
@@ -37,7 +39,8 @@ object PlayerFactory {
         return simpleCache!!
     }
 
-    fun createPlayer(context: Context, autoPlay: Boolean = true): ExoPlayer {
+    fun createPlayer(context: Context, customFactory: Boolean = false, autoPlay: Boolean = true):
+            ExoPlayer {
         // 2. 配置 LoadControl (缓冲策略)
         // 目标：增加最大缓冲以抵抗网络波动，减少重缓冲；保持较小的起播缓冲以秒开。
         val loadControl = DefaultLoadControl.Builder()
@@ -78,7 +81,11 @@ object PlayerFactory {
         return ExoPlayer.Builder(context, renderersFactory)
             .setLoadControl(loadControl)
             .setTrackSelector(trackSelector)
-            .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory)) // 绑定带缓存的 Source
+            .setMediaSourceFactory(
+                if (customFactory) CustomMediaSourceFactory(cacheDataSourceFactory) else DefaultMediaSourceFactory(
+                    cacheDataSourceFactory
+                )
+            )
             .setHandleAudioBecomingNoisy(true) // 耳机拔出自动暂停
             .build().apply { playWhenReady = autoPlay }
     }

@@ -127,7 +127,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     }
 
     private fun createPlayer(): ExoPlayer {
-        //factory = MyMediaSourceFactory(DownloadTracker.dataSourceFactory)
+        factory = MyMediaSourceFactory(DownloadTracker.dataSourceFactory)
         return ExoPlayer.Builder(this)
             //.setMediaSourceFactory(DefaultMediaSourceFactory(MultiDataSourceFactory( this)))
             .setLoadControl(defaultLoadControl())

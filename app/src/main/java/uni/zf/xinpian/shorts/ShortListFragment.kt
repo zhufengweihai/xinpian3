@@ -19,7 +19,7 @@ import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.databinding.FragmentShortListBinding
-import uni.zf.xinpian.player.PlayerFactory
+import uni.zf.xinpian.play.PlayerFactory
 
 class ShortListFragment : Fragment() {
     private lateinit var binding: FragmentShortListBinding
