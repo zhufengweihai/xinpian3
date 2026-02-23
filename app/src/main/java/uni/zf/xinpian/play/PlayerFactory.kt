@@ -30,7 +30,7 @@ object PlayerFactory {
     @Synchronized
     private fun getCache(context: Context): SimpleCache {
         if (simpleCache == null) {
-            val cacheSize = 10 * 1024 * 1024 * 1024L // 100MB 缓存
+            val cacheSize = 10 * 1024 * 1024 * 1024L // 10G 缓存
             val cacheDir = File(context.cacheDir, "media3_cache")
             val evictor = LeastRecentlyUsedCacheEvictor(cacheSize)
             val databaseProvider = StandaloneDatabaseProvider(context)

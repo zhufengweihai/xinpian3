@@ -24,7 +24,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
@@ -82,7 +81,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         setContentView(binding.root)
         initView()
         onBackPressedDispatcher()
-        player = createPlayer()
+        player = PlayerFactory.createPlayer( this, true)
         binding.playerView.player = player
         loadData()
     }
@@ -98,7 +97,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     public override fun onStart() {
         super.onStart()
         if (player == null) {
-            createPlayer()
+            player = PlayerFactory.createPlayer( this, true)
             binding.playerView.player = player
         }
         player?.seekTo(playbackPosition)
@@ -124,18 +123,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
 
     override fun onVisibilityChanged(visibility: Int) {
         binding.lockView.visibility = visibility
-    }
-
-    private fun createPlayer(): ExoPlayer {
-        factory = MyMediaSourceFactory(DownloadTracker.dataSourceFactory)
-        return ExoPlayer.Builder(this)
-            //.setMediaSourceFactory(DefaultMediaSourceFactory(MultiDataSourceFactory( this)))
-            .setLoadControl(defaultLoadControl())
-            .build().apply {
-                addListener(PlayerEventListener())
-                setAudioAttributes(AudioAttributes.DEFAULT, true)
-                playWhenReady = true
-            }
     }
 
     private fun initView() {
@@ -237,7 +224,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
             addItemDecoration(BottomItemDecoration(context))
         }
         bottomSheetView.findViewById<View>(R.id.tv_back).setOnClickListener { bottomSheetDialog.dismiss() }
-        bottomSheetView.findViewById<View>(R.id.iv_back).setOnClickListener { bottomSheetDialog.dismiss() }
         bottomSheetDialog.show()
     }
 
@@ -263,7 +249,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
             addItemDecoration(BottomItemDecoration(context))
         }
         bottomSheetView.findViewById<View>(R.id.tv_back).setOnClickListener { bottomSheetDialog.dismiss() }
-        bottomSheetView.findViewById<View>(R.id.iv_back).setOnClickListener { bottomSheetDialog.dismiss() }
         bottomSheetDialog.show()
     }
 

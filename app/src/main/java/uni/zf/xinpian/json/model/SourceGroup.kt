@@ -12,10 +12,10 @@ data class SourceGroup(
     val id: Long = 0, // 有些是 0 或缺失，用 Long? 兼容
     val name: String,
     @SerialName("source_list") val playList: List<SourceItem>,
-    val sourceKey: String? = null,
+    @SerialName("source_key") val sourceKey: String? = null,
     val vodId: Int? = null,
     val status: Int? = null,
     val type: Int? = null,
-    val doubanId: Int? = null,
+    @SerialName("douban_id") val doubanId: Int? = null,
     val vipSource: Int? = null // 可选字段
 )
