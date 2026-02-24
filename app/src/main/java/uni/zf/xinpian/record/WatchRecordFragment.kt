@@ -22,6 +22,7 @@ class WatchRecordFragment : Fragment(), WatchRecordAdapter.CallBack {
 
     private val viewModel: WatchRecordViewModel by viewModels()
     private var binding: FragmentWatchRecordBinding? = null
+    private val adapter = WatchRecordAdapter(this)
     private var toConfirm = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -36,15 +37,12 @@ class WatchRecordFragment : Fragment(), WatchRecordAdapter.CallBack {
     }
 
     private fun initRecyclerView() {
-        val adapter = WatchRecordAdapter(this)
         binding!!.watchListView.apply {
             this.adapter = adapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(color = ContextCompat.getColor(context, R.color.divider)))
         }
-        lifecycleScope.launch {
-            viewModel.watchList.collect { adapter.setWatchList(it) }
-        }
+
     }
 
     private fun initDeleteAllView() {
@@ -57,6 +55,12 @@ class WatchRecordFragment : Fragment(), WatchRecordAdapter.CallBack {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            viewModel.watchList.collect { adapter.setWatchList(it) }
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null

@@ -16,21 +16,34 @@ import kotlin.getValue
 class SpecialsFragment : Fragment() {
     private var _binding: FragmentSpecialsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel:DiscoverViewModel by viewModels()
+    private lateinit var adapter: SpecialsAdapter
+    private val viewModel: DiscoverViewModel by viewModels()
+    private var hasLoaded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSpecialsBinding.inflate(inflater, container, false)
-        setupRecyclerView()
         return binding.root
     }
 
-    private fun setupRecyclerView() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.rvSpecials.layoutManager = GridLayoutManager(context, 2)
-        val adapter = SpecialsAdapter()
+        adapter = SpecialsAdapter()
         binding.rvSpecials.adapter = adapter
-        lifecycleScope.launch {
-            viewModel.specialDataFlow.collectLatest {
-                adapter.submitData(it)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadData()
+    }
+
+    private fun loadData() {
+        if (!hasLoaded) {
+            lifecycleScope.launch {
+                viewModel.specialDataFlow.collectLatest {
+                    adapter.submitData(it)
+                    hasLoaded = true
+                }
             }
         }
     }

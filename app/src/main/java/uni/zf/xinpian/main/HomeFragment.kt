@@ -18,15 +18,26 @@ import uni.zf.xinpian.json.model.CategoryList
 class HomeFragment : Fragment() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: FragmentHomeBinding
+    private var hasLoaded = false
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        loadData()
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadData()
+    }
+
     private fun loadData() {
-        viewModel.requestCategoryList()
-        lifecycleScope.launch { viewModel.getCategoryList().collect(::setupViewPagerAndTabs) }
+        if (!hasLoaded) {
+            viewModel.requestCategoryList()
+            lifecycleScope.launch {
+                viewModel.getCategoryList().collect(::setupViewPagerAndTabs)
+                hasLoaded = true
+            }
+        }
+
     }
 
     private fun setupViewPagerAndTabs(categories: CategoryList) {

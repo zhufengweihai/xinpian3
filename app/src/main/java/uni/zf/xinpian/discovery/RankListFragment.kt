@@ -25,20 +25,34 @@ class RankListFragment : Fragment() {
     private var binding: FragmentRankListBinding? = null
     private lateinit var adapter: RankListAdapter
     private val viewModel: RankViewModel by viewModels()
+    private var hasLoaded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentRankListBinding.inflate(inflater, container, false)
-        init()
         return binding!!.root
     }
 
-    private fun init() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         adapter = RankListAdapter()
         binding!!.rvRankList.adapter = adapter
-        lifecycleScope.launch {
-            adapter.updateItems(viewModel.getWeekRankList())
-        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        loadData()
+    }
+
+    private fun loadData() {
+        if (!hasLoaded) {
+            lifecycleScope.launch {
+                adapter.updateItems(viewModel.getWeekRankList())
+                hasLoaded = true
+            }
+        }
+
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null

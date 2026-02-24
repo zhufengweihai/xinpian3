@@ -19,16 +19,24 @@ class RankingFragment : Fragment() {
     private var _binding: FragmentRankingBinding? = null
     private val binding get() = _binding!!
     private val viewModel: RankViewModel by viewModels()
+    private var hasLoaded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRankingBinding.inflate(inflater, container, false)
-        loadOptions()
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadOptions()
+    }
+
     private fun loadOptions() {
-        lifecycleScope.launch {
-            setupViewPagerAndTabs(viewModel.getWeekRankOptions())
+        if (!hasLoaded) {
+            lifecycleScope.launch {
+                setupViewPagerAndTabs(viewModel.getWeekRankOptions())
+                hasLoaded = true
+            }
         }
     }
 
