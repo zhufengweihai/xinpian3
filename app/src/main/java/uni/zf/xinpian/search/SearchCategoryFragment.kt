@@ -22,18 +22,29 @@ class SearchCategoryFragment : Fragment() {
     private var binding: FragmentSearchCategoryBinding? = null
     private lateinit var adapter: CategoryVideoAdapter
     private val viewModel: CategoryViewModel by viewModels()
+    private var hasLoaded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSearchCategoryBinding.inflate(inflater, container, false)
-       init()
         return binding!!.root
     }
 
-    private fun init() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         adapter = CategoryVideoAdapter()
         binding!!.rvCategoryVideo.adapter = adapter
-        lifecycleScope.launch {
-            viewModel.videoFlow.collectLatest(adapter::submitData)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadData()
+    }
+    private fun loadData() {
+        if (!hasLoaded) {
+            lifecycleScope.launch {
+                viewModel.videoFlow.collectLatest(adapter::submitData)
+            }
+            hasLoaded = true
         }
     }
     override fun onDestroyView() {

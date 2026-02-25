@@ -47,10 +47,9 @@ class RankListFragment : Fragment() {
         if (!hasLoaded) {
             lifecycleScope.launch {
                 adapter.updateItems(viewModel.getWeekRankList())
-                hasLoaded = true
             }
+            hasLoaded = true
         }
-
     }
 
     override fun onDestroyView() {

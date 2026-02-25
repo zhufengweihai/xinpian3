@@ -30,7 +30,6 @@ class ScheduleFragment : Fragment() {
 
     }
 
-
     override fun onResume() {
         super.onResume()
         loadData()
@@ -41,9 +40,9 @@ class ScheduleFragment : Fragment() {
             lifecycleScope.launch {
                 viewModel.scheduleDataFlow.collectLatest {
                     adapter.submitData(it)
-                    hasLoaded = true
                 }
             }
+            hasLoaded = true
         }
     }
 

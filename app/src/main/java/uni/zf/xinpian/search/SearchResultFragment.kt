@@ -26,19 +26,22 @@ class SearchResultFragment : Fragment() {
     private lateinit var adapter: SearchResultAdapter
     private val viewModel: SearchResultViewModel by viewModels()
     private val commonViewModel: CommonResultViewModel by activityViewModels()
+    private var hasLoaded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSearchResultBinding.inflate(inflater, container, false)
-        init()
         return binding!!.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        adapter = SearchResultAdapter()
+        binding!!.rvCategoryVideo.adapter = adapter
     }
 
     override fun onResume() {
         super.onResume()
-        commonViewModel.keyword.observe(viewLifecycleOwner, {
-            viewModel.updateKeyword(it)
-            adapter.updateKeyword(it)
-        })
+        loadData()
     }
 
     override fun onPause() {
@@ -46,11 +49,16 @@ class SearchResultFragment : Fragment() {
         commonViewModel.keyword.removeObservers(viewLifecycleOwner)
     }
 
-    private fun init() {
-        adapter = SearchResultAdapter()
-        binding!!.rvCategoryVideo.adapter = adapter
-        lifecycleScope.launch {
-            viewModel.videoFlow.collectLatest(adapter::submitData)
+    private fun loadData() {
+        if (hasLoaded) {
+            commonViewModel.keyword.observe(viewLifecycleOwner, {
+                viewModel.updateKeyword(it)
+                adapter.updateKeyword(it)
+            })
+            lifecycleScope.launch {
+                viewModel.videoFlow.collectLatest(adapter::submitData)
+            }
+            hasLoaded = true
         }
     }
 

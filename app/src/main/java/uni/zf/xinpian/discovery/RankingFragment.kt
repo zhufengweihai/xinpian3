@@ -35,8 +35,8 @@ class RankingFragment : Fragment() {
         if (!hasLoaded) {
             lifecycleScope.launch {
                 setupViewPagerAndTabs(viewModel.getWeekRankOptions())
-                hasLoaded = true
             }
+            hasLoaded = true
         }
     }
 

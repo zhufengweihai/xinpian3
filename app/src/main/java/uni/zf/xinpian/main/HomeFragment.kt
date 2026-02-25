@@ -34,10 +34,9 @@ class HomeFragment : Fragment() {
             viewModel.requestCategoryList()
             lifecycleScope.launch {
                 viewModel.getCategoryList().collect(::setupViewPagerAndTabs)
-                hasLoaded = true
             }
+            hasLoaded = true
         }
-
     }
 
     private fun setupViewPagerAndTabs(categories: CategoryList) {

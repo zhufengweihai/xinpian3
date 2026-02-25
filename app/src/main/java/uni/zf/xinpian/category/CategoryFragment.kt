@@ -33,6 +33,14 @@ class CategoryFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         init()
     }
+
+    override fun onResume() {
+        super.onResume()
+        if (!viewModel.isDataLoaded()) {
+            loadData()
+        }
+    }
+
     private fun init() {
         dyTagAdapter = DyTagListAdapter()
         binding.rvDyTagList.adapter = dyTagAdapter
@@ -120,14 +128,6 @@ class CategoryFragment() : Fragment() {
             viewModel.getDyTagList().collect {
                 dyTagAdapter.updateDyTagList(it.list)
             }
-        }
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        // 当fragment变为可见时，确保显示正确的数据
-        if (!viewModel.isDataLoaded()) {
-            loadData()
         }
     }
 }

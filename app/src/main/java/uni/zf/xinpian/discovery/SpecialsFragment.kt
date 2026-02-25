@@ -42,9 +42,9 @@ class SpecialsFragment : Fragment() {
             lifecycleScope.launch {
                 viewModel.specialDataFlow.collectLatest {
                     adapter.submitData(it)
-                    hasLoaded = true
                 }
             }
+            hasLoaded = true
         }
     }
 
