@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -27,29 +25,39 @@ class ShortListFragment : Fragment() {
     private lateinit var player: ExoPlayer
     private var isDataLoaded = false
     private var currentPlayingPosition = -1
+    private lateinit var adapter: ShortVideoListAdapter
 
     @OptIn(UnstableApi::class)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentShortListBinding.inflate(inflater, container, false)
-        player = PlayerFactory.createPlayer(requireContext(), false)
-        val adapter = ShortVideoListAdapter(player)
-        binding.viewPager.adapter = adapter
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initPlayer()
+        initUI()
+    }
+
+    private fun initUI(){
+        adapter = ShortVideoListAdapter(player)
+        binding.viewPager.adapter = adapter
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 playVideo(position)
             }
         })
+    }
 
-        lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onResume(owner: LifecycleOwner) {
-                if (!isDataLoaded && isVisible) {
-                    player.play()
-                }
-            }
-        })
+    override fun onResume() {
+        super.onResume()
+        loadData()
+        if (!player.isPlaying) player.play()
+    }
 
+    private fun initPlayer(){
+        player = PlayerFactory.createPlayer(requireContext(), false)
         player.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 if (playbackState == ExoPlayer.STATE_ENDED) {
@@ -60,15 +68,15 @@ class ShortListFragment : Fragment() {
                 }
             }
         })
-
-        lifecycleScope.launch {
-            viewModel.dataFlow.collectLatest { adapter.submitData(it) }
+    }
+    private fun loadData() {
+        if (!isDataLoaded){
+            lifecycleScope.launch {
+                viewModel.dataFlow.collectLatest { adapter.submitData(it) }
+            }
             isDataLoaded = true
         }
-
-        return binding.root
     }
-
     @OptIn(UnstableApi::class)
     private fun playVideo(position: Int) {
         val recyclerView = binding.viewPager.getChildAt(0) as RecyclerView
