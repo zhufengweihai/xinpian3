@@ -39,7 +39,7 @@ class ShortListFragment : Fragment() {
         initUI()
     }
 
-    private fun initUI(){
+    private fun initUI() {
         adapter = ShortVideoListAdapter(player)
         binding.viewPager.adapter = adapter
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -53,10 +53,10 @@ class ShortListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         loadData()
-        if (!player.isPlaying) player.play()
+        //if (!player.isPlaying) player.play()
     }
 
-    private fun initPlayer(){
+    private fun initPlayer() {
         player = PlayerFactory.createPlayer(requireContext(), false)
         player.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -69,14 +69,16 @@ class ShortListFragment : Fragment() {
             }
         })
     }
+
     private fun loadData() {
-        if (!isDataLoaded){
+        if (!isDataLoaded) {
             lifecycleScope.launch {
                 viewModel.dataFlow.collectLatest { adapter.submitData(it) }
             }
             isDataLoaded = true
         }
     }
+
     @OptIn(UnstableApi::class)
     private fun playVideo(position: Int) {
         val recyclerView = binding.viewPager.getChildAt(0) as RecyclerView
