@@ -7,66 +7,6 @@
     android:background="@color/background"
     android:fitsSystemWindows="true">
 
-    <LinearLayout
-        android:id="@+id/search_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/shape_search"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="5dp"
-        app:layout_constraintEnd_toStartOf="@id/iv_history"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="5dp"
-            android:src="@drawable/ic_search"
-            app:tint="#AAAAAA" />
-
-        <TextView
-            android:id="@+id/input_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:gravity="start|center_vertical"
-            android:hint="@string/search_tip"
-            android:maxLines="1"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/iv_history"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="5dp"
-        android:layout_margin="10dp"
-        android:src="@drawable/icon_history"
-        app:layout_constraintBottom_toBottomOf="@id/search_container"
-        app:layout_constraintEnd_toStartOf="@id/iv_list"
-        app:layout_constraintStart_toEndOf="@id/search_container"
-        app:layout_constraintTop_toTopOf="@id/search_container" />
-
-    <ImageView
-        android:id="@+id/iv_list"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="5dp"
-        android:layout_marginVertical="10dp"
-        android:layout_marginEnd="10dp"
-        android:src="@drawable/icon_list"
-        app:layout_constraintBottom_toBottomOf="@id/search_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/iv_history"
-        app:layout_constraintTop_toTopOf="@id/search_container" />
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
@@ -75,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_container" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"

@@ -18,11 +18,12 @@ fun newCategoryFragment(categoryId: Int) = CategoryFragment().apply {
     arguments = Bundle().apply { putInt(ARG_CATEGORY, categoryId) }
 }
 
-class CategoryFragment() : Fragment() {
+class CategoryFragment : Fragment() {
     private val viewModel: CategoryViewModel by viewModels()
     private lateinit var binding: FragmentCategoryBinding
     private lateinit var dyTagAdapter: DyTagListAdapter
     private lateinit var cumTagAdapter: CustomTagAdapter
+    private var hasLoaded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCategoryBinding.inflate(inflater, container, false)
@@ -36,8 +37,9 @@ class CategoryFragment() : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!viewModel.isDataLoaded()) {
+        if (!hasLoaded) {
             loadData()
+            hasLoaded = true
         }
     }
 
