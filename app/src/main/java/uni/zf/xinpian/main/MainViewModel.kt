@@ -18,6 +18,7 @@ import uni.zf.xinpian.data.AppConst.initUrl
 import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.model.Category
 import uni.zf.xinpian.json.model.CategoryList
+import uni.zf.xinpian.json.model.GithubRelease
 import uni.zf.xinpian.utils.createHeaders
 
 class MainViewModel(private val app: Application) : AndroidViewModel(app) {
@@ -67,5 +68,17 @@ class MainViewModel(private val app: Application) : AndroidViewModel(app) {
                 e.printStackTrace()
             }
         }
+    }
+
+    suspend fun requestAppUpdateInfo(): GithubRelease? {
+        try {
+            val json = OkHttpUtil.get(AppConst.appReleaseUrl)
+            if (json.isEmpty()) return null
+            val fullJsonObject = Json.parseToJsonElement(json).jsonObject
+            return Json.decodeFromJsonElement<GithubRelease>(fullJsonObject)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 }

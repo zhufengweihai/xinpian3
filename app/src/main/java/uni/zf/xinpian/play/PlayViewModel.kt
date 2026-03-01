@@ -62,7 +62,7 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
                 val jsonObject = Json.parseToJsonElement(json).jsonObject
                 jsonObject["data"]?.jsonObject?.let {
                     val videoData = jsonConfig.decodeFromJsonElement<VideoData>(it)
-                    videoDataStore.updateData { videoData.apply { sourceGroups.filter { it.name == "常规线路" } } }
+                    videoDataStore.updateData { videoData.copy(sourceGroups = videoData.sourceGroups.filter { it.name != "常规线路" }) }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

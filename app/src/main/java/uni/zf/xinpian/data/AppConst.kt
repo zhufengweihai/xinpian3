@@ -23,6 +23,8 @@ object AppConst {
     const val ARG_SHORT_ID = "vid"
     const val ARG_KEYWORD = "keyword"
     const val CUSTOM_TAG_START = "/videos"
+    const val KEY_VERSION = "version"
+    const val DEFAULT_VERSION = "V0.0.0"
     private val jpUrlPrefix = generateJpUrlPrefix()
     val host = "${jpUrlPrefix}.zxfmj.com"
     val baseUrl = "https://${jpUrlPrefix}.zxfmj.com"
@@ -50,5 +52,6 @@ object AppConst {
     val searchCategoryUrl = "https://${jpUrlPrefix}.zxfmj.com/api/v2/settings/topCategory"
     val categoryVideoUrl = "https://${jpUrlPrefix}.zxfmj.com/api/search/searchList?category_id=%d&page=%%d"
     val searchUrl = "https://${jpUrlPrefix}.zxfmj.com/api/v2/search/videoV2?key=%s&category_id=%d&page=%%d&pageSize=20"
+    val appReleaseUrl = "https://api.github.com/repos/zhufengweihai/xinpian3/releases/latest"
 }
 

@@ -14,19 +14,25 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
-import io.dcloud.uts.UTSPromise.Companion.resolve
-import io.dcloud.uts.compareTo
-import uni.UNI69B4A3A.UniUpgradeCenterResult
-import uni.UNI69B4A3A.default
+import androidx.lifecycle.lifecycleScope
+import com.king.app.dialog.AppDialog.dismissDialog
+import com.king.app.dialog.AppDialog.showDialog
+import com.king.app.dialog.AppDialogConfig
+import com.king.app.updater.AppUpdater
+import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
+import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.databinding.ActivityMainBinding
+import uni.zf.xinpian.json.model.GithubRelease
 import java.io.File
+
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -50,15 +56,17 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         checkAppUpdate()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(runnable)
     }
 
     private fun loadData() {
-        viewModel.refreshSecret( this@MainActivity)
+        viewModel.refreshSecret(this@MainActivity)
         viewModel.refreshImgDomains(this@MainActivity)
     }
+
     private fun setupUI() {
         binding.viewPager.apply {
             adapter = MainFragmentStateAdapter(this@MainActivity)
@@ -92,24 +100,32 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkAppUpdate() {
         if (isDataLoaded) {
-            default().then(fun(uniUpgradeCenterResult) {
-                if (uniUpgradeCenterResult.code > 0) {
-                    showUpdateDialog(uniUpgradeCenterResult)
+            lifecycleScope.launch {
+                viewModel.requestAppUpdateInfo()?.let {
+                    val appData = AppData.getInstance(this@MainActivity)
+                    if (it.name >= appData.version) {
+                        appData.version = it.name
+                        showUpdateDialog(it)
+                    }
                 }
-                resolve()
-            })
+            }
             isDataLoaded = false
         }
     }
 
-    private fun showUpdateDialog(result: UniUpgradeCenterResult) {
-        AlertDialog.Builder(this, R.style.CustomAlertDialogTheme)
-            .setTitle(result.title)
-            .setMessage(result.contents)
-            .setPositiveButton("更新") { _, _ -> startDownload(result.url.trim()) }
-            .setNegativeButton("取消", null)
-            .setCancelable(false)
-            .show()
+    private fun showUpdateDialog(apkRelease: GithubRelease) {
+        val appDialogConfig = AppDialogConfig(this)
+            .setTitle("发现新版本: ${apkRelease.name}")
+            .setConfirm("升级")
+            .setContent(apkRelease.body)
+            .setOnClickConfirm { // 开始下载更新
+                AppUpdater(this@MainActivity, apkRelease.assets.first().browserDownloadUrl).start()
+                dismissDialog()
+            }
+
+
+// 显示对话框
+        showDialog(appDialogConfig)
     }
 
     private fun startDownload(url: String) {

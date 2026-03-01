@@ -88,6 +88,8 @@ dependencies {
     implementation libs.kotlinx.serialization.json
     implementation libs.jsoup
     implementation libs.commons.net
+    implementation libs.app.updater
+    implementation libs.app.dialog
 
     ksp(libs.androidx.room.compiler)
 

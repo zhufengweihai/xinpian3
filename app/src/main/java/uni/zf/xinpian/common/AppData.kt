@@ -7,8 +7,10 @@ import androidx.core.content.edit
 import androidx.startup.Initializer
 import uni.zf.xinpian.data.AppConst.DEFAULT_IMG_DOMAINS
 import uni.zf.xinpian.data.AppConst.DEFAULT_SECRET
+import uni.zf.xinpian.data.AppConst.DEFAULT_VERSION
 import uni.zf.xinpian.data.AppConst.KEY_IMG_DOMAINS
 import uni.zf.xinpian.data.AppConst.KEY_SECRET
+import uni.zf.xinpian.data.AppConst.KEY_VERSION
 import uni.zf.xinpian.data.AppConst.NETWORK_MOBILE
 import uni.zf.xinpian.data.AppConst.NETWORK_WIFI
 import uni.zf.xinpian.data.AppConst.USER_AGENT_SUFFIX
@@ -24,8 +26,12 @@ class AppData private constructor(val context: Context) {
     var imgDomains = context.prefs.getString(KEY_IMG_DOMAINS, DEFAULT_IMG_DOMAINS)!!.split(",")
         set(value) {
             context.prefs.edit { putString(KEY_IMG_DOMAINS, value.joinToString(",")) }
+            field = value
         }
-
+    var version = context.prefs.getString(KEY_VERSION, DEFAULT_VERSION)!!
+        set(value) {
+            context.prefs.edit { putString(KEY_VERSION, value) }
+        }
     private fun initUserAgent(): String {
         val networkType = if (NetworkTypeUtils.isWifiConnected(context)) NETWORK_WIFI else NETWORK_MOBILE
         return WebSettings.getDefaultUserAgent(context) + USER_AGENT_SUFFIX.format(networkType)
