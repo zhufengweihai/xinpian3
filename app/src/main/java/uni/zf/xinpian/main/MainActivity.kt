@@ -1,5 +1,6 @@
 package uni.zf.xinpian.main
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DownloadManager
@@ -14,9 +15,9 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -26,13 +27,13 @@ import com.king.app.dialog.AppDialog.dismissDialog
 import com.king.app.dialog.AppDialog.showDialog
 import com.king.app.dialog.AppDialogConfig
 import com.king.app.updater.AppUpdater
+import com.king.app.updater.util.PermissionUtils
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
 import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.databinding.ActivityMainBinding
 import uni.zf.xinpian.json.model.GithubRelease
 import java.io.File
-
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -42,6 +43,16 @@ class MainActivity : AppCompatActivity() {
     private var isDataLoaded = false
     private val REQUEST_INSTALL_PERMISSION = 1001
     private var downloadId: Long = -1
+    private var pendingApkUrl: String? = null
+
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                pendingApkUrl?.let { AppUpdater(this, it).start() }
+            } else {
+                Toast.makeText(this, "通知权限未授权！", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +70,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(runnable)
+        if (::runnable.isInitialized) {
+            handler.removeCallbacks(runnable)
+        }
     }
 
     private fun loadData() {
@@ -99,7 +112,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAppUpdate() {
-        if (isDataLoaded) {
+        if (!isDataLoaded) {
             lifecycleScope.launch {
                 viewModel.requestAppUpdateInfo()?.let {
                     val appData = AppData.getInstance(this@MainActivity)
@@ -109,7 +122,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            isDataLoaded = false
+            isDataLoaded = true
         }
     }
 
@@ -118,14 +131,24 @@ class MainActivity : AppCompatActivity() {
             .setTitle("发现新版本: ${apkRelease.name}")
             .setConfirm("升级")
             .setContent(apkRelease.body)
-            .setOnClickConfirm { // 开始下载更新
-                AppUpdater(this@MainActivity, apkRelease.assets.first().browserDownloadUrl).start()
+            .setOnClickConfirm {
+                appUpdater(apkRelease.assets.first().browserDownloadUrl)
                 dismissDialog()
             }
-
-
-// 显示对话框
         showDialog(appDialogConfig)
+    }
+
+    private fun appUpdater(apkUrl: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (PermissionUtils.checkPermission(this, POST_NOTIFICATIONS)) {
+                AppUpdater(this, apkUrl).start()
+            } else {
+                pendingApkUrl = apkUrl
+                requestNotificationPermissionLauncher.launch(POST_NOTIFICATIONS)
+            }
+        } else {
+            AppUpdater(this, apkUrl).start()
+        }
     }
 
     private fun startDownload(url: String) {
