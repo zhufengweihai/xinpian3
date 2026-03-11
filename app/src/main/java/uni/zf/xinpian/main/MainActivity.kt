@@ -30,9 +30,9 @@ import com.king.app.updater.AppUpdater
 import com.king.app.updater.util.PermissionUtils
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.R
-import uni.zf.xinpian.common.AppData
 import uni.zf.xinpian.databinding.ActivityMainBinding
 import uni.zf.xinpian.json.model.GithubRelease
+import uni.zf.xinpian.utils.AppVersionUtil.getVersionName
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -115,9 +115,8 @@ class MainActivity : AppCompatActivity() {
         if (!isDataLoaded) {
             lifecycleScope.launch {
                 viewModel.requestAppUpdateInfo()?.let {
-                    val appData = AppData.getInstance(this@MainActivity)
-                    if (it.name >= appData.version) {
-                        appData.version = it.name
+                    val v = it.name.replace("V", "")
+                    if (v > getVersionName(this@MainActivity)) {
                         showUpdateDialog(it)
                     }
                 }
