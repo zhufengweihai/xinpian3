@@ -1,15 +1,25 @@
 package uni.zf.xinpian.main
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.FrameLayout.LayoutParams
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.king.app.dialog.AppDialog.dismissDialog
 import com.king.app.dialog.AppDialog.showDialog
@@ -21,6 +31,8 @@ import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ActivityMainBinding
 import uni.zf.xinpian.json.model.GithubRelease
 import uni.zf.xinpian.utils.AppVersionUtil.getVersionName
+import androidx.core.net.toUri
+import uni.zf.xinpian.data.AppConst.VPN_URL
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -29,6 +41,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var runnable: Runnable
     private var isDataLoaded = false
     private var pendingApkUrl: String? = null
+    private var isShowingAd = false
+    private var adView: View? = null
+    private var countDownTimer: CountDownTimer? = null
+    private val COOL_DOWN = 60 * 1000
+    private var lastShowTime = 0L
+    private var isCheckedUpdate = false
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -40,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -48,9 +67,13 @@ class MainActivity : AppCompatActivity() {
         loadData()
     }
 
-    override fun onStart() {
-        super.onStart()
-        checkAppUpdate()
+    override fun onResume() {
+        super.onResume()
+        val current = System.currentTimeMillis()
+        if (current - lastShowTime > COOL_DOWN) {
+            lastShowTime = current
+            showSplashAd()
+        }
     }
 
     override fun onDestroy() {
@@ -58,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         if (::runnable.isInitialized) {
             handler.removeCallbacks(runnable)
         }
+        countDownTimer?.cancel()
     }
 
     private fun loadData() {
@@ -123,4 +147,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun showSplashAd() {
+        if (isShowingAd) return
+        isShowingAd = true
+
+        adView = LayoutInflater.from(this).inflate(R.layout.layout_splash_ad, null)
+        (window.decorView as FrameLayout).addView(
+            adView, LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT
+            )
+        )
+        adView?.setOnClickListener { startActivity(Intent(Intent.ACTION_VIEW, VPN_URL.toUri())) }
+        val tvSkip = adView?.findViewById<TextView>(R.id.tv_skip)
+
+        countDownTimer = object : CountDownTimer(5000, 1000) {
+            @SuppressLint("SetTextI18n")
+            override fun onTick(millisUntilFinished: Long) {
+                tvSkip?.text = "跳过 ${millisUntilFinished / 1000}"
+            }
+
+            override fun onFinish() {
+                hideAd()
+            }
+        }.start()
+
+        // 手动跳过
+        tvSkip?.setOnClickListener { hideAd() }
+    }
+
+    private fun hideAd() {
+        countDownTimer?.cancel()
+        (window.decorView as FrameLayout).removeView(adView)
+        isShowingAd = false
+        if (!isCheckedUpdate) {
+            isCheckedUpdate = true
+            checkAppUpdate()
+        }
+    }
 }

@@ -66,6 +66,7 @@ dependencies {
     implementation libs.lifecycle.livedata.ktx
     implementation libs.lifecycle.viewmodel.ktx
     implementation libs.androidx.fragment.ktx
+    implementation libs.androidx.core.splashscreen
     implementation libs.fastjson
     implementation libs.media3.ui
     implementation libs.media3.exoplayer

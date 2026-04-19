@@ -31,7 +31,10 @@
                 android:id="@+id/ad_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:visibility="gone" />
+                android:scaleType="fitXY"
+                android:src="@drawable/ad1"
+                android:background="@drawable/shape_rounded_corners"
+                android:layout_marginHorizontal="10dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_dyTagList"

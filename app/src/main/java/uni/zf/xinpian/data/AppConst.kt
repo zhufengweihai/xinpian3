@@ -3,6 +3,7 @@ package uni.zf.xinpian.data
 import uni.zf.xinpian.utils.generateJpUrlPrefix
 
 object AppConst {
+    const val VPN_URL = "https://pandavpnpro.com/r/110177713"
     const val KEY_SECRET = "secret"
     const val DEFAULT_SECRET = "0sD4gjkMdbnsYp5k4K0oB5MGMggyp9UP"
     const val USER_AGENT_SUFFIX = ";webank/h5face;webank/1.0;netType:%s;appVersion:424;packageName:com.qihoo.jp22"

@@ -1,10 +1,10 @@
 package uni.zf.xinpian
 
+import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStore
 import androidx.room.Room.databaseBuilder
-import io.dcloud.uniapp.UniApplication
 import uni.zf.xinpian.data.AppDatabase
 import uni.zf.xinpian.json.CategorySerializer
 import uni.zf.xinpian.json.CustomTagSerializer
@@ -18,7 +18,7 @@ import uni.zf.xinpian.json.model.SlideList
 import uni.zf.xinpian.json.model.VideoData
 import java.io.File
 
-class App : UniApplication() {
+class App : Application() {
     lateinit var appDb: AppDatabase
     override fun onCreate() {
         super.onCreate()

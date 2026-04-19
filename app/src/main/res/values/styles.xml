@@ -33,4 +33,10 @@
     <style name="RoundBorder" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerRadius">8dp</item>
     </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimationDuration">200</item>
+    </style>
 </resources>
