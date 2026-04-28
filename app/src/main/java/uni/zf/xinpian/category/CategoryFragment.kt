@@ -1,14 +1,25 @@
 package uni.zf.xinpian.category
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.MultiFormatReader
+import com.google.zxing.RGBLuminanceSource
+import com.google.zxing.common.HybridBinarizer
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
@@ -51,6 +62,47 @@ class CategoryFragment : Fragment() {
         binding.tagListView.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
         binding.tagListView.adapter = cumTagAdapter
         setupSwipeRefresh()
+        setupAdImageClick()
+    }
+
+    private fun setupAdImageClick() {
+        binding.adImageView.setOnClickListener {
+            val bitmap = (binding.adImageView.drawable as? BitmapDrawable)?.bitmap
+            if (bitmap == null) {
+                Toast.makeText(requireContext(), "图片未加载", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            scanQrCode(bitmap)
+        }
+    }
+
+    private fun scanQrCode(bitmap: Bitmap) {
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.Default) {
+                try {
+                    val width = bitmap.width
+                    val height = bitmap.height
+                    val pixels = IntArray(width * height)
+                    bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+                    val source = RGBLuminanceSource(width, height, pixels)
+                    val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
+                    MultiFormatReader().decode(binaryBitmap).text
+                } catch (e: Exception) {
+                    null
+                }
+            }
+
+            if (!isAdded) return@launch
+            if (result != null) {
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, result.toUri()))
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "无法打开: $result", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "未识别到二维码", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun setupSwipeRefresh() {

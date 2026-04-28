@@ -77,6 +77,7 @@ dependencies {
     implementation libs.androidx.swiperefreshlayout
     implementation libs.fresco
     implementation libs.glide
+    implementation libs.zxing.core
     implementation libs.androidx.paging.runtime
     implementation libs.androidx.activity
     implementation libs.room.runtime
