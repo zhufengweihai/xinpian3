@@ -13,16 +13,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.zxing.BinaryBitmap
-import com.google.zxing.MultiFormatReader
-import com.google.zxing.RGBLuminanceSource
-import com.google.zxing.common.HybridBinarizer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
+import uni.zf.xinpian.utils.QrCodeScanner
 import uni.zf.xinpian.view.HorizontalItemDecoration
 
 fun newCategoryFragment(categoryId: Int) = CategoryFragment().apply {
@@ -79,17 +76,7 @@ class CategoryFragment : Fragment() {
     private fun scanQrCode(bitmap: Bitmap) {
         lifecycleScope.launch {
             val result = withContext(Dispatchers.Default) {
-                try {
-                    val width = bitmap.width
-                    val height = bitmap.height
-                    val pixels = IntArray(width * height)
-                    bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
-                    val source = RGBLuminanceSource(width, height, pixels)
-                    val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
-                    MultiFormatReader().decode(binaryBitmap).text
-                } catch (e: Exception) {
-                    null
-                }
+                QrCodeScanner.scanQrCode(bitmap)
             }
 
             if (!isAdded) return@launch

@@ -1,9 +1,12 @@
 package uni.zf.xinpian.play
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.KeyEvent
@@ -14,11 +17,13 @@ import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import android.widget.FrameLayout.GONE
 import android.widget.FrameLayout.VISIBLE
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
@@ -36,7 +41,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import uni.zf.xinpian.R
 import uni.zf.xinpian.databinding.ActivityPlayBinding
 import uni.zf.xinpian.json.model.VideoData
@@ -45,6 +52,7 @@ import uni.zf.xinpian.player.EpisodeChangeListener
 import uni.zf.xinpian.player.GestureControl
 import uni.zf.xinpian.player.GestureListener
 import uni.zf.xinpian.player.parser.MyMediaSourceFactory
+import uni.zf.xinpian.utils.QrCodeScanner
 import uni.zf.xinpian.utils.TimeUtils.formatMs
 import uni.zf.xinpian.utils.toPercent
 import uni.zf.xinpian.view.GridItemDecoration
@@ -143,6 +151,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         binding.ivIntroduction.setOnClickListener { videoData?.let { showDetailsDialog(it, this) } }
         initSourceListView()
         initPlayListView()
+        initAdImageView()
         initRecommendListView()
     }
 
@@ -250,6 +259,35 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         }
         bottomSheetView.findViewById<View>(R.id.tv_back).setOnClickListener { bottomSheetDialog.dismiss() }
         bottomSheetDialog.show()
+    }
+
+    private fun initAdImageView() {
+        binding.ivAd.setOnClickListener {
+            val bitmap = (binding.ivAd.drawable as? BitmapDrawable)?.bitmap
+            if (bitmap == null) {
+                Toast.makeText(this@PlayActivity, "图片未加载", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            scanQrCode(bitmap)
+        }
+    }
+
+    private fun scanQrCode(bitmap: Bitmap) {
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.Default) {
+                QrCodeScanner.scanQrCode(bitmap)
+            }
+
+            if (result != null) {
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, result.toUri()))
+                } catch (e: Exception) {
+                    Toast.makeText(this@PlayActivity, "无法打开: $result", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this@PlayActivity, "未识别到二维码", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun initRecommendListView() {

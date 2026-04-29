@@ -245,6 +245,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_items" />
 
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_ad"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ad2"
+                android:layout_marginHorizontal="10dp"
+                app:shapeAppearanceOverlay="@style/RoundBorder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_items"/>
+
             <TextView
                 android:id="@+id/tv_recommend"
                 android:layout_width="wrap_content"
@@ -256,7 +268,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_items" />
+                app:layout_constraintTop_toBottomOf="@id/iv_ad" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_recommend"
