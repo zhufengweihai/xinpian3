@@ -20,6 +20,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.king.app.dialog.AppDialog.dismissDialog
 import com.king.app.dialog.AppDialog.showDialog
@@ -44,9 +47,10 @@ class MainActivity : AppCompatActivity() {
     private var isShowingAd = false
     private var adView: View? = null
     private var countDownTimer: CountDownTimer? = null
-    private val COOL_DOWN = 60 * 1000
+    private val COOL_DOWN = 30 * 1000
     private var lastShowTime = 0L
     private var isCheckedUpdate = false
+    private var isInBackground = false
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -65,10 +69,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupUI()
         loadData()
+        registerAppLifecycleObserver()
+        // 首次启动显示广告
+        lastShowTime = System.currentTimeMillis()
+        showSplashAd()
+    }
+
+    private fun registerAppLifecycleObserver() {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                isInBackground = true
+            }
+        })
     }
 
     override fun onResume() {
         super.onResume()
+        if (!isInBackground) return
+        isInBackground = false
         val current = System.currentTimeMillis()
         if (current - lastShowTime > COOL_DOWN) {
             lastShowTime = current

@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="10dp" />
+                android:layout_marginVertical="10dp" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ad_image_view"

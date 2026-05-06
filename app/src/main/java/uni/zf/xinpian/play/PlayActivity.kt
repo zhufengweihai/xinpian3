@@ -2,8 +2,8 @@ package uni.zf.xinpian.play
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -13,7 +13,6 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import android.widget.FrameLayout.GONE
 import android.widget.FrameLayout.VISIBLE
 import android.widget.TextView
@@ -25,7 +24,9 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -77,7 +78,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     private var videoData: VideoData? = null
     private var loading = false
     private var isFullScreen = false
-    private var systemVisibility = 0
     private var originHeight = 0
     private var isLock = false
     private val hideRunnable = Runnable { binding.lockView.visibility = GONE }
@@ -89,7 +89,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         setContentView(binding.root)
         initView()
         onBackPressedDispatcher()
-        player = PlayerFactory.createPlayer( this, true)
+        player = PlayerFactory.createPlayer(this, true)
+        player?.addListener(PlayerEventListener())
         binding.playerView.player = player
         loadData()
     }
@@ -105,7 +106,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     public override fun onStart() {
         super.onStart()
         if (player == null) {
-            player = PlayerFactory.createPlayer( this, true)
+            player = PlayerFactory.createPlayer(this, true)
+            player?.addListener(PlayerEventListener())
             binding.playerView.player = player
         }
         player?.seekTo(playbackPosition)
@@ -153,6 +155,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         initPlayListView()
         initAdImageView()
         initRecommendListView()
+        initOverlayAd()
     }
 
     private fun initBackView() {
@@ -163,33 +166,61 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
 
     private fun toggleFullScreen(isPortrait: Boolean = false) {
         isFullScreen = !isFullScreen
-        val layoutParams = binding.playerView.layoutParams.apply {
-            if (isFullScreen) {
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+        if (isFullScreen) {
+            // 进入全屏横屏
+            if (!isPortrait) {
+                requestedOrientation = SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            }
+            // 隐藏系统栏
+            insetsController.hide(WindowInsetsCompat.Type.systemBars())
+            insetsController.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+            // PlayerView 填满整个屏幕
+            binding.playerLayout.layoutParams = binding.playerLayout.layoutParams.apply {
                 originHeight = height
-                window.setFlags(FLAG_FULLSCREEN, FLAG_FULLSCREEN)
                 width = ViewGroup.LayoutParams.MATCH_PARENT
                 height = ViewGroup.LayoutParams.MATCH_PARENT
-                systemVisibility = window.decorView.systemUiVisibility
-                window.decorView.systemUiVisibility = (
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        )
-            } else {
-                window.clearFlags(FLAG_FULLSCREEN)
+            }
+            binding.playerLayout.requestLayout()
+
+            // 隐藏下方内容区域
+            val scrollView = binding.root.getChildAt(1)
+            scrollView?.visibility = GONE
+
+            // 移除 padding 让播放器真正全屏
+            binding.root.setPadding(0, 0, 0, 0)
+            binding.root.setBackgroundColor(Color.BLACK)
+        } else {
+            // 退出全屏
+            if (!isPortrait) {
+                requestedOrientation = SCREEN_ORIENTATION_UNSPECIFIED
+            }
+            // 显示系统栏
+            insetsController.show(WindowInsetsCompat.Type.systemBars())
+
+            // 恢复 PlayerView 高度
+            binding.playerLayout.layoutParams = binding.playerLayout.layoutParams.apply {
                 width = ViewGroup.LayoutParams.MATCH_PARENT
                 height = originHeight
-                window.decorView.systemUiVisibility = systemVisibility
             }
+            binding.playerLayout.requestLayout()
+
+            // 显示下方内容
+            val scrollView = binding.root.getChildAt(1)
+            scrollView?.visibility = VISIBLE
+
+            // 恢复 insets padding
+            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
+            binding.root.requestApplyInsets()
+            binding.root.setBackgroundColor(Color.WHITE)
         }
-        if (!isPortrait) {
-            requestedOrientation = if (isFullScreen) SCREEN_ORIENTATION_LANDSCAPE else SCREEN_ORIENTATION_PORTRAIT
-        }
-        binding.playerView.layoutParams = layoutParams
-        binding.root.setBackgroundColor(if (isFullScreen) Color.BLACK else Color.WHITE)
     }
 
     private fun initLockView() {
@@ -294,6 +325,28 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         binding.rvRecommend.adapter = RelatedVideoAdapter()
         binding.rvRecommend.layoutManager = GridLayoutManager(this, 3)
         binding.rvRecommend.addItemDecoration(GridItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
+    }
+
+    private var isOverlayAdDismissed = false
+
+    private fun initOverlayAd() {
+        binding.overlayAdClose.setOnClickListener {
+            hideOverlayAd()
+            isOverlayAdDismissed = true
+        }
+        binding.overlayAdImage.setOnClickListener {
+            val bitmap = (binding.overlayAdImage.drawable as? BitmapDrawable)?.bitmap ?: return@setOnClickListener
+            scanQrCode(bitmap)
+        }
+    }
+
+    private fun showOverlayAd() {
+        if (isOverlayAdDismissed) return
+        binding.overlayAdContainer.visibility = VISIBLE
+    }
+
+    private fun hideOverlayAd() {
+        binding.overlayAdContainer.visibility = GONE
     }
 
     private fun setupClickListener(button: TextView, step: Int) {
@@ -409,8 +462,26 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     private inner class PlayerEventListener : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: Int) {
             loading = playbackState == Player.STATE_BUFFERING
-            if (loading) binding.playerView.postDelayed(loadingRunnable, 2000)
-            else binding.loadingView.isGone = true
+            if (loading) {
+                binding.playerView.postDelayed(loadingRunnable, 2000)
+                showOverlayAd()
+            } else {
+                binding.loadingView.isGone = true
+            }
+
+            // 播放中时隐藏广告
+            if (playbackState == Player.STATE_READY && player?.isPlaying == true) {
+                hideOverlayAd()
+            }
+        }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            if (isPlaying) {
+                hideOverlayAd()
+            } else if (player?.playbackState == Player.STATE_READY) {
+                // 暂停时显示广告
+                showOverlayAd()
+            }
         }
 
         override fun onPlayerError(error: PlaybackException) {
@@ -428,6 +499,8 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
                 val adapter = binding.rvItems.adapter as PlayListAdapter
                 adapter.updateItems(player?.currentMediaItemIndex ?: 0)
             }
+            // 切集时重置广告关闭状态
+            isOverlayAdDismissed = false
         }
     }
 

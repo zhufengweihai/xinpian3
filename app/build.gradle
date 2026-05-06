@@ -65,6 +65,7 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.lifecycle.livedata.ktx
     implementation libs.lifecycle.viewmodel.ktx
+    implementation libs.lifecycle.process
     implementation libs.androidx.fragment.ktx
     implementation libs.androidx.core.splashscreen
     implementation libs.fastjson
