@@ -1,6 +1,8 @@
 package uni.zf.xinpian.search
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -11,6 +13,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
@@ -18,13 +21,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.data.AppConst.ARG_KEYWORD
+import uni.zf.xinpian.data.AppConst.GYLM_URL
 import uni.zf.xinpian.data.model.SearchHistory
 import uni.zf.xinpian.databinding.ActivitySearchVideoBinding
 import uni.zf.xinpian.json.model.Category
+import uni.zf.xinpian.utils.QrCodeScanner
 import uni.zf.xinpian.view.SpaceItemDecoration
 
 class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
@@ -47,6 +54,7 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
         initInputView()
         initSearchHistoryView()
         initRecommendSearchView()
+        initAdImageView()
         loadData()
     }
 
@@ -169,6 +177,25 @@ class SearchVideoActivity : AppCompatActivity(), SearchHistoryListener {
             historyViewModel.deleteSearchHistory(history)
         } else {
             searchVideo(history)
+        }
+    }
+
+    private fun initAdImageView() {
+        binding.ivAd.setOnClickListener {
+            val bitmap = (binding.ivAd.drawable as? BitmapDrawable)?.bitmap
+            if (bitmap == null) {
+                Toast.makeText(this, "图片未加载", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            scanQrCode(bitmap)
+        }
+    }
+
+    private fun scanQrCode(bitmap: Bitmap) {
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.Default) { QrCodeScanner.scanQrCode(bitmap) }
+            val url = if (!result.isNullOrEmpty()) result else GYLM_URL
+            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
         }
     }
 }

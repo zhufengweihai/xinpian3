@@ -46,6 +46,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uni.zf.xinpian.R
+import uni.zf.xinpian.data.AppConst.GYLM_URL
+import uni.zf.xinpian.data.AppConst.VPN_URL
 import uni.zf.xinpian.databinding.ActivityPlayBinding
 import uni.zf.xinpian.json.model.VideoData
 import uni.zf.xinpian.player.BottomItemDecoration
@@ -305,19 +307,9 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
 
     private fun scanQrCode(bitmap: Bitmap) {
         lifecycleScope.launch {
-            val result = withContext(Dispatchers.Default) {
-                QrCodeScanner.scanQrCode(bitmap)
-            }
-
-            if (result != null) {
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW, result.toUri()))
-                } catch (e: Exception) {
-                    Toast.makeText(this@PlayActivity, "无法打开: $result", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(this@PlayActivity, "未识别到二维码", Toast.LENGTH_SHORT).show()
-            }
+            val result = withContext(Dispatchers.Default) { QrCodeScanner.scanQrCode(bitmap) }
+            val url = if (!result.isNullOrEmpty()) result else GYLM_URL
+            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
         }
     }
 
@@ -327,21 +319,12 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         binding.rvRecommend.addItemDecoration(GridItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
     }
 
-    private var isOverlayAdDismissed = false
-
     private fun initOverlayAd() {
-        binding.overlayAdClose.setOnClickListener {
-            hideOverlayAd()
-            isOverlayAdDismissed = true
-        }
-        binding.overlayAdImage.setOnClickListener {
-            val bitmap = (binding.overlayAdImage.drawable as? BitmapDrawable)?.bitmap ?: return@setOnClickListener
-            scanQrCode(bitmap)
-        }
+        binding.overlayAdClose.setOnClickListener { hideOverlayAd() }
+        binding.overlayAdImage.setOnClickListener { startActivity(Intent(Intent.ACTION_VIEW, VPN_URL.toUri())) }
     }
 
     private fun showOverlayAd() {
-        if (isOverlayAdDismissed) return
         binding.overlayAdContainer.visibility = VISIBLE
     }
 
@@ -499,8 +482,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
                 val adapter = binding.rvItems.adapter as PlayListAdapter
                 adapter.updateItems(player?.currentMediaItemIndex ?: 0)
             }
-            // 切集时重置广告关闭状态
-            isOverlayAdDismissed = false
         }
     }
 

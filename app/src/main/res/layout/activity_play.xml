@@ -92,22 +92,21 @@
         <!-- 播放器内悬浮广告（缓冲/暂停时显示） -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/overlay_ad_container"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="50dp"
-            android:background="@drawable/item_corners_10_background_80000000"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/player_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/player_view">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/overlay_ad_image"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_width="200dp"
+                android:layout_height="120dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/ad2"
+                android:src="@drawable/video_ad"
+                app:shapeAppearanceOverlay="@style/RoundBorder"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -115,12 +114,13 @@
 
             <ImageView
                 android:id="@+id/overlay_ad_close"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:padding="4dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:padding="3dp"
+                android:background="@drawable/item_corners_10_background_80000000"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/overlay_ad_image"
+                app:layout_constraintTop_toTopOf="@id/overlay_ad_image"
                 app:tint="@color/white" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

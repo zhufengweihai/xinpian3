@@ -70,17 +70,18 @@
         app:layout_constraintStart_toEndOf="@id/search_container"
         app:layout_constraintTop_toTopOf="@id/search_container" />
 
-    <!-- 横幅广告 -->
-    <ImageView
-        android:id="@+id/iv_banner"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_ad"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginHorizontal="10dp"
         android:layout_marginTop="10dp"
         android:scaleType="fitXY"
-        android:visibility="gone"
+        android:src="@drawable/ad3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_container" />
+        app:layout_constraintTop_toBottomOf="@id/search_container"
+        app:shapeAppearanceOverlay="@style/RoundBorder" />
 
     <TextView
         android:id="@+id/history_label"
@@ -94,7 +95,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_banner" />
+        app:layout_constraintTop_toBottomOf="@id/iv_ad" />
 
     <TextView
         android:id="@+id/delete_all_view"
@@ -107,7 +108,7 @@
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/finish_view"
-        app:layout_constraintTop_toBottomOf="@id/iv_banner" />
+        app:layout_constraintTop_toBottomOf="@id/iv_ad" />
 
     <TextView
         android:id="@+id/finish_view"
@@ -119,7 +120,7 @@
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_banner" />
+        app:layout_constraintTop_toBottomOf="@id/iv_ad" />
 
     <ImageView
         android:id="@+id/delete_view"
@@ -129,7 +130,7 @@
         android:layout_marginEnd="5dp"
         android:src="@drawable/ic_delete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_banner" />
+        app:layout_constraintTop_toBottomOf="@id/iv_ad" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_history_view"
@@ -180,10 +181,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recommend_search_view"
         app:tabIndicatorColor="@color/main"
-        app:tabPaddingTop="3dp"
         app:tabPaddingBottom="3dp"
-        app:tabPaddingStart="3dp"
         app:tabPaddingEnd="3dp"
+        app:tabPaddingStart="3dp"
+        app:tabPaddingTop="3dp"
         app:tabSelectedTextColor="@color/main"
         app:tabTextAppearance="@style/TabTextAppearance" />
 

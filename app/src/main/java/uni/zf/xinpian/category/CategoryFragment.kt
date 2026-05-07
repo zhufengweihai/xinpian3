@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
+import uni.zf.xinpian.data.AppConst.GYLM_URL
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
 import uni.zf.xinpian.utils.QrCodeScanner
 import uni.zf.xinpian.view.HorizontalItemDecoration
@@ -75,20 +76,9 @@ class CategoryFragment : Fragment() {
 
     private fun scanQrCode(bitmap: Bitmap) {
         lifecycleScope.launch {
-            val result = withContext(Dispatchers.Default) {
-                QrCodeScanner.scanQrCode(bitmap)
-            }
-
-            if (!isAdded) return@launch
-            if (result != null) {
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW, result.toUri()))
-                } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "无法打开: $result", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(requireContext(), "未识别到二维码", Toast.LENGTH_SHORT).show()
-            }
+            val result = withContext(Dispatchers.Default) { QrCodeScanner.scanQrCode(bitmap) }
+            val url = if (!result.isNullOrEmpty()) result else GYLM_URL
+            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
         }
     }
 
