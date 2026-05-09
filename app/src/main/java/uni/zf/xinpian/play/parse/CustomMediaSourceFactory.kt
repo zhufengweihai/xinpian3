@@ -9,7 +9,7 @@ import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy
-import uni.zf.xinpian.player.parser.MyHlsParserFactory
+import uni.zf.xinpian.play.parser.MyHlsParserFactory
 
 @UnstableApi
 class CustomMediaSourceFactory(private val dataSourceFactory: DataSource.Factory) : MediaSource.Factory {

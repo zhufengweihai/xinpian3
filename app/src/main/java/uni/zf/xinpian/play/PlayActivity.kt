@@ -50,11 +50,6 @@ import uni.zf.xinpian.data.AppConst.GYLM_URL
 import uni.zf.xinpian.data.AppConst.VPN_URL
 import uni.zf.xinpian.databinding.ActivityPlayBinding
 import uni.zf.xinpian.json.model.VideoData
-import uni.zf.xinpian.player.BottomItemDecoration
-import uni.zf.xinpian.player.EpisodeChangeListener
-import uni.zf.xinpian.player.GestureControl
-import uni.zf.xinpian.player.GestureListener
-import uni.zf.xinpian.player.parser.MyMediaSourceFactory
 import uni.zf.xinpian.utils.QrCodeScanner
 import uni.zf.xinpian.utils.TimeUtils.formatMs
 import uni.zf.xinpian.utils.toPercent
@@ -75,7 +70,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     private var currentSource = 0
     private var currentItem = 0
     private var currentPos: Long = 0
-    private var factory: MyMediaSourceFactory? = null
     private val viewModel: PlayViewModel by viewModels()
     private var videoData: VideoData? = null
     private var loading = false
@@ -417,9 +411,6 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     override fun onEpisode(itemIndex: Int) {
         val prevUri = player?.currentMediaItem?.localConfiguration?.uri
         player?.seekTo(itemIndex, 0)
-        if (prevUri != null && prevUri != player?.currentMediaItem?.localConfiguration?.uri) {
-            viewModel.pauseLastDownload(prevUri)
-        }
     }
 
     override fun onDownload(itemIndex: Int) {

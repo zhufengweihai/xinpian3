@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import uni.zf.xinpian.data.model.WatchHistory
-import uni.zf.xinpian.data.model.WatchRecord
 
 @Dao
 interface WatchHistoryDao {

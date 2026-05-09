@@ -3,12 +3,9 @@ package uni.zf.xinpian.main
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -40,8 +37,6 @@ import uni.zf.xinpian.data.AppConst.VPN_URL
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    private val handler = Handler(Looper.getMainLooper())
-    private lateinit var runnable: Runnable
     private var isDataLoaded = false
     private var pendingApkUrl: String? = null
     private var isShowingAd = false
@@ -96,9 +91,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (::runnable.isInitialized) {
-            handler.removeCallbacks(runnable)
-        }
         countDownTimer?.cancel()
     }
 

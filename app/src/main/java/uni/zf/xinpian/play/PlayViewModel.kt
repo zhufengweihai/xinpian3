@@ -1,12 +1,9 @@
 package uni.zf.xinpian.play
 
 import android.app.Application
-import android.net.Uri
-import androidx.annotation.OptIn
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.util.UnstableApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -24,7 +21,6 @@ import uni.zf.xinpian.data.AppConst.recoUrl
 import uni.zf.xinpian.data.AppConst.videoUrl
 import uni.zf.xinpian.data.model.RelatedVideo
 import uni.zf.xinpian.data.model.WatchHistory
-import uni.zf.xinpian.download.DownloadTracker
 import uni.zf.xinpian.http.OkHttpUtil
 import uni.zf.xinpian.json.model.VideoData
 import uni.zf.xinpian.utils.createHeaders
@@ -35,7 +31,6 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
     private val videoDataStore = (application as App).getVideoDataStore(videoId)
     private val watchHistoryDao by lazy { App.INSTANCE.appDb.watchHistoryDao() }
     private val relatedVideoDao by lazy { App.INSTANCE.appDb.relatedVideoDao() }
-    private val downloadDao by lazy { App.INSTANCE.appDb.downloadDao() }
 
     private val jsonConfig = Json {
         isLenient = true  // 允许非严格格式的 JSON
@@ -151,13 +146,4 @@ class PlayViewModel(application: Application, savedStateHandle: SavedStateHandle
         val matchResult = idPattern.find(url)
         return matchResult?.groupValues?.get(1) ?: ""
     }
-
-    @OptIn(UnstableApi::class)
-    fun pauseLastDownload(uri: Uri) {
-        viewModelScope.launch {
-            if (!isDownloadExists(uri.toString())) DownloadTracker.pauseDownload(uri)
-        }
-    }
-
-    private suspend fun isDownloadExists(url: String) = downloadDao.isDownloadExists(url)
 }

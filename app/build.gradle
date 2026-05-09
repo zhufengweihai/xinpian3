@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias libs.plugins.ksp
-    id 'io.dcloud.uts.kotlin'
     id 'kotlin-parcelize'
     id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
 }
@@ -55,10 +54,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.aar'], dir: './libs')
-    implementation project(':uts-progressNotification')
-    implementation project(':uts-openSchema')
-
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
@@ -68,15 +63,12 @@ dependencies {
     implementation libs.lifecycle.process
     implementation libs.androidx.fragment.ktx
     implementation libs.androidx.core.splashscreen
-    implementation libs.fastjson
     implementation libs.media3.ui
     implementation libs.media3.exoplayer
     implementation libs.androidx.media3.exoplayer.hls
-    //implementation libs.androidx.media3.datasource.cronet
     implementation libs.androidx.media3.datasource.okhttp
     implementation libs.okhttp
     implementation libs.androidx.swiperefreshlayout
-    implementation libs.fresco
     implementation libs.glide
     implementation libs.zxing.core
     implementation libs.androidx.paging.runtime
@@ -86,11 +78,9 @@ dependencies {
     implementation libs.androidx.room.paging
     implementation libs.androidx.startup.runtime
     implementation libs.androidx.preference
-    //implementation libs.gson
     implementation libs.androidx.datastore
     implementation libs.kotlinx.serialization.json
     implementation libs.jsoup
-    implementation libs.commons.net
     implementation libs.app.updater
     implementation libs.app.dialog
 

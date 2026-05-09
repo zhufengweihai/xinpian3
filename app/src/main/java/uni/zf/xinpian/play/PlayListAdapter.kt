@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uni.zf.xinpian.R
 import uni.zf.xinpian.json.model.SourceItem
-import uni.zf.xinpian.player.EpisodeChangeListener
 
 @SuppressLint("NotifyDataSetChanged")
 open class PlayListAdapter(

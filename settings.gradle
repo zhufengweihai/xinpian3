@@ -17,11 +17,8 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
-        flatDir { dirs('./plugins/') }
     }
 }
 
 rootProject.name = "xinpian"
 include ':app'
-include ':uts-openSchema'
-include ':uts-progressNotification'
