@@ -35,13 +35,13 @@
             android:textColor="@color/white"
             android:textSize="18sp" />
 
-        <!--ImageView
+        <ImageView
             android:id="@+id/cast"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_toStartOf="@id/exo_settings"
             android:padding="5dp"
-            android:src="@drawable/icon_cast" /-->
+            android:src="@drawable/icon_cast" />
 
         <ImageButton
             android:id="@id/exo_settings"

@@ -55,6 +55,7 @@ class CategoryFragment : Fragment() {
     private fun init() {
         dyTagAdapter = DyTagListAdapter()
         binding.rvDyTagList.adapter = dyTagAdapter
+        binding.rvDyTagList.overScrollMode = View.OVER_SCROLL_NEVER
         cumTagAdapter = CustomTagAdapter()
         binding.tagListView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.tagListView.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
@@ -86,6 +87,8 @@ class CategoryFragment : Fragment() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             refreshData()
         }
+        // 禁用 NestedScrollView 的过度滚动回弹（Android 12+ stretch effect）
+        binding.nestedScrollView.overScrollMode = View.OVER_SCROLL_NEVER
     }
 
     private fun refreshData() {

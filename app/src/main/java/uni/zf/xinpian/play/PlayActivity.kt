@@ -1,6 +1,7 @@
 package uni.zf.xinpian.play
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -78,11 +79,14 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
     private var isLock = false
     private val hideRunnable = Runnable { binding.lockView.visibility = GONE }
     private val loadingRunnable = Runnable { binding.loadingView.isVisible = loading }
+    private lateinit var castHelper: CastHelper
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
+        castHelper = CastHelper(this)
+        castHelper.setListener(CastEventListener())
         initView()
         onBackPressedDispatcher()
         player = PlayerFactory.createPlayer(this, true)
@@ -119,6 +123,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
 
     override fun onDestroy() {
         super.onDestroy()
+        castHelper.release()
         player?.release()
         player = null
     }
@@ -143,6 +148,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         titleView = binding.playerView.findViewById(R.id.title)
         initBackView()
         binding.playerView.findViewById<View>(R.id.fullscreen).setOnClickListener { toggleFullScreen() }
+        binding.playerView.findViewById<View>(R.id.cast).setOnClickListener { showCastDeviceDialog() }
         initLockView()
         initFastStepsView()
         binding.tvIntroduction.setOnClickListener { videoData?.let { showDetailsDialog(it, this) } }
@@ -324,6 +330,81 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
 
     private fun hideOverlayAd() {
         binding.overlayAdContainer.visibility = GONE
+    }
+
+    private fun showCastDeviceDialog() {
+        if (castHelper.isCasting()) {
+            castHelper.disconnect()
+            player?.play()
+            Toast.makeText(this, "已断开投屏", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 点击时开始搜索设备
+        Toast.makeText(this, "正在搜索投屏设备...", Toast.LENGTH_SHORT).show()
+        castHelper.startDiscovery()
+
+        // 延迟2秒等待设备发现，然后展示结果
+        binding.playerView.postDelayed({
+            val routes = castHelper.getAvailableRoutes()
+            when {
+                routes.isEmpty() -> {
+                    Toast.makeText(this, "未发现可投屏设备，请确保手机和电视在同一局域网", Toast.LENGTH_LONG).show()
+                    castHelper.stopDiscovery()
+                }
+                routes.size == 1 -> {
+                    castHelper.selectRoute(routes[0])
+                    castToDevice()
+                }
+                else -> {
+                    val deviceNames = routes.map { it.name }.toTypedArray()
+                    AlertDialog.Builder(this)
+                        .setTitle("选择投屏设备")
+                        .setItems(deviceNames) { _, which ->
+                            castHelper.selectRoute(routes[which])
+                            castToDevice()
+                        }
+                        .setNegativeButton("取消") { _, _ -> castHelper.stopDiscovery() }
+                        .setOnCancelListener { castHelper.stopDiscovery() }
+                        .show()
+                }
+            }
+        }, 2000)
+    }
+
+    private fun castToDevice() {
+        val currentMediaItem = player?.currentMediaItem ?: return
+        val url = currentMediaItem.localConfiguration?.uri?.toString() ?: return
+        val title = currentMediaItem.mediaMetadata.title?.toString() ?: videoData?.title ?: "视频"
+        player?.pause()
+        castHelper.cast(url, title)
+    }
+
+    private inner class CastEventListener : CastHelper.CastListener {
+        override fun onCastConnected(deviceName: String) {
+            runOnUiThread {
+                Toast.makeText(this@PlayActivity, "已连接: $deviceName", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onCastDisconnected() {
+            runOnUiThread {
+                Toast.makeText(this@PlayActivity, "已断开投屏", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onCastStarted(title: String) {
+            runOnUiThread {
+                Toast.makeText(this@PlayActivity, "正在投屏: $title", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onCastError(message: String) {
+            runOnUiThread {
+                Toast.makeText(this@PlayActivity, message, Toast.LENGTH_SHORT).show()
+                player?.play()
+            }
+        }
     }
 
     private fun setupClickListener(button: TextView, step: Int) {
