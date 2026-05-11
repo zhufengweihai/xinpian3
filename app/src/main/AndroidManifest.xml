@@ -59,6 +59,14 @@
             android:exported="false"
             android:theme="@style/Theme.Xinpian.NoActionBar" />
         <activity
+            android:name=".play.download.DownloadSelectActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Xinpian.NoActionBar" />
+        <activity
+            android:name=".play.download.DownloadListActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Xinpian.NoActionBar" />
+        <activity
             android:name=".list.ListActivity"
             android:exported="false"
             android:theme="@style/Theme.Xinpian.NoActionBar" />

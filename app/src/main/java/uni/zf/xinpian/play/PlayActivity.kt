@@ -5,9 +5,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.KeyEvent
@@ -43,15 +41,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst.GYLM_URL
 import uni.zf.xinpian.data.AppConst.VPN_URL
 import uni.zf.xinpian.databinding.ActivityPlayBinding
 import uni.zf.xinpian.json.model.VideoData
-import uni.zf.xinpian.utils.QrCodeScanner
+import uni.zf.xinpian.play.download.DownloadDataHolder
+import uni.zf.xinpian.play.download.DownloadSelectActivity
 import uni.zf.xinpian.utils.TimeUtils.formatMs
 import uni.zf.xinpian.utils.toPercent
 import uni.zf.xinpian.view.GridItemDecoration
@@ -153,6 +150,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         initFastStepsView()
         binding.tvIntroduction.setOnClickListener { videoData?.let { showDetailsDialog(it, this) } }
         binding.ivIntroduction.setOnClickListener { videoData?.let { showDetailsDialog(it, this) } }
+        binding.btnDownload.setOnClickListener { openDownloadSelect() }
         initSourceListView()
         initPlayListView()
         initAdImageView()
@@ -296,20 +294,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
 
     private fun initAdImageView() {
         binding.ivAd.setOnClickListener {
-            val bitmap = (binding.ivAd.drawable as? BitmapDrawable)?.bitmap
-            if (bitmap == null) {
-                Toast.makeText(this@PlayActivity, "图片未加载", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            scanQrCode(bitmap)
-        }
-    }
-
-    private fun scanQrCode(bitmap: Bitmap) {
-        lifecycleScope.launch {
-            val result = withContext(Dispatchers.Default) { QrCodeScanner.scanQrCode(bitmap) }
-            val url = if (!result.isNullOrEmpty()) result else GYLM_URL
-            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+            startActivity(Intent(Intent.ACTION_VIEW, GYLM_URL.toUri()))
         }
     }
 
@@ -378,6 +363,20 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         val title = currentMediaItem.mediaMetadata.title?.toString() ?: videoData?.title ?: "视频"
         player?.pause()
         castHelper.cast(url, title)
+    }
+
+    private fun openDownloadSelect() {
+        val data = videoData ?: run {
+            Toast.makeText(this, "视频数据未加载", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (data.sourceGroups.isEmpty()) {
+            Toast.makeText(this, "无可用片源", Toast.LENGTH_SHORT).show()
+            return
+        }
+        DownloadDataHolder.title = data.title
+        DownloadDataHolder.sourceGroups = data.sourceGroups
+        startActivity(Intent(this, DownloadSelectActivity::class.java))
     }
 
     private inner class CastEventListener : CastHelper.CastListener {

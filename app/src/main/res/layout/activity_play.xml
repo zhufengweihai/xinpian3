@@ -180,6 +180,26 @@
                 app:tint="@color/main" />
 
             <TextView
+                android:id="@+id/btn_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_search_para"
+                android:backgroundTint="@color/main"
+                android:drawableStart="@android:drawable/stat_sys_download"
+                android:drawablePadding="5dp"
+                android:gravity="center"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="下载"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/name_view"
+                android:visibility="gone"/>
+
+            <TextView
                 android:id="@+id/tv_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -188,7 +208,7 @@
                 android:gravity="start|center_vertical"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/name_view" />
+                app:layout_constraintTop_toBottomOf="@id/btn_download" />
 
             <TextView
                 android:id="@+id/tv_types"

@@ -1,26 +1,20 @@
 package uni.zf.xinpian.category
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.data.AppConst.GYLM_URL
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
-import uni.zf.xinpian.utils.QrCodeScanner
 import uni.zf.xinpian.view.HorizontalItemDecoration
 
 fun newCategoryFragment(categoryId: Int) = CategoryFragment().apply {
@@ -66,20 +60,7 @@ class CategoryFragment : Fragment() {
 
     private fun setupAdImageClick() {
         binding.adImageView.setOnClickListener {
-            val bitmap = (binding.adImageView.drawable as? BitmapDrawable)?.bitmap
-            if (bitmap == null) {
-                Toast.makeText(requireContext(), "图片未加载", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            scanQrCode(bitmap)
-        }
-    }
-
-    private fun scanQrCode(bitmap: Bitmap) {
-        lifecycleScope.launch {
-            val result = withContext(Dispatchers.Default) { QrCodeScanner.scanQrCode(bitmap) }
-            val url = if (!result.isNullOrEmpty()) result else GYLM_URL
-            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+            startActivity(Intent(Intent.ACTION_VIEW, GYLM_URL.toUri()))
         }
     }
 

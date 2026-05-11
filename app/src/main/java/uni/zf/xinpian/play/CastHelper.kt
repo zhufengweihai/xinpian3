@@ -117,11 +117,14 @@ class CastHelper(private val context: Context) {
     }
 
     fun disconnect() {
+        val wasCasting = isCasting
         remotePlaybackClient?.endSession(null, null)
         remotePlaybackClient?.release()
         remotePlaybackClient = null
         isCasting = false
-        listener?.onCastDisconnected()
+        if (wasCasting) {
+            listener?.onCastDisconnected()
+        }
     }
 
     fun isCasting(): Boolean = isCasting
