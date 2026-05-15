@@ -1,9 +1,11 @@
 package uni.zf.xinpian.data
 
+import uni.zf.xinpian.http.DomainManager
 import uni.zf.xinpian.utils.generateJpUrlPrefix
 
 object AppConst {
     const val DOMAIN_URL = "https://jdomain.oss-accelerate.aliyuncs.com/domain.txt"
+    const val TOKEN = "1b80ef50a3cd601776bb98d950f74f85"
     const val VPN_URL = "https://pandavpnpro.com/r/110177713"
     const val GYLM_URL = "https://review-2026.kuaizhan.com/?code_sign=gyic_38039011&_d=20260506"
     const val KEY_SECRET = "secret"
@@ -14,9 +16,9 @@ object AppConst {
     const val KEY_IMG_DOMAINS = "imgDomains"
     const val DEFAULT_IMG_DOMAINS =
         "static.ztcuc.com,img4.ztcuc.com,img.ztcuc.com,oxcljymt.top,lnijywwg.top,pxluvojc.top"
-    const val VERSION = "423"
+    const val VERSION = "500"
     const val DEFAULT_CATEGORY_ID = "88"
-    const val PACKAGE_NAME = "com.qihoo.jp22"
+    const val PACKAGE_NAME = "com.sam.mobile"
     const val ARG_CATEGORY = "category"
     const val ARG_DY_TAG = "DyTag"
     const val ARG_TAG_TITLE = "tagTitle"
@@ -29,32 +31,33 @@ object AppConst {
     const val KEY_VERSION = "version"
     const val DEFAULT_VERSION = "V0.0.0"
     private val jpUrlPrefix = generateJpUrlPrefix()
-    val host = "${jpUrlPrefix}.zxfmj.com"
-    val baseUrl = "https://${jpUrlPrefix}.zxfmj.com"
-    val imgDomainUrl = "https://${jpUrlPrefix}.zxfmj.com/api/resourceDomainConfig"
-    val categoryUrl = "https://${jpUrlPrefix}.zxfmj.com/api/term/home_fenlei"
-    val initUrl = "https://${jpUrlPrefix}.zxfmj.com/api/v2/sys/init"
-    val slideUrl = "https://${jpUrlPrefix}.zxfmj.com/api/slide/list?pos_id=%s"
-    val tagsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/customTags/list?category_id=%s"
-    val dyTagURL = "https://${jpUrlPrefix}.zxfmj.com/api/dyTag/list?category_id=%s"
-    val tagVideoListUrl = "https://${jpUrlPrefix}.zxfmj.com/api/dyTag/tpl2_data?id=%d&page=%%d"
-    val appAuthUrl = "https://${jpUrlPrefix}.zxfmj.com/api/appAuthConfig"
-    val videoUrl = "https://${jpUrlPrefix}.zxfmj.com/api/video/detailv2?id=%d"
-    val recoUrl = "https://${jpUrlPrefix}.zxfmj.com/api/video/guessRecommend?id=%s&page=1"
-    val shortListUrl = "https://${jpUrlPrefix}.zxfmj.com/api/play?count=10&type=1&page=%d&order=2&token=&init=0"
-    val shortUrl = "https://${jpUrlPrefix}.970xw.com/api/detail?token=&vid=%d"
-    val discoverUrl = "https://${jpUrlPrefix}.zxfmj.com/api/discover/list?type=1&page=%d&pageSize=20"
-    val specialUrl = "https://${jpUrlPrefix}.zxfmj.com/api/special/list?page=%d"
-    val specialDetailUrl = "https://${jpUrlPrefix}.zxfmj.com/api/special/detail?id=%d"
-    val rankOptionsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/weekRank/options"
-    val weekRankUrl = "https://${jpUrlPrefix}.zxfmj.com/api/weekRank/list?category_id=%d"
-    val filterOptionsUrl = "https://${jpUrlPrefix}.zxfmj.com/api/crumb/filterOptions"
-    val filteredVideoUrl = "https://${jpUrlPrefix}.zxfmj" +
-            ".com/api/crumb/list?fcate_pid=%s&category_id=%s&area=%s&year=%s&type=%s&sort=%s&page=%%d"
-    val recommendUrl = "https://${jpUrlPrefix}.zxfmj.com/api/search/recommend"
-    val searchCategoryUrl = "https://${jpUrlPrefix}.zxfmj.com/api/v2/settings/topCategory"
-    val categoryVideoUrl = "https://${jpUrlPrefix}.zxfmj.com/api/search/searchList?category_id=%d&page=%%d"
-    val searchUrl = "https://${jpUrlPrefix}.zxfmj.com/api/v2/search/videoV2?key=%s&category_id=%d&page=%%d&pageSize=20"
+
+    /** 动态域名：通过 DomainManager 获取当前活跃域名 */
+    val host: String get() = "${jpUrlPrefix}.${DomainManager.currentDomain}"
+    val baseUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}"
+    val imgDomainUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/resourceDomainConfig"
+    val categoryUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/term/home_fenlei"
+    val initUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/v2/sys/init"
+    val slideUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/slide/list?pos_id=%s"
+    val tagsUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/customTags/list?category_id=%s"
+    val dyTagURL: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/dyTag/list?category_id=%s"
+    val tagVideoListUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/dyTag/tpl2_data?id=%d&page=%%d"
+    val appAuthUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/appAuthConfig"
+    val videoUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/video/detailv2?id=%d"
+    val recoUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/video/guessRecommend?id=%s&page=1"
+    val shortListUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/play?count=10&type=1&page=%d&order=2&token=&init=0"
+    val shortUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/detail?token=${TOKEN}&vid=%d"
+    val discoverUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/discover/list?type=1&page=%d&pageSize=20"
+    val specialUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/special/list?page=%d"
+    val specialDetailUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/special/detail?id=%d"
+    val rankOptionsUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/weekRank/options"
+    val weekRankUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/weekRank/list?category_id=%d"
+    val filterOptionsUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/crumb/filterOptions"
+    val filteredVideoUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}" +
+            "/api/crumb/list?fcate_pid=%s&category_id=%s&area=%s&year=%s&type=%s&sort=%s&page=%%d"
+    val recommendUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/search/recommend"
+    val searchCategoryUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/v2/settings/topCategory"
+    val categoryVideoUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/search/searchList?category_id=%d&page=%%d"
+    val searchUrl: String get() = "https://${jpUrlPrefix}.${DomainManager.currentDomain}/api/v2/search/videoV2?key=%s&category_id=%d&page=%%d&pageSize=20"
     val appReleaseUrl = "https://api.github.com/repos/zhufengweihai/xinpian3/releases/latest"
 }
-

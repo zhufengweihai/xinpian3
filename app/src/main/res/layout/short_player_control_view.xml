@@ -4,6 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="PrivateResource">
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/exo_black_opacity_60" />
+
     <TextView
         android:id="@+id/tv_episode"
         android:layout_width="wrap_content"
@@ -49,12 +54,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:background="@drawable/tv_border"
-            android:ellipsize="end"
-            android:gravity="start|center_vertical"
-            android:paddingHorizontal="5dp"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
             android:text="点击完整播放"
             android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/title"
             app:layout_constraintStart_toEndOf="@id/title"
             app:layout_constraintTop_toTopOf="@id/title" />

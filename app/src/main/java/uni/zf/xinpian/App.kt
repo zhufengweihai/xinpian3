@@ -5,7 +5,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStore
 import androidx.room.Room.databaseBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import uni.zf.xinpian.data.AppDatabase
+import uni.zf.xinpian.http.DomainManager
 import uni.zf.xinpian.json.CategorySerializer
 import uni.zf.xinpian.json.CustomTagSerializer
 import uni.zf.xinpian.json.DyTagSerializer
@@ -20,6 +25,8 @@ import java.io.File
 
 class App : Application() {
     lateinit var appDb: AppDatabase
+    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this
@@ -30,6 +37,12 @@ class App : Application() {
                     1
                 )
                 .build()
+
+        // 初始化域名管理器：先从本地缓存恢复，再异步从远程更新
+        DomainManager.init(applicationContext)
+        appScope.launch(Dispatchers.IO) {
+            DomainManager.fetchDomains(applicationContext)
+        }
     }
 
     companion object {
