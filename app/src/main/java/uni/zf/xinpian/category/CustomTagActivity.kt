@@ -33,10 +33,15 @@ class CustomTagActivity : AppCompatActivity() {
         binding.rvVideoList.layoutManager = GridLayoutManager(this, 3)
         binding.rvVideoList.addItemDecoration(SeriesItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
 
+        binding.swipeRefresh.setOnRefreshListener {
+            loadData()
+        }
+
         loadData()
     }
 
     private fun loadData() {
+        binding.swipeRefresh.isRefreshing = true
         lifecycleScope.launch {
             viewModel.getCustomTagData()?.let {
                 loadImages(binding.ivCover, it.coverUrl)
@@ -44,6 +49,7 @@ class CustomTagActivity : AppCompatActivity() {
                 binding.tvContent.text = it.content
                 adapter.updateVideoList(it.videoList)
             }
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 }

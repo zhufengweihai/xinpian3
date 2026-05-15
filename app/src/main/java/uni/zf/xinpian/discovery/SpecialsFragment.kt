@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -30,6 +31,14 @@ class SpecialsFragment : Fragment() {
         binding.rvSpecials.layoutManager = GridLayoutManager(context, 2)
         adapter = SpecialsAdapter()
         binding.rvSpecials.adapter = adapter
+
+        adapter.addLoadStateListener { loadState ->
+            binding.swipeRefresh.isRefreshing = loadState.refresh is LoadState.Loading
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            adapter.refresh()
+        }
     }
 
     override fun onResume() {
@@ -39,6 +48,7 @@ class SpecialsFragment : Fragment() {
 
     private fun loadData() {
         if (!hasLoaded) {
+            binding.swipeRefresh.isRefreshing = true
             lifecycleScope.launch {
                 viewModel.specialDataFlow.collectLatest {
                     adapter.submitData(it)

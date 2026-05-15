@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.databinding.FragmentScheduleBinding
@@ -28,6 +29,13 @@ class ScheduleFragment : Fragment() {
         adapter = ScheduleListAdapter()
         binding.rvSchedule.adapter = adapter
 
+        adapter.addLoadStateListener { loadState ->
+            binding.swipeRefresh.isRefreshing = loadState.refresh is LoadState.Loading
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            adapter.refresh()
+        }
     }
 
     override fun onResume() {
@@ -37,6 +45,7 @@ class ScheduleFragment : Fragment() {
 
     private fun loadData() {
         if (!hasLoaded) {
+            binding.swipeRefresh.isRefreshing = true
             lifecycleScope.launch {
                 viewModel.scheduleDataFlow.collectLatest {
                     adapter.submitData(it)

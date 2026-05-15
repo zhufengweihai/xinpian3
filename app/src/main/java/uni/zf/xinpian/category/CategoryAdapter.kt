@@ -35,16 +35,19 @@ class CategoryAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val customTagAdapter = CustomTagAdapter()
 
     fun updateSlideData(data: List<SlideData>) {
+        if (this.slideData == data) return
         this.slideData = data
         notifyItemChanged(0)
     }
 
     fun updateCustomTags(tags: List<CustomTag>) {
+        if (this.customTags == tags) return
         this.customTags = tags
         notifyItemChanged(1)
     }
 
     fun updateDyTags(tags: List<DyTag>) {
+        if (this.dyTags == tags) return
         val oldSize = this.dyTags.size
         this.dyTags = tags
         val headerCount = 3 // slide + tags + ad

@@ -71,7 +71,6 @@ class CategoryFragment : Fragment() {
                     MotionEvent.ACTION_MOVE -> {
                         val deltaY = e.y - touchStartY
                         if (deltaY > 30 && !rv.canScrollVertically(-1)) {
-                            // 在顶部向下拉，开始拦截
                             isPulling = true
                             return true
                         }
@@ -126,7 +125,6 @@ class CategoryFragment : Fragment() {
 
     private fun triggerRefresh() {
         isRefreshing = true
-        // 动画到固定位置
         binding.refreshProgress.animate()
             .translationY(10f)
             .alpha(1f)
@@ -136,6 +134,15 @@ class CategoryFragment : Fragment() {
             .setInterpolator(DecelerateInterpolator())
             .start()
         refreshData()
+    }
+
+    private fun showLoadingIndicator() {
+        isRefreshing = true
+        binding.refreshProgress.visibility = View.VISIBLE
+        binding.refreshProgress.translationY = 10f
+        binding.refreshProgress.alpha = 1f
+        binding.refreshProgress.scaleX = 1f
+        binding.refreshProgress.scaleY = 1f
     }
 
     private fun hideRefreshIndicator() {
@@ -152,18 +159,46 @@ class CategoryFragment : Fragment() {
     }
 
     private fun refreshData() {
-        loadCommonData(isRefresh = true)
-    }
-
-    private fun loadData() {
-        loadCommonData(isRefresh = false)
-    }
-
-    private fun loadCommonData(isRefresh: Boolean = false) {
         viewModel.requestSlideData()
         viewModel.requestCustomTags()
         viewModel.requestDyTag()
-        if (isRefresh) collectDataWithRefresh() else collectDataWithoutRefresh()
+        collectDataWithRefresh()
+    }
+
+    private fun loadData() {
+        showLoadingIndicator()
+        viewModel.requestSlideData()
+        viewModel.requestCustomTags()
+        viewModel.requestDyTag()
+        collectDataWithLoading()
+    }
+
+    private fun collectDataWithLoading() {
+        var pendingDataLoads = 3
+
+        lifecycleScope.launch {
+            viewModel.getSlideList().collect {
+                if (it.data.isNotEmpty()) categoryAdapter.updateSlideData(it.data)
+                pendingDataLoads--
+                if (pendingDataLoads == 0) hideRefreshIndicator()
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.getCustomTagList().collect {
+                if (it.list.isNotEmpty()) categoryAdapter.updateCustomTags(it.list)
+                pendingDataLoads--
+                if (pendingDataLoads == 0) hideRefreshIndicator()
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.getDyTagList().collect {
+                if (it.list.isNotEmpty()) categoryAdapter.updateDyTags(it.list)
+                pendingDataLoads--
+                if (pendingDataLoads == 0) hideRefreshIndicator()
+            }
+        }
     }
 
     private fun collectDataWithRefresh() {
@@ -200,26 +235,6 @@ class CategoryFragment : Fragment() {
                     refreshComplete = true
                     hideRefreshIndicator()
                 }
-            }
-        }
-    }
-
-    private fun collectDataWithoutRefresh() {
-        lifecycleScope.launch {
-            viewModel.getSlideList().collect {
-                categoryAdapter.updateSlideData(it.data)
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.getCustomTagList().collect {
-                if (it.list.isNotEmpty()) categoryAdapter.updateCustomTags(it.list)
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.getDyTagList().collect {
-                categoryAdapter.updateDyTags(it.list)
             }
         }
     }

@@ -7,13 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.databinding.FragmentRankListBinding
-import uni.zf.xinpian.databinding.FragmentSearchCategoryBinding
-import uni.zf.xinpian.discovery.RankListAdapter
-import uni.zf.xinpian.discovery.RankViewModel
 
 fun newRankListFragment(categoryId: Int) = RankListFragment().apply {
     arguments = Bundle().apply {
@@ -36,6 +32,10 @@ class RankListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = RankListAdapter()
         binding!!.rvRankList.adapter = adapter
+
+        binding!!.swipeRefresh.setOnRefreshListener {
+            refreshData()
+        }
     }
 
     override fun onResume() {
@@ -45,10 +45,19 @@ class RankListFragment : Fragment() {
 
     private fun loadData() {
         if (!hasLoaded) {
+            binding!!.swipeRefresh.isRefreshing = true
             lifecycleScope.launch {
                 adapter.updateItems(viewModel.getWeekRankList())
+                binding!!.swipeRefresh.isRefreshing = false
             }
             hasLoaded = true
+        }
+    }
+
+    private fun refreshData() {
+        lifecycleScope.launch {
+            adapter.updateItems(viewModel.getWeekRankList())
+            binding!!.swipeRefresh.isRefreshing = false
         }
     }
 

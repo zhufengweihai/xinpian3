@@ -3,6 +3,7 @@ package uni.zf.xinpian.data
 import uni.zf.xinpian.utils.generateJpUrlPrefix
 
 object AppConst {
+    const val DOMAIN_URL = "https://jdomain.oss-accelerate.aliyuncs.com/domain.txt"
     const val VPN_URL = "https://pandavpnpro.com/r/110177713"
     const val GYLM_URL = "https://review-2026.kuaizhan.com/?code_sign=gyic_38039011&_d=20260506"
     const val KEY_SECRET = "secret"

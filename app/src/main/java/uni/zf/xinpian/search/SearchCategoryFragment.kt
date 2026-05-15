@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
@@ -33,20 +34,31 @@ class SearchCategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = CategoryVideoAdapter()
         binding!!.rvCategoryVideo.adapter = adapter
+
+        adapter.addLoadStateListener { loadState ->
+            binding?.swipeRefresh?.isRefreshing = loadState.refresh is LoadState.Loading
+        }
+
+        binding!!.swipeRefresh.setOnRefreshListener {
+            adapter.refresh()
+        }
     }
 
     override fun onResume() {
         super.onResume()
         loadData()
     }
+
     private fun loadData() {
         if (!hasLoaded) {
+            binding!!.swipeRefresh.isRefreshing = true
             lifecycleScope.launch {
                 viewModel.videoFlow.collectLatest(adapter::submitData)
             }
             hasLoaded = true
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null

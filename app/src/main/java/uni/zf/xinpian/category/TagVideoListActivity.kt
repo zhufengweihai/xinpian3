@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -37,10 +38,19 @@ class TagVideoListActivity : AppCompatActivity() {
         binding.rvTagData.layoutManager = GridLayoutManager(this, 3)
         binding.rvTagData.addItemDecoration(SeriesItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
 
+        adapter.addLoadStateListener { loadState ->
+            binding.swipeRefresh.isRefreshing = loadState.refresh is LoadState.Loading
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            adapter.refresh()
+        }
+
         loadData()
     }
 
-    private fun loadData (){
+    private fun loadData() {
+        binding.swipeRefresh.isRefreshing = true
         lifecycleScope.launch {
             viewModel.videoDataFlow.collectLatest {
                 adapter.submitData(it)

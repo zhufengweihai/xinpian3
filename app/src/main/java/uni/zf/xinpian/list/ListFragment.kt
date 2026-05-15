@@ -88,14 +88,9 @@ class ListFragment : Fragment(), FilterOptionListener {
 
     private fun listenLoadState() {
         videosAdapter.addLoadStateListener {
-            when {
-                it.refresh is Loading || it.append is Loading -> binding.main.isRefreshing = true
-                it.refresh is Error || it.append is Error -> {
-                    makeText(context, "请求失败", LENGTH_SHORT).show()
-                    binding.main.isRefreshing = false
-                }
-
-                else -> binding.main.isRefreshing = false
+            binding.main.isRefreshing = it.refresh is Loading
+            if (it.refresh is Error || it.append is Error) {
+                makeText(context, "请求失败", LENGTH_SHORT).show()
             }
         }
     }
