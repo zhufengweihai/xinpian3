@@ -1,21 +1,19 @@
 package uni.zf.xinpian.category
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
+import android.view.animation.DecelerateInterpolator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
-import uni.zf.xinpian.R
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
-import uni.zf.xinpian.data.AppConst.GYLM_URL
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
-import uni.zf.xinpian.view.HorizontalItemDecoration
 
 fun newCategoryFragment(categoryId: Int) = CategoryFragment().apply {
     arguments = Bundle().apply { putInt(ARG_CATEGORY, categoryId) }
@@ -24,9 +22,14 @@ fun newCategoryFragment(categoryId: Int) = CategoryFragment().apply {
 class CategoryFragment : Fragment() {
     private val viewModel: CategoryViewModel by viewModels()
     private lateinit var binding: FragmentCategoryBinding
-    private lateinit var dyTagAdapter: DyTagListAdapter
-    private lateinit var cumTagAdapter: CustomTagAdapter
+    private lateinit var categoryAdapter: CategoryAdapter
     private var hasLoaded = false
+    private var isRefreshing = false
+
+    // 下拉刷新相关
+    private var touchStartY = 0f
+    private var isPulling = false
+    private val refreshThreshold = 160f
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCategoryBinding.inflate(inflater, container, false)
@@ -47,33 +50,108 @@ class CategoryFragment : Fragment() {
     }
 
     private fun init() {
-        dyTagAdapter = DyTagListAdapter()
-        binding.rvDyTagList.adapter = dyTagAdapter
-        binding.rvDyTagList.overScrollMode = View.OVER_SCROLL_NEVER
-        cumTagAdapter = CustomTagAdapter()
-        binding.tagListView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.tagListView.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(R.dimen.list_item_space)))
-        binding.tagListView.adapter = cumTagAdapter
-        setupSwipeRefresh()
-        setupAdImageClick()
+        categoryAdapter = CategoryAdapter()
+        categoryAdapter.setHasStableIds(true)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = categoryAdapter
+        binding.recyclerView.setItemViewCacheSize(10)
+        binding.recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
+        setupPullToRefresh()
     }
 
-    private fun setupAdImageClick() {
-        binding.adImageView.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, GYLM_URL.toUri()))
-        }
+    private fun setupPullToRefresh() {
+        binding.recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                if (isRefreshing) return false
+                when (e.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        touchStartY = e.y
+                        isPulling = false
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        val deltaY = e.y - touchStartY
+                        if (deltaY > 30 && !rv.canScrollVertically(-1)) {
+                            // 在顶部向下拉，开始拦截
+                            isPulling = true
+                            return true
+                        }
+                    }
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+                when (e.action) {
+                    MotionEvent.ACTION_MOVE -> {
+                        val deltaY = e.y - touchStartY
+                        val pullDistance = (deltaY * 0.4f).coerceAtLeast(0f)
+                        showPullProgress(pullDistance)
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        val deltaY = e.y - touchStartY
+                        if (deltaY >= refreshThreshold) {
+                            triggerRefresh()
+                        } else {
+                            hidePullProgress()
+                        }
+                        isPulling = false
+                    }
+                }
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+        })
     }
 
-    private fun setupSwipeRefresh() {
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            refreshData()
-        }
-        // 禁用 NestedScrollView 的过度滚动回弹（Android 12+ stretch effect）
-        binding.nestedScrollView.overScrollMode = View.OVER_SCROLL_NEVER
+    private fun showPullProgress(pullDistance: Float) {
+        binding.refreshProgress.visibility = View.VISIBLE
+        binding.refreshProgress.translationY = pullDistance - 20f
+        val progress = (pullDistance / (refreshThreshold * 0.4f)).coerceIn(0f, 1f)
+        binding.refreshProgress.alpha = progress
+        binding.refreshProgress.scaleX = progress.coerceIn(0.4f, 1f)
+        binding.refreshProgress.scaleY = progress.coerceIn(0.4f, 1f)
+    }
+
+    private fun hidePullProgress() {
+        binding.refreshProgress.animate()
+            .alpha(0f)
+            .translationY(-40f)
+            .setDuration(200)
+            .setInterpolator(DecelerateInterpolator())
+            .withEndAction {
+                binding.refreshProgress.visibility = View.GONE
+            }
+            .start()
+    }
+
+    private fun triggerRefresh() {
+        isRefreshing = true
+        // 动画到固定位置
+        binding.refreshProgress.animate()
+            .translationY(10f)
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(150)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
+        refreshData()
+    }
+
+    private fun hideRefreshIndicator() {
+        binding.refreshProgress.animate()
+            .alpha(0f)
+            .translationY(-40f)
+            .setDuration(300)
+            .setInterpolator(DecelerateInterpolator())
+            .withEndAction {
+                binding.refreshProgress.visibility = View.GONE
+                isRefreshing = false
+            }
+            .start()
     }
 
     private fun refreshData() {
-        binding.swipeRefreshLayout.isRefreshing = true
         loadCommonData(isRefresh = true)
     }
 
@@ -89,38 +167,38 @@ class CategoryFragment : Fragment() {
     }
 
     private fun collectDataWithRefresh() {
-        var pendingDataLoads = 3 // 跟踪待加载的数据项数量（slide、custom tags、dy tags）
+        var pendingDataLoads = 3
         var refreshComplete = false
 
         lifecycleScope.launch {
             viewModel.getSlideList().collect {
-                binding.slideView.setVideoList(it.data)
+                categoryAdapter.updateSlideData(it.data)
                 pendingDataLoads--
                 if (pendingDataLoads == 0 && !refreshComplete) {
                     refreshComplete = true
-                    binding.swipeRefreshLayout.isRefreshing = false
+                    hideRefreshIndicator()
                 }
             }
         }
 
         lifecycleScope.launch {
             viewModel.getCustomTagList().collect {
-                if (it.list.isNotEmpty()) cumTagAdapter.updateCustomTagList(it.list)
+                if (it.list.isNotEmpty()) categoryAdapter.updateCustomTags(it.list)
                 pendingDataLoads--
                 if (pendingDataLoads == 0 && !refreshComplete) {
                     refreshComplete = true
-                    binding.swipeRefreshLayout.isRefreshing = false
+                    hideRefreshIndicator()
                 }
             }
         }
 
         lifecycleScope.launch {
             viewModel.getDyTagList().collect {
-                dyTagAdapter.updateDyTagList(it.list)
+                categoryAdapter.updateDyTags(it.list)
                 pendingDataLoads--
                 if (pendingDataLoads == 0 && !refreshComplete) {
                     refreshComplete = true
-                    binding.swipeRefreshLayout.isRefreshing = false
+                    hideRefreshIndicator()
                 }
             }
         }
@@ -129,19 +207,19 @@ class CategoryFragment : Fragment() {
     private fun collectDataWithoutRefresh() {
         lifecycleScope.launch {
             viewModel.getSlideList().collect {
-                binding.slideView.setVideoList(it.data)
+                categoryAdapter.updateSlideData(it.data)
             }
         }
 
         lifecycleScope.launch {
             viewModel.getCustomTagList().collect {
-                if (it.list.isNotEmpty()) cumTagAdapter.updateCustomTagList(it.list)
+                if (it.list.isNotEmpty()) categoryAdapter.updateCustomTags(it.list)
             }
         }
 
         lifecycleScope.launch {
             viewModel.getDyTagList().collect {
-                dyTagAdapter.updateDyTagList(it.list)
+                categoryAdapter.updateDyTags(it.list)
             }
         }
     }

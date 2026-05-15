@@ -24,8 +24,13 @@ class SlideView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int
     private val handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable? = null
 
+    private var currentVideoList: List<SlideData>? = null
+
     fun setVideoList(videoList: List<SlideData>) {
         if (videoList.isEmpty()) return
+        // 如果数据相同，不重复初始化
+        if (currentVideoList == videoList) return
+        currentVideoList = videoList
         setupViewPager(videoList)
         setupIndicators(videoList.size)
         displayInLoop(videoList)

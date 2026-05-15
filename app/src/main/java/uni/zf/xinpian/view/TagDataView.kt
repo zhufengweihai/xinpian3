@@ -23,6 +23,8 @@ class TagDataView(context: Context, attrs: AttributeSet? = null, defStyleAttr: I
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     private val binding = ViewTagDataBinding.inflate(LayoutInflater.from(context), this)
+    private val videoAdapter = VideoListAdapter()
+    private var isVideoListInitialized = false
 
     fun setTagData(dyTag: DyTag) {
         binding.tagTextView.text = dyTag.name
@@ -46,9 +48,12 @@ class TagDataView(context: Context, attrs: AttributeSet? = null, defStyleAttr: I
     }
 
     private fun setupVideoListView(tagDataList: List<TagData>) {
-        val adapter = VideoListAdapter(tagDataList)
-        binding.videoListView.layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
-        binding.videoListView.adapter = adapter
-        binding.videoListView.addItemDecoration(SpaceItemDecoration(context))
+        if (!isVideoListInitialized) {
+            binding.videoListView.layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
+            binding.videoListView.adapter = videoAdapter
+            binding.videoListView.addItemDecoration(SpaceItemDecoration(context))
+            isVideoListInitialized = true
+        }
+        videoAdapter.updateVideoList(tagDataList)
     }
 }
