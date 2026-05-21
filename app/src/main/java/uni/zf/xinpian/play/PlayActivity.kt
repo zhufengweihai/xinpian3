@@ -475,7 +475,7 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         binding.tvMask.text = video.mask
         val playListAdapter = binding.rvItems.adapter as PlayListAdapter
         if (video.sourceGroups.isNotEmpty()) {
-            playListAdapter.updateItems(video.sourceGroups[currentSource].playList)
+            playListAdapter.updateItems(video.sourceGroups[currentSource].playList, currentItem)
         }
     }
 
