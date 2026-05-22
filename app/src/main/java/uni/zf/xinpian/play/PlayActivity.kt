@@ -477,6 +477,22 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         if (video.sourceGroups.isNotEmpty()) {
             playListAdapter.updateItems(video.sourceGroups[currentSource].playList, currentItem)
         }
+        scrollToSource(currentSource)
+        scrollToEpisode(currentItem)
+    }
+
+    private fun scrollToSource(position: Int) {
+        binding.rvSources.post {
+            val layoutManager = binding.rvSources.layoutManager as? LinearLayoutManager ?: return@post
+            layoutManager.scrollToPositionWithOffset(position, 0)
+        }
+    }
+
+    private fun scrollToEpisode(position: Int) {
+        binding.rvItems.post {
+            val layoutManager = binding.rvItems.layoutManager as? LinearLayoutManager ?: return@post
+            layoutManager.scrollToPositionWithOffset(position, 0)
+        }
     }
 
     override fun onSource(sourceIndex: Int) {
@@ -485,12 +501,14 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
             currentItem = player?.currentMediaItemIndex ?: 0
             currentPos = player?.currentPosition ?: 0
             play(it)
+            scrollToSource(currentSource)
         }
     }
 
     override fun onEpisode(itemIndex: Int) {
         val prevUri = player?.currentMediaItem?.localConfiguration?.uri
         player?.seekTo(itemIndex, 0)
+        scrollToEpisode(itemIndex)
     }
 
     override fun onDownload(itemIndex: Int) {
@@ -550,8 +568,10 @@ open class PlayActivity : AppCompatActivity(), ControllerVisibilityListener, Sou
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             mediaItem?.let {
                 it.mediaMetadata.title?.let { titleView.text = it }
+                val currentIndex = player?.currentMediaItemIndex ?: 0
                 val adapter = binding.rvItems.adapter as PlayListAdapter
-                adapter.updateItems(player?.currentMediaItemIndex ?: 0)
+                adapter.updateItems(currentIndex)
+                scrollToEpisode(currentIndex)
             }
         }
     }
