@@ -51,12 +51,23 @@ class CategoryAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val oldSize = this.dyTags.size
         this.dyTags = tags
         val headerCount = 3 // slide + tags + ad
-        if (oldSize == 0) {
-            notifyItemRangeInserted(headerCount, tags.size)
-        } else if (oldSize == tags.size) {
-            notifyItemRangeChanged(headerCount, tags.size)
-        } else {
-            notifyDataSetChanged()
+        when {
+            oldSize == 0 -> {
+                notifyItemRangeInserted(headerCount, tags.size)
+            }
+            oldSize == tags.size -> {
+                notifyItemRangeChanged(headerCount, tags.size)
+            }
+            tags.size > oldSize -> {
+                // 更新已有的项，然后插入新增的项
+                notifyItemRangeChanged(headerCount, oldSize)
+                notifyItemRangeInserted(headerCount + oldSize, tags.size - oldSize)
+            }
+            else -> {
+                // 更新保留的项，然后移除多余的项
+                notifyItemRangeChanged(headerCount, tags.size)
+                notifyItemRangeRemoved(headerCount + tags.size, oldSize - tags.size)
+            }
         }
     }
 

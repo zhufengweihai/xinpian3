@@ -11,6 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import uni.zf.xinpian.data.AppConst.ARG_CATEGORY
 import uni.zf.xinpian.databinding.FragmentCategoryBinding
@@ -25,6 +27,7 @@ class CategoryFragment : Fragment() {
     private lateinit var categoryAdapter: CategoryAdapter
     private var hasLoaded = false
     private var isRefreshing = false
+    private var dataCollectJob: Job? = null
 
     // 下拉刷新相关
     private var touchStartY = 0f
@@ -162,7 +165,7 @@ class CategoryFragment : Fragment() {
         viewModel.requestSlideData()
         viewModel.requestCustomTags()
         viewModel.requestDyTag()
-        collectDataWithRefresh()
+        collectDataOnce()
     }
 
     private fun loadData() {
@@ -170,71 +173,36 @@ class CategoryFragment : Fragment() {
         viewModel.requestSlideData()
         viewModel.requestCustomTags()
         viewModel.requestDyTag()
-        collectDataWithLoading()
+        collectDataOnce()
     }
 
-    private fun collectDataWithLoading() {
-        var pendingDataLoads = 3
+    private fun collectDataOnce() {
+        // 取消之前的收集任务，避免重复收集
+        dataCollectJob?.cancel()
+        dataCollectJob = lifecycleScope.launch {
+            var pendingDataLoads = 3
 
-        lifecycleScope.launch {
-            viewModel.getSlideList().collect {
-                if (it.data.isNotEmpty()) categoryAdapter.updateSlideData(it.data)
+            // 使用 first { 条件 } 等待有效数据到达后立即停止收集
+            // 避免 DataStore 持续发射导致 adapter 反复更新和滚动位置重置
+            launch {
+                val slideList = viewModel.getSlideList().first { it.data.isNotEmpty() }
+                categoryAdapter.updateSlideData(slideList.data)
                 pendingDataLoads--
                 if (pendingDataLoads == 0) hideRefreshIndicator()
             }
-        }
 
-        lifecycleScope.launch {
-            viewModel.getCustomTagList().collect {
-                if (it.list.isNotEmpty()) categoryAdapter.updateCustomTags(it.list)
+            launch {
+                val customTagList = viewModel.getCustomTagList().first { it.list.isNotEmpty() }
+                categoryAdapter.updateCustomTags(customTagList.list)
                 pendingDataLoads--
                 if (pendingDataLoads == 0) hideRefreshIndicator()
             }
-        }
 
-        lifecycleScope.launch {
-            viewModel.getDyTagList().collect {
-                if (it.list.isNotEmpty()) categoryAdapter.updateDyTags(it.list)
+            launch {
+                val dyTagList = viewModel.getDyTagList().first { it.list.isNotEmpty() }
+                categoryAdapter.updateDyTags(dyTagList.list)
                 pendingDataLoads--
                 if (pendingDataLoads == 0) hideRefreshIndicator()
-            }
-        }
-    }
-
-    private fun collectDataWithRefresh() {
-        var pendingDataLoads = 3
-        var refreshComplete = false
-
-        lifecycleScope.launch {
-            viewModel.getSlideList().collect {
-                categoryAdapter.updateSlideData(it.data)
-                pendingDataLoads--
-                if (pendingDataLoads == 0 && !refreshComplete) {
-                    refreshComplete = true
-                    hideRefreshIndicator()
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.getCustomTagList().collect {
-                if (it.list.isNotEmpty()) categoryAdapter.updateCustomTags(it.list)
-                pendingDataLoads--
-                if (pendingDataLoads == 0 && !refreshComplete) {
-                    refreshComplete = true
-                    hideRefreshIndicator()
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.getDyTagList().collect {
-                categoryAdapter.updateDyTags(it.list)
-                pendingDataLoads--
-                if (pendingDataLoads == 0 && !refreshComplete) {
-                    refreshComplete = true
-                    hideRefreshIndicator()
-                }
             }
         }
     }
